@@ -180,15 +180,15 @@ function create_tables($db, $prefix = '') {
 	//读取SQL文件
 	$sql = file_get_contents(MODULE_PATH . 'Data/install.sql');
 	if (file_exists(MODULE_PATH . 'Data/data.sql')) {
-		$sql .= file_get_contents(MODULE_PATH . 'Data/data.sql');
+		$sql .= "\n" . file_get_contents(MODULE_PATH . 'Data/data.sql');
 	}
 	if (file_exists(MODULE_PATH . 'Data/patch.sql')) {
-		$sql .= file_get_contents(MODULE_PATH . 'Data/patch.sql');
+		$sql .= "\n" . file_get_contents(MODULE_PATH . 'Data/patch.sql');
 	}
 	$other_patch = glob(MODULE_PATH . 'Data/patch_*.sql');
 	if ($other_patch) {
 		foreach ($other_patch as $value) {
-			$sql .= file_get_contents($value);
+			$sql .= "\n" . file_get_contents($value);
 		}
 	}
 	$sql = str_replace("\r", "\n", $sql);
