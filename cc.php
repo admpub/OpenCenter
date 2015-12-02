@@ -2,20 +2,21 @@
 $dirname = './Runtime/';
 
 //清文件缓存
-$dirs	=	array($dirname);
+$dirs = array($dirname);
 
-if(function_exists('memcache_init')){
-    $mem = memcache_init();
-    $mem->flush();
+if (function_exists('memcache_init')) {
+	$mem = memcache_init();
+	$mem->flush();
 }
 header('Content-Type:text/html;charset=utf-8');
+echo '<!doctype html><html><head><meta charset="utf-8"><title>清理缓存</title><style>div{border:2px solid green; background:#f1f1f1;padding:20px;margin:20px;width:800px;font-weight:bold;color:green;text-align:center;margin:50px auto}</style></head><body>';
 //清理缓存
-foreach($dirs as $value) {
+foreach ($dirs as $value) {
 	rmdirr($value);
-	echo "<div style='border:2px solid green; background:#f1f1f1; padding:20px;margin:20px;width:800px;font-weight:bold;color:green;text-align:center;margin: 50px auto'>\"".$value."\" 已经被删除!缓存清理完毕。 </div> <br /><br />";
+	echo '<div>"' . $value . '" 已经被删除!缓存清理完毕。 </div> <br /><br />';
 }
-
-@mkdir($dirname,0777,true);
+echo '</body></html>';
+@mkdir($dirname, 0777, true);
 
 function rmdirr($dirname) {
 	if (!file_exists($dirname)) {
@@ -25,7 +26,7 @@ function rmdirr($dirname) {
 		return unlink($dirname);
 	}
 	$dir = dir($dirname);
-	if($dir){
+	if ($dir) {
 		while (false !== $entry = $dir->read()) {
 			if ($entry == '.' || $entry == '..') {
 				continue;
@@ -36,7 +37,7 @@ function rmdirr($dirname) {
 	$dir->close();
 	return rmdir($dirname);
 }
-function U(){
+function U() {
 	return false;
 }
 ?>
