@@ -421,7 +421,7 @@ class ConfigController extends BaseController {
 				}
 			} else {
 				$dl['changeTime'] = time();
-				if (!D('field')->where('id=' . $res['id'])->save($dl)) {
+				if (!D('field')->where(array('id' => $res['id']))->save($dl)) {
 					$this->error('信息修改时出错！');
 				}
 				$is_success = true;
@@ -443,40 +443,40 @@ class ConfigController extends BaseController {
 	 * @author 郑钟良<zzl@ourstu.com>
 	 */
 	function _checkInput($data) {
-		if ($data['form_type'] == "textarea") {
+		if ($data['form_type'] == 'textarea') {
 			$validation = $this->_getValidation($data['validation']);
-			if (($validation['min'] != 0 && mb_strlen($data['value'], "utf-8") < $validation['min']) || ($validation['max'] != 0 && mb_strlen($data['value'], "utf-8") > $validation['max'])) {
+			if (($validation['min'] != 0 && mb_strlen($data['value'], 'utf-8') < $validation['min']) || ($validation['max'] != 0 && mb_strlen($data['value'], 'utf-8') > $validation['max'])) {
 				if ($validation['max'] == 0) {
 					$validation['max'] = '';
 				}
 				$info['succ'] = 0;
-				$info['msg'] = $data['field_name'] . "长度必须在" . $validation['min'] . "-" . $validation['max'] . "之间";
+				$info['msg'] = $data['field_name'] . '长度必须在' . $validation['min'] . '-' . $validation['max'] . '之间';
 			}
 		} else {
 			switch ($data['child_form_type']) {
 			case 'string':
 				$validation = $this->_getValidation($data['validation']);
-				if (($validation['min'] != 0 && mb_strlen($data['value'], "utf-8") < $validation['min']) || ($validation['max'] != 0 && mb_strlen($data['value'], "utf-8") > $validation['max'])) {
+				if (($validation['min'] != 0 && mb_strlen($data['value'], 'utf-8') < $validation['min']) || ($validation['max'] != 0 && mb_strlen($data['value'], 'utf-8') > $validation['max'])) {
 					if ($validation['max'] == 0) {
 						$validation['max'] = '';
 					}
 					$info['succ'] = 0;
-					$info['msg'] = $data['field_name'] . "长度必须在" . $validation['min'] . "-" . $validation['max'] . "之间";
+					$info['msg'] = $data['field_name'] . '长度必须在' . $validation['min'] . '-' . $validation['max'] . '之间';
 				}
 				break;
 			case 'number':
-				if (preg_match("/^\d*$/", $data['value'])) {
+				if (preg_match('/^\d*$/', $data['value'])) {
 					$validation = $this->_getValidation($data['validation']);
-					if (($validation['min'] != 0 && mb_strlen($data['value'], "utf-8") < $validation['min']) || ($validation['max'] != 0 && mb_strlen($data['value'], "utf-8") > $validation['max'])) {
+					if (($validation['min'] != 0 && mb_strlen($data['value'], 'utf-8') < $validation['min']) || ($validation['max'] != 0 && mb_strlen($data['value'], 'utf-8') > $validation['max'])) {
 						if ($validation['max'] == 0) {
 							$validation['max'] = '';
 						}
 						$info['succ'] = 0;
-						$info['msg'] = $data['field_name'] . "长度必须在" . $validation['min'] . "-" . $validation['max'] . "之间，且为数字";
+						$info['msg'] = $data['field_name'] . '长度必须在' . $validation['min'] . '-' . $validation['max'] . '之间，且为数字';
 					}
 				} else {
 					$info['succ'] = 0;
-					$info['msg'] = $data['field_name'] . "必须是数字";
+					$info['msg'] = $data['field_name'] . '必须是数字';
 				}
 				break;
 			case 'email':
@@ -781,7 +781,7 @@ class ConfigController extends BaseController {
 	public function cleanRemember() {
 		$uid = is_login();
 		if ($uid) {
-			D('user_token')->where('uid=' . $uid)->delete();
+			D('user_token')->where(array('uid' => $uid))->delete();
 			$this->success('清除成功！');
 		}
 		$this->error('清除失败！');

@@ -52,7 +52,7 @@ class BaseController extends AddonsController {
 		session('SYNCLOGIN_TYPE', $type);
 		session('SYNCLOGIN_OPENID', $token['openid']);
 		session('SYNCLOGIN_ACCESS_TOKEN', $token['access_token']);
-		$check = D('sync_login')->where("`type_uid`='" . $token['openid'] . "' AND type='" . $type . "'")->select();
+		$check = D('sync_login')->where(array('type_uid' => $token['openid'], 'type' => $type))->select();
 		$addon_config = get_addon_config('SyncLogin');
 
 		if ($is_login) {
@@ -215,10 +215,10 @@ class BaseController extends AddonsController {
 		$type = session('SYNCLOGIN_TYPE');
 		$token = session('SYNCLOGIN_TOKEN');
 		$user_info = D('Addons://SyncLogin/Info')->$type($token);
-		if ($info1 = D('sync_login')->where("`type_uid`='" . $openid . "' AND type='" . $type . "'")->find()) {
-			$user = UCenterMember()->where("id=" . $info1['uid'])->find();
+		if ($info1 = D('sync_login')->where(array('type_uid' => $openid, 'type' => $type))->find()) {
+			$user = UCenterMember()->where(array('id' => $info1['uid']))->find();
 			if (empty($user)) {
-				D('sync_login')->where("type_uid=" . $openid . " AND type='" . $type . "'")->delete();
+				D('sync_login')->where(array('type_uid' => $openid, 'type' => $type))->delete();
 				//已经绑定过，执行登录操作，设置token
 			} else {
 				if ($info1['oauth_token'] == '') {
@@ -252,7 +252,7 @@ class BaseController extends AddonsController {
 	}
 
 	public function checkIsBind() {
-		$check = D('sync_login')->where("`type_uid`='" . $this->openid . "' AND type='" . $this->type . "'")->select();
+		$check = D('sync_login')->where(array('type_uid' => $this->openid, 'type' => $this->type))->select();
 		if ($check) {
 			redirect(U('Home/Index/index'));
 		}

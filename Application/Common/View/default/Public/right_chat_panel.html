@@ -18,8 +18,8 @@
             <php>
                 $map_mid=is_login();
                 $modelTP=D('talk_push');
-                $has_talk_push=$modelTP->where("(uid = ".$map_mid." and status = 1) or (uid = ".$map_mid." and status = 0)")->count();
-                $has_message_push=D('talk_message_push')->where("uid= ".$map_mid." and (status=1 or status=0)")->count();
+                $has_talk_push=$modelTP->where('(uid = \''.$map_mid.'\' and status = 1) or (uid = \''.$map_mid.'\' and status = 0)')->count();
+                $has_message_push=D('talk_message_push')->where('uid= \''.$map_mid.'\' and (status=1 or status=0)')->count();
 
 
                 if($has_talk_push || $has_message_push){
