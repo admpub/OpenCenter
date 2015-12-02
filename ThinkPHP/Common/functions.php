@@ -536,7 +536,7 @@ function load($name, $baseUrl = '', $ext = '.php') {
 	$name = str_replace(array('.', '#'), array('/', '.'), $name);
 	if (empty($baseUrl)) {
 		if (0 === strpos($name, '@/')) {
-//加载当前模块函数库
+            //加载当前模块函数库
 			$baseUrl = MODULE_PATH . 'Common/';
 			$name = substr($name, 2);
 		} else {
@@ -635,7 +635,7 @@ function M($name = '', $tablePrefix = '', $connection = '') {
  */
 function parse_res_name($name, $layer, $level = 1) {
 	if (strpos($name, '://')) {
-// 指定扩展资源
+        // 指定扩展资源
 		list($extend, $name) = explode('://', $name);
 	} else {
 		$extend = '';
@@ -880,7 +880,7 @@ function layout($layout) {
 			C('LAYOUT_NAME', $layout);
 		}
 	} else {
-// 临时关闭布局
+        // 临时关闭布局
 		C('LAYOUT_ON', false);
 	}
 }
@@ -1543,7 +1543,7 @@ function cookie($name = '', $value = '', $option = null) {
 		// 要删除的cookie前缀，不指定则删除config设置的指定前缀
 		$prefix = empty($value) ? $config['prefix'] : $value;
 		if (!empty($prefix)) {
-// 如果前缀为空字符串将不作处理直接返回
+            // 如果前缀为空字符串将不作处理直接返回
 			foreach ($_COOKIE as $key => $val) {
 				if (0 === stripos($key, $prefix)) {
 					setcookie($key, '', time() - 3600, $config['path'], $config['domain']);
