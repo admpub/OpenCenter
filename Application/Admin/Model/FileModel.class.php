@@ -8,7 +8,7 @@
 // +----------------------------------------------------------------------
 
 namespace Admin\Model;
-use Think\Model;
+use Common\Model\Base;
 use Think\Upload;
 
 /**
@@ -16,7 +16,7 @@ use Think\Upload;
  * 负责文件的下载和上传
  */
 
-class FileModel extends Model{
+class FileModel extends Base{
     /**
      * 文件模型自动完成
      * @var array

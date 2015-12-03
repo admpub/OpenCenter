@@ -8,14 +8,14 @@
 // +----------------------------------------------------------------------
 
 namespace Issue\Model;
-use Think\Model;
+use Common\Model\Base;
 
 /**
  * Class IssueModel 专辑模型
  * @package Issue\Model
  * @auth 陈一枭
  */
-class IssueModel extends Model {
+class IssueModel extends Base {
 
     protected $tableName='issue';
     protected $_validate = array(

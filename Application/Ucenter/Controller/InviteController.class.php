@@ -9,9 +9,6 @@
 
 namespace Ucenter\Controller;
 
-
-use Think\Controller;
-
 class InviteController extends BaseController
 {
     protected $mInviteModel;

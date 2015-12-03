@@ -8,14 +8,14 @@
 // +----------------------------------------------------------------------
 
 namespace Home\Model;
-use Think\Model;
+use Common\Model\Base;
 
 /**
  * 文件模型
  * 负责文件的下载和上传
  */
 
-class FileModel extends Model{
+class FileModel extends Base{
 	/**
 	 * 文件模型自动完成
 	 * @var array

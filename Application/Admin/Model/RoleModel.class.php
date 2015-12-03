@@ -8,8 +8,7 @@
  */
 
 namespace Admin\Model;
-
-use Think\Model;
+use Common\Model\Base;
 
 /**
  * 角色模型
@@ -17,7 +16,7 @@ use Think\Model;
  * @package Admin\Model
  * @郑钟良
  */
-class RoleModel extends Model
+class RoleModel extends Base
 {
 
     protected $_validate = array(

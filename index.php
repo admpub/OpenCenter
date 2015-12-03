@@ -6,8 +6,8 @@
 // +----------------------------------------------------------------------
 // | Author: 麦当苗儿 <zuojiazi@vip.qq.com> <http://www.zjzit.cn>
 // +----------------------------------------------------------------------
-error_reporting(E_ALL);
-ini_set('display_errors', true);
+
+
 function reset_session_path() {
 	$root = str_replace('\\', '/', dirname(__FILE__));
 	$savePath = $root . '/tmp/';

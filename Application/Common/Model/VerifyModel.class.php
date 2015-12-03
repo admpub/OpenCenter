@@ -9,9 +9,7 @@
 
 namespace Common\Model;
 
-use Think\Model;
-
-class VerifyModel extends Model
+class VerifyModel extends Base
 {
     protected $tableName = 'verify';
     protected $_auto = array(array('create_time', NOW_TIME, self::MODEL_INSERT));

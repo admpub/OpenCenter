@@ -8,13 +8,13 @@
 // +----------------------------------------------------------------------
 
 namespace Admin\Model;
-use Think\Model;
+use Common\Model\Base;
 use Admin\Model\AuthGroupModel;
 
 /**
  * 文档基础模型
  */
-class DocumentModel extends Model{
+class DocumentModel extends Base{
 
     /* 自动验证规则 */
     protected $_validate = array(

@@ -8,13 +8,13 @@
 // +----------------------------------------------------------------------
 
 namespace Admin\Model;
-use Think\Model;
+use Common\Model\Base;
 /**
  * 配置模型
  * @author 麦当苗儿 <zuojiazi@vip.qq.com>
  */
 
-class ConfigModel extends Model {
+class ConfigModel extends Base {
     protected $_validate = array(
         array('name', 'require', '标识不能为空', self::EXISTS_VALIDATE, 'regex', self::MODEL_BOTH),
         array('name', '', '标识已经存在', self::VALUE_VALIDATE, 'unique', self::MODEL_BOTH),

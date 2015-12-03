@@ -8,9 +8,7 @@
 
 namespace Common\Model;
 
-use Think\Model;
-
-class SeoRuleModel extends Model
+class SeoRuleModel extends Base
 {
     public function getMetaOfCurrentPage($seo)
     {

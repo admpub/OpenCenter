@@ -8,14 +8,14 @@
 // +----------------------------------------------------------------------
 
 namespace Admin\Model;
-use Think\Model;
+use Common\Model\Base;
 
 /**
  * 用户模型
  * @author 麦当苗儿 <zuojiazi@vip.qq.com>
  */
 
-class MemberModel extends Model {
+class MemberModel extends Base {
 
     protected $_validate = array(
         array('nickname', '4,32', '昵称长度为4-32个字符', self::EXISTS_VALIDATE, 'length'),

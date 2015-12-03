@@ -3,10 +3,8 @@
  * 放置用户登陆注册
  */
 namespace Ucenter\Controller;
-
-
+use Common\Controller\Base;
 use Common\Model\FollowModel;
-use Think\Controller;
 use User\Api\UserApi;
 
 require_once APP_PATH . 'User/Conf/config.php';
@@ -15,7 +13,7 @@ require_once APP_PATH . 'User/Conf/config.php';
  * 用户控制器
  * 包括用户中心，用户登录及注册
  */
-class MemberController extends Controller
+class MemberController extends Base
 {
 
     /**

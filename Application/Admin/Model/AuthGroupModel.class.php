@@ -8,14 +8,14 @@
 // +----------------------------------------------------------------------
 
 namespace Admin\Model;
-use Think\Model;
+use Common\Model\Base;
 
 /**
  * 用户组模型类
  * Class AuthGroupModel
  * @author 朱亚杰 <zhuyajie@topthink.net>
  */
-class AuthGroupModel extends Model {
+class AuthGroupModel extends Base {
 	const TYPE_ADMIN = 1; // 管理员用户组类型标识
 	const MEMBER = 'member';
 	const UCENTER_MEMBER = 'ucenter_member';

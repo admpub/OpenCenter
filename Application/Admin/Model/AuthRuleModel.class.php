@@ -8,12 +8,12 @@
 // +----------------------------------------------------------------------
 
 namespace Admin\Model;
-use Think\Model;
+use Common\Model\Base;
 /**
  * 权限规则模型
  * @author 朱亚杰 <zhuyajie@topthink.net>
  */
-class AuthRuleModel extends Model{
+class AuthRuleModel extends Base{
     
     const RULE_URL = 1;
     const RULE_MAIN = 2;

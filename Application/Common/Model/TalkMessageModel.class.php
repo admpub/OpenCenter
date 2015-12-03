@@ -9,10 +9,7 @@
 
 namespace Common\Model;
 
-
-use Think\Model;
-
-class TalkMessageModel extends Model
+class TalkMessageModel extends Base
 {
     protected $_auto = array(
         array('create_time', NOW_TIME, self::MODEL_INSERT),

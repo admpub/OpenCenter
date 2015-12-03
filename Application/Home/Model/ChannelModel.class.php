@@ -8,12 +8,11 @@
 // +----------------------------------------------------------------------
 
 namespace Home\Model;
-use Think\Model;
-
+use Common\Model\Base;
 /**
  * 分类模型
  */
-class ChannelModel extends Model{
+class ChannelModel extends Base{
 
 	/**
 	 * 获取导航列表，支持多级导航

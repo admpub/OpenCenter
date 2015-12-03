@@ -15,7 +15,7 @@ namespace Common\Model;
  * @package Common\Model
  * @auth 陈一枭
  */
-class ContentHandlerModel {
+class ContentHandlerModel extends Base {
 
     /**处理@
      * @auth 陈一枭

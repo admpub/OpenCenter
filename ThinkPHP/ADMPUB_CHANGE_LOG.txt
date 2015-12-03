@@ -1,29 +1,32 @@
-1¡¢ÔÚÎÄ¼ş Common/function.php ÎÄ¼şÖĞµÄTº¯ÊıºóÃæĞÂÔö£º
+1ã€åœ¨æ–‡ä»¶ Common/function.php æ–‡ä»¶ä¸­çš„Tå‡½æ•°åé¢æ–°å¢ï¼š
 
 /**
- * [SWH|+] OpenCenter/ThinkOX ĞÂÔö¶ÔcommonÏÂµÄÄ£°å¼ì²â
- * ÔÚÉÏÃæµÄTº¯Êı×îºóµ÷ÓÃ£º
+ * [SWH|+] OpenCenter/ThinkOX æ–°å¢å¯¹commonä¸‹çš„æ¨¡æ¿æ£€æµ‹
+ * åœ¨ä¸Šé¢çš„Tå‡½æ•°æœ€åè°ƒç”¨ï¼š
  * return tempaleFileChecker($baseUrl.($theme?$theme.'/':'').$file.C('TMPL_TEMPLATE_SUFFIX'),$file,$theme);
  */
 function tempaleFileChecker($result,$file,$theme){
-	//Èç¹ûÄ£°æ´æÔÚ£¬Ôò·µ»Ø¸ÃÄ£°æ
+	//å¦‚æœæ¨¡ç‰ˆå­˜åœ¨ï¼Œåˆ™è¿”å›è¯¥æ¨¡ç‰ˆ
 	if (file_exists($result)) {
 		return $result;
 	}
-	//Èç¹ûÄ£°æ²»´æÔÚ£¬Ôò·µ»Ø¹«¹²Ä¿Â¼ÏÂµÄÄ£°æ
+	//å¦‚æœæ¨¡ç‰ˆä¸å­˜åœ¨ï¼Œåˆ™è¿”å›å…¬å…±ç›®å½•ä¸‹çš„æ¨¡ç‰ˆ
 	$baseUrl = APP_PATH . 'Common/View/' . ($theme ? $theme . '/' : '');
 	$result = $baseUrl . $file . C('TMPL_TEMPLATE_SUFFIX');
 	return $result;
 }
 
-²¢ÕÕÉÏÃæ×¢ÊÍÖĞËùÊöĞŞ¸ÄTº¯Êı¡£
+å¹¶ç…§ä¸Šé¢æ³¨é‡Šä¸­æ‰€è¿°ä¿®æ”¹Tå‡½æ•°ã€‚
 
-2¡¢½« ThinkPHP.php ÎÄ¼şÖĞµÄ£º
+2ã€å°† ThinkPHP.php æ–‡ä»¶ä¸­çš„ï¼š
 define('_PHP_FILE_',    rtrim(str_replace($_SERVER['HTTP_HOST'],'',$_temp[0].'.php'),'/'));
-¸ÄÎª£º
+æ”¹ä¸ºï¼š
 define('_PHP_FILE_',    $_temp[0].'.php');//[SWH|+]
 
 
-
+3ã€å°†æ–‡ä»¶ Library\Think\Page.class.php ä¸­çš„ï¼š
+private $nowPage = 1;
+æ”¹ä¸ºï¼š
+public  $nowPage = 1;
 
 -EOF-

@@ -8,7 +8,7 @@
 // +----------------------------------------------------------------------
 
 namespace Admin\Model;
-use Think\Model;
+use Common\Model\Base;
 
 /**
  * 插件模型
@@ -16,7 +16,7 @@ use Think\Model;
  * @date    2013-08-14 11:31:21
  */
 
-class HooksModel extends Model {
+class HooksModel extends Base {
 
 	/**
 	 * 查找后置操作

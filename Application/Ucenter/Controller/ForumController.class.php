@@ -7,7 +7,6 @@
  */
 
 namespace Ucenter\Controller;
-use Think\Controller;
 
 class ForumController extends BaseController {
     public function myTopic($page=1,$uid=0) {

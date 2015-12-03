@@ -6,13 +6,9 @@
  * 创建时间: 10:17 AM
  * 版权所有 想天工作室(www.ourstu.com)
  */
-
 namespace Common\Model;
 
-
-use Think\Model;
-
-class FollowModel extends Model
+class FollowModel extends Base
 {
 
     protected $_auto = array(

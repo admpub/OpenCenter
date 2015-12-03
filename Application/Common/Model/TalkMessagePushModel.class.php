@@ -9,8 +9,7 @@
 
 namespace Common\Model;
 
-use Think\Model;
-class TalkMessagePushModel extends Model{
+class TalkMessagePushModel extends Base{
 
     /**取得全部的推送消息
      * @return mixed

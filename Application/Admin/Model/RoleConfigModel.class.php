@@ -8,10 +8,9 @@
  */
 
 namespace Admin\Model;
+use Common\Model\Base;
 
-use Think\Model;
-
-class RoleConfigModel extends Model
+class RoleConfigModel extends Base
 {
 
     public function addData($data){

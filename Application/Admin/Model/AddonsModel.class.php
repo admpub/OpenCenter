@@ -8,14 +8,14 @@
 // +----------------------------------------------------------------------
 
 namespace Admin\Model;
-use Think\Model;
+use Common\Model\Base;
 
 /**
  * 插件模型
  * @author yangweijie <yangweijiester@gmail.com>
  */
 
-class AddonsModel extends Model {
+class AddonsModel extends Base {
 
 	/**
 	 * 查找后置操作

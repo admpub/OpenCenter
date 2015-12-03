@@ -9,8 +9,6 @@
 
 namespace Ucenter\Controller;
 
-use Think\Controller;
-
 class SessionController extends BaseController
 {
     protected $mTalkModel;

@@ -8,14 +8,14 @@
 // +----------------------------------------------------------------------
 
 namespace Admin\Model;
-use Think\Model;
+use Common\Model\Base;
 
 /**
  * Class SsoModel  单点登录模型
  * @package Admin\Model
  * @author:xjw129xjt(肖骏涛) xjt@ourstu.com
  */
-class SsoModel extends Model{
+class SsoModel extends Base{
     /**
      * 自动完成
      * @var array

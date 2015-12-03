@@ -6,7 +6,6 @@
  * Time: PM1:13
  */
 namespace Ucenter\Controller;
-use Think\Controller;
 
 class ConfigController extends BaseController {
 	public function _initialize() {

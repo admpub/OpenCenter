@@ -8,11 +8,9 @@
  */
 
 namespace Ucenter\Controller;
+use Common\Controller\Base;
 
-
-use Think\Controller;
-
-class PublicController extends Controller
+class PublicController extends Base
 {
     /**获取个人资料，用以支持小名片
      * @auth 陈一枭

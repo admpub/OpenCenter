@@ -8,14 +8,14 @@
 // +----------------------------------------------------------------------
 
 namespace Admin\Model;
-use Think\Model;
+use Common\Model\Base;
 
 /**
  * URL模型
  * @author huajie <banhuajie@163.com>
  */
 
-class UrlModel extends Model {
+class UrlModel extends Base {
 
     /* 自动验证规则 */
     protected $_validate = array(

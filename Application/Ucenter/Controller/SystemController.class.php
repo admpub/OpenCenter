@@ -8,8 +8,6 @@
 
 namespace Ucenter\Controller;
 
-use Think\Controller;
-
 class SystemController extends BaseController
 {
     public function _initialize(){

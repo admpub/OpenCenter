@@ -9,10 +9,7 @@
 
 namespace Common\Model;
 
-
-use Think\Model;
-
-class ModuleModel extends Model
+class ModuleModel extends Base
 {
 
     protected $tableName = 'module';

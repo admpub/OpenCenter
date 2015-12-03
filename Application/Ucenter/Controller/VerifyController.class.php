@@ -7,10 +7,9 @@
  */
 
 namespace Ucenter\Controller;
+use Common\Controller\Base;
 
-use Think\Controller;
-
-class VerifyController extends Controller
+class VerifyController extends Base
 {
 
 

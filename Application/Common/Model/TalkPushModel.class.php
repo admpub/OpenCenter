@@ -9,8 +9,7 @@
 
 namespace Common\Model;
 
-use Think\Model;
-class TalkPushModel extends Model{
+class TalkPushModel extends Base{
 
     public function getAllPush(){
         $new_talks=$this->where(array('uid'=>get_uid(),'status'=>0))->select();

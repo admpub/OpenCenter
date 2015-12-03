@@ -9,9 +9,7 @@
 
 namespace Common\Model;
 
-use Think\Model;
-
-class MessageModel extends Model {
+class MessageModel extends Base {
 	/**
 	 * 获取全部没有提示过的消息
 	 * @param $uid 用户ID

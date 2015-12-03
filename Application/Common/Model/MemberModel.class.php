@@ -9,12 +9,10 @@
 
 namespace Common\Model;
 
-use Think\Model;
-
 /**
  * 文档基础模型
  */
-class MemberModel extends Model {
+class MemberModel extends Base {
 	/* 用户模型自动完成 */
 	protected $_auto = array(
 		array('login', 0, self::MODEL_INSERT),

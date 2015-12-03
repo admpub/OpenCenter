@@ -7,7 +7,6 @@
  * 版权所有 想天工作室(www.ourstu.com)
  */
 namespace Ucenter\Controller;
-use Think\Controller;
 
 class MessageController extends BaseController {
 	protected $mTalkModel;

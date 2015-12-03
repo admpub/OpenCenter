@@ -8,7 +8,7 @@
 // +----------------------------------------------------------------------
 
 namespace Home\Model;
-use Think\Model;
+use Common\Model\Base;
 use Think\Upload;
 
 /**
@@ -16,7 +16,7 @@ use Think\Upload;
  * 负责图片的上传
  */
 
-class PictureModel extends Model{
+class PictureModel extends Base{
     /**
      * 自动完成
      * @var array

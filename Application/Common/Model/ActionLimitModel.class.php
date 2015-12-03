@@ -9,9 +9,7 @@
 
 namespace Common\Model;
 
-use Think\Model;
-
-class ActionLimitModel extends Model
+class ActionLimitModel extends Base
 {
     protected $tableName = 'action_limit';
     protected $_auto = array(

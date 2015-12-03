@@ -8,14 +8,14 @@
 // +----------------------------------------------------------------------
 
 namespace Admin\Model;
-use Think\Model;
+use Common\Model\Base;
 
 /**
  * 插件模型
  * @author yangweijie <yangweijiester@gmail.com>
  */
 
-class MenuModel extends Model {
+class MenuModel extends Base {
 
 	protected $_validate = array(
 		array('url', 'require', 'url必须填写'), //默认情况下用正则进行验证
