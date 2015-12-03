@@ -12,11 +12,12 @@ var Notify = {
      */
     'setAllReaded': function () {
         $.post(U('Ucenter/Public/setAllMessageReaded'), function () {
+            if(typeof($hint_count)=='undefined')return;
             $hint_count.text(0);
             $('#nav_message').html('<div style="font-size: 18px;color: #ccc;font-weight: normal;text-align: center;line-height: 150px">暂无任何消息!</div>');
+            if(typeof($nav_bandage_count)=='undefined')return;
             $nav_bandage_count.hide();
             $nav_bandage_count.text(0);
-
         });
     }
 };

@@ -178,8 +178,8 @@ function bindGoTop() {
  * 绑定消息检查
  */
 function bindMessageChecker() {
-    $hint_count = $('#nav_hint_count');
-    $nav_bandage_count = $('#nav_bandage_count');
+    window["$hint_count"] = $('#nav_hint_count');
+    window["$nav_bandage_count"] = $('#nav_bandage_count');
 
     setInterval(function () {
         checkMessage();
@@ -196,6 +196,7 @@ function paly_ios_sound() {
  * 检查是否有新的消息
  */
 function checkMessage() {
+    if(typeof($hint_count)=='undefined')return;
     $.get(U('Ucenter/Public/getInformation'), {}, function (msg) {
         if (msg.messages) {
             var count = parseInt($hint_count.text());
