@@ -8,6 +8,28 @@ use Think\Controller;
  */
 class Base extends Controller {
 	public $_seo = array();
+	protected $_once = false;
+
+	public function _initialize() {
+		$this->_onceInit();
+	}
+
+	protected function _onceInit() {
+		if ($this->_once) {
+			return;
+		}
+
+		$this->_once = true;
+
+		/* 读取数据库中的配置 */
+		$config = S('DB_CONFIG_DATA');
+		if (!$config) {
+			$config = D('Config')->lists();
+			S('DB_CONFIG_DATA', $config);
+		}
+		#dump($config);exit;
+		C($config); //添加配置
+	}
 
 	public function setTitle($title) {
 		$this->_seo['title'] = $title;
