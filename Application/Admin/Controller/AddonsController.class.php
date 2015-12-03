@@ -245,7 +245,7 @@ str;
 		$request = (array) I('request.');
 		$total = $list ? count($list) : 1;
 		$listRows = C('LIST_ROWS') > 0 ? C('LIST_ROWS') : 20;
-		$page = new \Think\Page($total, $listRows, $request);
+		$page = new \Think\Page($total, $listRows);
 		$voList = array_slice($list, $page->firstRow, $page->listRows);
 		$p = $page->show();
 		$this->assign('_list', $voList);
@@ -475,7 +475,7 @@ str;
 	public function hooks() {
 		$this->meta_title = '钩子列表';
 		$map = $fields = array();
-		$list = $this->lists(D("Hooks")->field($fields), $map);
+		$list = $this->lists(D('Hooks')->field($fields), $map);
 		int_to_string($list, array('type' => C('HOOKS_TYPE')));
 		// 记录当前列表页的cookie
 		Cookie('__forward__', $_SERVER['REQUEST_URI']);

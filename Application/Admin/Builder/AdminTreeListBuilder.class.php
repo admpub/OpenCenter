@@ -347,7 +347,7 @@ class AdminTreeListBuilder extends AdminBuilder
 
         //生成翻页HTML代码
         C('VAR_PAGE', 'page');
-        $pager = new \Think\Page($this->_pagination['totalCount'], $this->_pagination['listRows'], $_REQUEST);
+        $pager = new \Think\Page($this->_pagination['totalCount'], $this->_pagination['listRows']);
         $pager->setConfig('theme', '%FIRST% %UP_PAGE% %LINK_PAGE% %DOWN_PAGE% %END% %HEADER%');
         $paginationHtml = $pager->show();
 

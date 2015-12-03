@@ -462,7 +462,7 @@ class AdminController extends Base {
 		} else {
 			$listRows = C('LIST_ROWS') > 0 ? C('LIST_ROWS') : 10;
 		}
-		$page = new \Think\Page($total, $listRows, $REQUEST);
+		$page = new \Think\Page($total, $listRows);
 		if ($total > $listRows) {
 			$page->setConfig('theme', '%FIRST% %UP_PAGE% %LINK_PAGE% %DOWN_PAGE% %END% %HEADER%');
 		}
