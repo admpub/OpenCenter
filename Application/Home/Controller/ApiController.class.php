@@ -10,8 +10,9 @@
 namespace Home\Controller;
 
 use Ucenter\Api\Uc;
-class ApiController extends Uc{
-    function index(){
-        $this->response();
-    }
+
+class ApiController extends Uc {
+	public function index() {
+		$this->response();
+	}
 }

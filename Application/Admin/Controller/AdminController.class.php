@@ -9,14 +9,14 @@
 namespace Admin\Controller;
 
 use Admin\Model\AuthRuleModel;
-use Think\Controller;
+use Common\Controller\Base;
 use Vendor\requester;
 
 /**
  * 后台首页控制器
  * @author 麦当苗儿 <zuojiazi@vip.qq.com>
  */
-class AdminController extends Controller {
+class AdminController extends Base {
 
 	/**
 	 * 后台控制器初始化

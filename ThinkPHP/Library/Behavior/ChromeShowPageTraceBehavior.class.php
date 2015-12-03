@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | ThinkPHP [ WE CAN DO IT JUST THINK IT ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2006-2013 http://thinkphp.cn All rights reserved.
+// | Copyright (c) 2006-2014 http://thinkphp.cn All rights reserved.
 // +----------------------------------------------------------------------
 // | Licensed ( http://www.apache.org/licenses/LICENSE-2.0 )
 // +----------------------------------------------------------------------
@@ -27,7 +27,7 @@
  *
  */
 namespace Behavior;
-use \Think\Log;
+use Think\Log;
 
 /**
  * 系统行为扩展 页面Trace显示输出
@@ -63,7 +63,7 @@ class ChromeShowPageTraceBehavior {
             '文件加载'  =>  count(get_included_files()),
             '缓存信息'  =>  N('cache_read').' gets '.N('cache_write').' writes ',
             '配置加载'  =>  count(c()),
-            '聊天信息'  =>  'SESSION_ID='.session_id(),
+            '会话信息'  =>  'SESSION_ID='.session_id(),
             );
         // 读取应用定义的Trace文件
         $traceFile  =   COMMON_PATH.'Conf/trace.php';
@@ -127,7 +127,7 @@ class ChromeShowPageTraceBehavior {
                     $content .= "\r\n";
                 }
             }
-            error_log(str_replace('<br/>',"\r\n",$content), Log::FILE,LOG_PATH.date('y_m_d').'_trace.log');
+            error_log(str_replace('<br/>',"\r\n",$content), 3,LOG_PATH.date('y_m_d').'_trace.log');
         }
         unset($files,$info,$base);
     }

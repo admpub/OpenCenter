@@ -10,7 +10,6 @@
 // +----------------------------------------------------------------------
 
 namespace Think;
-
 /**
  * ThinkPHP 引导类
  */
@@ -87,7 +86,7 @@ class Think {
           L(include THINK_PATH.'Lang/'.strtolower(C('DEFAULT_LANG')).'.php');
 
           if(!APP_DEBUG){
-              $content  .=  "\nnamespace { Think\Think::addMap(".var_export(self::$_map,true).");";
+              $content  .=  "\nnamespace { Think\\Think::addMap(".var_export(self::$_map,true).");";
               $content  .=  "\nL(".var_export(L(),true).");\nC(".var_export(C(),true).');Think\Hook::import('.var_export(Hook::get(),true).');}';
               Storage::put($runtimefile,strip_whitespace('<?php '.$content));
           }else{
@@ -322,7 +321,7 @@ class Think {
      * @param string $label 标签
      * @param string $level 日志级别(或者页面Trace的选项卡)
      * @param boolean $record 是否记录日志
-     * @return void
+     * @return void|array
      */
     static public function trace($value='[think]',$label='',$level='DEBUG',$record=false) {
         static $_trace =  array();
@@ -333,10 +332,7 @@ class Think {
             $level  =   strtoupper($level);
             
             if((defined('IS_AJAX') && IS_AJAX) || !C('SHOW_PAGE_TRACE')  || $record) {
-                if(true==APP_DEBUG){//修正非调试模式下无法进入后台编辑的问题
-                    Log::record($info,$level,$record);
-                }
-
+                Log::record($info,$level,$record);
             }else{
                 if(!isset($_trace[$level]) || count($_trace[$level])>C('TRACE_MAX_RECORD')) {
                     $_trace[$level] =   array();
