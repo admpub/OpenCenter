@@ -153,10 +153,11 @@ class UserController extends AdminController {
 		$builder->display();
 	}
 
-	/**用户扩展资料详情
-		     * @param string $uid
-		     * @author 郑钟良<zzl@ourstu.com>
-	*/
+	/**
+	 * 用户扩展资料详情
+	 * @param string $uid
+	 * @author 郑钟良<zzl@ourstu.com>
+	 */
 	public function expandinfo_details($uid = 0) {
 		if (IS_POST) {
 			/* 修改积分 xjw129xjt(肖骏涛)*/
@@ -228,9 +229,10 @@ class UserController extends AdminController {
 
 	}
 
-	/**扩展用户信息分组列表
-		     * @author 郑钟良<zzl@ourstu.com>
-	*/
+	/**
+	 * 扩展用户信息分组列表
+	 * @author 郑钟良<zzl@ourstu.com>
+	 */
 	public function profile($page = 1, $r = 20) {
 		$map['status'] = array('egt', 0);
 		$profileList = D('field_group')->where($map)->order("sort asc")->page($page, $r)->select();
@@ -246,9 +248,10 @@ class UserController extends AdminController {
 		$builder->display();
 	}
 
-	/**扩展分组排序
-		     * @author 郑钟良<zzl@ourstu.com>
-	*/
+	/**
+	 * 扩展分组排序
+	 * @author 郑钟良<zzl@ourstu.com>
+	 */
 	public function sortProfile($ids = null) {
 		if (IS_POST) {
 			$builder = new AdminSortBuilder();
@@ -267,10 +270,11 @@ class UserController extends AdminController {
 		}
 	}
 
-	/**扩展字段列表
-		     * @param $id
-		     * @author 郑钟良<zzl@ourstu.com>
-	*/
+	/**
+	 * 扩展字段列表
+	 * @param $id
+	 * @author 郑钟良<zzl@ourstu.com>
+	 */
 	public function field($id, $page = 1, $r = 20) {
 		$profile = D('field_group')->where(array('id' => $id))->find();
 		$map['status'] = array('egt', 0);
@@ -306,10 +310,11 @@ class UserController extends AdminController {
 		$builder->display();
 	}
 
-	/**分组排序
-		     * @param $id
-		     * @author 郑钟良<zzl@ourstu.com>
-	*/
+	/**
+	 * 分组排序
+	 * @param $id
+	 * @author 郑钟良<zzl@ourstu.com>
+	 */
 	public function sortField($id = '', $ids = null) {
 		if (IS_POST) {
 			$builder = new AdminSortBuilder();
@@ -330,19 +335,20 @@ class UserController extends AdminController {
 		}
 	}
 
-	/**添加、编辑字段信息
-		     * @param $id
-		     * @param $profile_group_id
-		     * @param $field_name
-		     * @param $child_form_type
-		     * @param $visiable
-		     * @param $required
-		     * @param $form_type
-		     * @param $form_default_value
-		     * @param $validation
-		     * @param $input_tips
-		     * @author 郑钟良<zzl@ourstu.com>
-	*/
+	/**
+	 * 添加、编辑字段信息
+	 * @param $id
+	 * @param $profile_group_id
+	 * @param $field_name
+	 * @param $child_form_type
+	 * @param $visiable
+	 * @param $required
+	 * @param $form_type
+	 * @param $form_default_value
+	 * @param $validation
+	 * @param $input_tips
+	 * @author 郑钟良<zzl@ourstu.com>
+	 */
 	public function editFieldSetting($id = 0, $profile_group_id = 0, $field_name = '', $child_form_type = 0, $visiable = 0, $required = 0, $form_type = 0, $form_default_value = '', $validation = 0, $input_tips = '') {
 		if (IS_POST) {
 			$data['field_name'] = $field_name;
@@ -425,20 +431,22 @@ class UserController extends AdminController {
 
 	}
 
-	/**设置字段状态：删除=-1，禁用=0，启用=1
-		     * @param $ids
-		     * @param $status
-		     * @author 郑钟良<zzl@ourstu.com>
-	*/
+	/**
+	 * 设置字段状态：删除=-1，禁用=0，启用=1
+	 * @param $ids
+	 * @param $status
+	 * @author 郑钟良<zzl@ourstu.com>
+	 */
 	public function setFieldSettingStatus($ids, $status) {
 		$builder = new AdminListBuilder();
 		$builder->doSetStatus('field_setting', $ids, $status);
 	}
 
-	/**设置分组状态：删除=-1，禁用=0，启用=1
-		     * @param $status
-		     * @author 郑钟良<zzl@ourstu.com>
-	*/
+	/**
+	 * 设置分组状态：删除=-1，禁用=0，启用=1
+	 * @param $status
+	 * @author 郑钟良<zzl@ourstu.com>
+	 */
 	public function changeProfileStatus($status) {
 		$id = array_unique((array) I('ids', 0));
 		if ($id[0] == 0) {
@@ -456,11 +464,12 @@ class UserController extends AdminController {
 
 	}
 
-	/**添加、编辑分组信息
-		     * @param $id
-		     * * @param $profile_name
-		     * @author 郑钟良<zzl@ourstu.com>
-	*/
+	/**
+	 * 添加、编辑分组信息
+	 * @param $id
+	 * * @param $profile_name
+	 * @author 郑钟良<zzl@ourstu.com>
+	 */
 	public function editProfile($id = 0, $profile_name = '', $visiable = 1) {
 		if (IS_POST) {
 			$data['profile_name'] = $profile_name;

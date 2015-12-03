@@ -9,52 +9,31 @@
 
 namespace Common\Model;
 
-class ActionLimitModel extends Base
-{
-    protected $tableName = 'action_limit';
-    protected $_auto = array(
-        array('create_time', NOW_TIME, self::MODEL_INSERT),
+class ActionLimitModel extends Base {
+	protected $tableName = 'action_limit';
+	protected $_auto = array(
+		array('create_time', NOW_TIME, self::MODEL_INSERT),
 
-    );
+	);
 
+	public function addActionLimit($data) {
+		$res = $this->add($data);
+		return $res;
+	}
 
-    public function addActionLimit($data)
-    {
-        $res = $this->add($data);
-        return $res;
-    }
+	public function getActionLimit($where) {
+		$limit = $this->where($where)->find();
+		return $limit;
+	}
 
-    public function getActionLimit($where){
-        $limit = $this->where($where)->find();
-        return $limit;
-    }
+	public function getList($where) {
+		$list = $this->where($where)->select();
+		return $list;
+	}
 
-    public function getList($where){
-        $list = $this->where($where)->select();
-        return $list;
-    }
-
-
-    public function editActionLimit($data)
-    {
-        $res = $this->save($data);
-        return $res;
-    }
-
+	public function editActionLimit($data) {
+		$res = $this->save($data);
+		return $res;
+	}
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

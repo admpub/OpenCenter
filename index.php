@@ -7,7 +7,6 @@
 // | Author: 麦当苗儿 <zuojiazi@vip.qq.com> <http://www.zjzit.cn>
 // +----------------------------------------------------------------------
 
-
 function reset_session_path() {
 	$root = str_replace('\\', '/', dirname(__FILE__));
 	$savePath = $root . '/tmp/';

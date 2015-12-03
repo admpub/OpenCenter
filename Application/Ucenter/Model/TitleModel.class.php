@@ -7,10 +7,9 @@
  */
 
 namespace Ucenter\Model;
+use Common\Model\Base;
 
-use Think\Model;
-
-class TitleModel {
+class TitleModel extends Base {
 	public function getTitle($uid) {
 		$score = query_user(array('score'), $uid);
 		return $this->getTitleByScore($score['score']);

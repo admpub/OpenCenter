@@ -8,10 +8,9 @@
  */
 
 namespace Ucenter\Model;
+use Common\Model\Base;
 
-use Think\Model;
-
-class UserTagModel extends Model {
+class UserTagModel extends Base {
 
 	protected $_validate = array(
 		array('title', 'require', '标题不能为空。', self::EXISTS_VALIDATE, 'regex', self::MODEL_BOTH),

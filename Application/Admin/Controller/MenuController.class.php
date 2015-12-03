@@ -25,7 +25,7 @@ class MenuController extends AdminController {
 			$data = M('Menu')->where(array('id' => $pid))->field(true)->find();
 			$this->assign('data', $data);
 		}
-		$title = trim(I('get.title', 'htmlspecialchars'));
+		$title = I('get.title', '', 'trim,htmlspecialchars');
 		$type = C('CONFIG_GROUP_LIST');
 		$all_menu = M('Menu')->getField('id,title');
 		$map['pid'] = $pid;
@@ -33,7 +33,8 @@ class MenuController extends AdminController {
 			$map['title'] = array('like', "%{$title}%");
 		}
 
-		$list = M("Menu")->where($map)->field(true)->order('sort asc,id asc')->select();
+		$list = M('Menu')->where($map)->field(true)->order('sort asc,id asc')->select();
+
 		int_to_string($list, array('hide' => array(1 => '是', 0 => '否'), 'is_dev' => array(1 => '是', 0 => '否')));
 		if ($list) {
 			foreach ($list as &$key) {
@@ -152,7 +153,7 @@ class MenuController extends AdminController {
 
 	public function importFile($tree = null, $pid = 0) {
 		if ($tree == null) {
-			$file = APP_PATH . "Admin/Conf/Menu.php";
+			$file = APP_PATH . 'Admin/Conf/Menu.php';
 			$tree = require_once $file;
 		}
 		$menuModel = D('Menu');
