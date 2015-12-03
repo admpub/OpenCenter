@@ -51,7 +51,7 @@ class ModuleModel extends Base {
 
 	public function uninstall($id) {
 		$module = $this->find($id);
-		if ($module['is_setup'] == 0) {
+		if (!$module || $module['is_setup'] == 0) {
 			return array('error_code' => '模块未安装。');
 		}
 		$uninstallSql = APP_PATH . '/' . $module['name'] . '/Info/uninstall.sql';
@@ -67,7 +67,7 @@ class ModuleModel extends Base {
 
 	public function install($id) {
 		$module = $this->find($id);
-		if ($module['is_setup'] == 1) {
+		if ($module && $module['is_setup'] == 1) {
 			return array('error_code' => '模块已安装。');
 		}
 		$uninstallSql = APP_PATH . '/' . $module['name'] . '/Info/install.sql';
@@ -81,14 +81,19 @@ class ModuleModel extends Base {
 		return $res;
 	}
 
-	/**检查模块是否已安装
-		     * @param $name
-		     * @auth 陈一枭
+	/**
+	 * 检查模块是否已安装
+	 * @param $name
+	 * @auth 陈一枭
 	*/
 	public function getModule($name) {
 		$module = $this->where(array('name' => $name))->find();
 		if (!$module) {
 			$m = $this->getInfo($name);
+			if (!$m) {
+				#echo('Not Found Module: '.$name);
+				return;
+			}
 			if ($m['can_uninstall']) {
 				$m['is_setup'] = 0; //默认设为已安装，防止已安装的模块反复安装。
 			} else {

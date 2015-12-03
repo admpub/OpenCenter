@@ -34,12 +34,14 @@ class IndexController extends BaseController {
 			$this->error('参数出错！！');
 		}
 		$this->assign('type', $type);
-		$className = ucfirst($type) . 'Protocol';
-		$content = D(ucfirst($type) . '/' . $className)->profileContent($uid, $page, $count);
+		$uType = ucfirst($type);
+		$className = $uType . 'Protocol';
+		$dao = D($uType . '/' . $className);
+		$content = $dao->profileContent($uid, $page, $count);
 		if (empty($content)) {
 			$content = '暂无内容';
 		} else {
-			$totalCount = D(ucfirst($type) . '/' . $className)->getTotalCount($uid);
+			$totalCount = $dao->getTotalCount($uid);
 			$this->assign('totalCount', $totalCount);
 		}
 		$this->assign('content', $content);
@@ -47,7 +49,7 @@ class IndexController extends BaseController {
 		$str = '{$user_info.nickname|op_t}';
 		$str_app = '{$appArr[$type]|op_t}';
 		$this->setTitle($str . '的个人主页');
-		$this->setKeywords($str . '，个人主页，Think OX，个人' . $str_app);
+		$this->setKeywords($str . '，个人主页，个人' . $str_app);
 		$this->setDescription($str . '的个人' . $str_app . '页');
 		//四处一词 seo end
 		$this->display();
@@ -75,17 +77,18 @@ class IndexController extends BaseController {
 		//四处一词 seo
 		$str = '{$user_info.nickname|op_t}';
 		$this->setTitle($str . '的个人资料页');
-		$this->setKeywords($str . '，个人资料，Think OX');
+		$this->setKeywords($str . '，个人资料');
 		$this->setDescription($str . '的个人资料页');
 		//四处一词 seo end
 
 		$this->display();
 	}
 
-	/**获取用户扩展信息
-		     * @param null $uid
-		     * @author 郑钟良<zzl@ourstu.com>
-	*/
+	/**
+	 * 获取用户扩展信息
+	 * @param null $uid
+	 * @author 郑钟良<zzl@ourstu.com>
+	 */
 	public function getExpandInfo($uid = null, $profile_group_id = null) {
 		$profile_group_list = $this->_profile_group_list($uid);
 		foreach ($profile_group_list as &$val) {
@@ -94,11 +97,12 @@ class IndexController extends BaseController {
 		$this->assign('profile_group_list', $profile_group_list);
 	}
 
-	/**扩展信息分组列表获取
-		     * @param null $uid
-		     * @return mixed
-		     * @author 郑钟良<zzl@ourstu.com>
-	*/
+	/**
+	 * 扩展信息分组列表获取
+	 * @param null $uid
+	 * @return mixed
+	 * @author 郑钟良<zzl@ourstu.com>
+	 */
 	public function _profile_group_list($uid = null) {
 		$profile_group_list = array();
 		$fields_list = $this->getRoleFieldIds($uid);
@@ -132,12 +136,13 @@ class IndexController extends BaseController {
 		return $fields_list;
 	}
 
-	/**分组下的字段信息及相应内容
-		     * @param null $id
-		     * @param null $uid
-		     * @return null
-		     * @author 郑钟良<zzl@ourstu.com>
-	*/
+	/**
+	 * 分组下的字段信息及相应内容
+	 * @param null $id
+	 * @param null $uid
+	 * @return null
+	 * @author 郑钟良<zzl@ourstu.com>
+	 */
 	public function _info_list($id = null, $uid = null) {
 		$fields_list = $this->getRoleFieldIds($uid);
 		$info_list = null;
@@ -225,11 +230,12 @@ class IndexController extends BaseController {
 		}
 		$this->assign('type', $type);
 		$className = ucfirst($type) . 'Protocol';
-		$content = D(ucfirst($type) . '/' . $className)->profileContent($uid, $page, $count, $tab);
+		$dao = D(ucfirst($type) . '/' . $className);
+		$content = $dao->profileContent($uid, $page, $count, $tab);
 		if (empty($content)) {
 			$content = '暂无内容';
 		} else {
-			$totalCount = D(ucfirst($type) . '/' . $className)->getTotalCount($uid, $tab);
+			$totalCount = $dao->getTotalCount($uid, $tab);
 			$this->assign('totalCount', $totalCount);
 		}
 		$this->assign('content', $content);
@@ -237,9 +243,9 @@ class IndexController extends BaseController {
 		//四处一词 seo
 		$str = '{$user_info.nickname|op_t}';
 		$str_app = '{$appArr[$type]|op_t}';
-		$this->setTitle($str . "的个人" . $str_app . "页");
-		$this->setKeywords($str . "，个人主页，Think OX，个人" . $str_app);
-		$this->setDescription($str . "的个人" . $str_app . "页");
+		$this->setTitle($str . '的个人' . $str_app . '页');
+		$this->setKeywords($str . '，个人主页，个人' . $str_app);
+		$this->setDescription($str . '的个人' . $str_app . '页');
 		//四处一词 seo end
 
 		$this->display('index');
@@ -265,18 +271,24 @@ class IndexController extends BaseController {
 		$apps = array();
 		// 获取APP的HASH数组
 		foreach ($appList as $app) {
-
 			$appName = strtolower($app['app_name']);
 			if ($appName == '.' || $appName == '..') {
 				continue;
 			}
 
 			$module = D('Module')->getModule($appName);
+			if (!$module) {
+				continue;
+			}
 
 			$className = ucfirst($appName);
+			if (!$this->protocol_exists($className)) {
+				continue;
+			}
+
 			$dao = D($className . '/' . $className . 'Protocol');
 			if (method_exists($dao, 'profileContent') && $module['is_setup']) {
-				$apps[$appName] = D($className . '/' . $className . 'Protocol')->getModelInfo();
+				$apps[$appName] = $dao->getModelInfo();
 			}
 			unset($dao);
 		}
@@ -284,6 +296,11 @@ class IndexController extends BaseController {
 		$this->assign('appArr', $apps);
 
 		return $apps;
+	}
+
+	public function protocol_exists($className) {
+		#echo APP_PATH.$className.'/Model/'.$className . 'ProtocolModel.class.php<br/>';
+		return file_exists(APP_PATH . $className . '/Model/' . $className . 'ProtocolModel.class.php');
 	}
 
 	public function _fans_and_following($uid = null) {
