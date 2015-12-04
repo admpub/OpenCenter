@@ -39,12 +39,18 @@ require_once APP_PATH . '/Common/Common/role.php';
  * @author 麦当苗儿 <zuojiazi@vip.qq.com>
  */
 function is_login() {
+	static $_uid = null;
+	if (is_null($_uid) == false) {
+		return $_uid;
+	}
+
 	$user = session('user_auth');
 	if (empty($user)) {
-		return 0;
+		$_uid = 0;
 	} else {
-		return session('user_auth_sign') == data_auth_sign($user) ? $user['uid'] : 0;
+		$_uid = session('user_auth_sign') == data_auth_sign($user) ? (int) $user['uid'] : 0;
 	}
+	return $_uid;
 }
 
 /**
