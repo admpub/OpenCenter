@@ -809,7 +809,7 @@ class UserController extends AdminController {
 			} else {
 				$res = $model->addType($data);
 			}
-			if ($res) {
+			if ($res !== false) {
 				$this->success(($aId == 0 ? '添加' : '编辑') . '成功');
 			} else {
 				$this->error(($aId == 0 ? '添加' : '编辑') . '失败');

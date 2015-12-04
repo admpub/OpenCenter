@@ -46,7 +46,7 @@ class ScoreModel extends Base {
 	public function addType($data) {
 		$db_prefix = C('DB_PREFIX');
 		$res = $this->add($data);
-		$query = "ALTER TABLE  `{$db_prefix}member` ADD  `score" . $res . "` FLOAT NOT NULL COMMENT  '" . $data['title'] . "'";
+		$query = "ALTER TABLE  `{$db_prefix}member` ADD  `score" . $res . "` FLOAT NOT NULL DEFAULT '0' COMMENT '" . $data['title'] . "'";
 		D()->execute($query);
 		return $res;
 	}
@@ -78,7 +78,7 @@ class ScoreModel extends Base {
 	public function editType($data) {
 		$db_prefix = C('DB_PREFIX');
 		$res = $this->save($data);
-		$query = "ALTER TABLE `{$db_prefix}member` MODIFY COLUMN `score" . $data['id'] . "` FLOAT comment '" . $data['title'] . "';";
+		$query = "ALTER TABLE `{$db_prefix}member` MODIFY COLUMN `score" . $data['id'] . "` FLOAT NOT NULL DEFAULT '0' comment '" . $data['title'] . "';";
 		D()->execute($query);
 		return $res;
 	}
