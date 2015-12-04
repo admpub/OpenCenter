@@ -202,7 +202,7 @@ function create_tables($db, $prefix = '') {
 	show_msg('开始安装数据库...');
 	foreach ($sql as $value) {
 		$value = trim($value);
-		if (empty($value)) {
+		if (empty($value) || strpos($value, '--') === 0) {
 			continue;
 		}
 

@@ -16,7 +16,7 @@ CREATE TABLE `ocenter_action` (
   `update_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '修改时间',
   `module` varchar(20) NOT NULL COMMENT '模块',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='系统行为表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='系统行为表';
 
 
 DROP TABLE IF EXISTS `ocenter_action_limit`;
@@ -35,7 +35,7 @@ CREATE TABLE `ocenter_action_limit` (
   `create_time` int(11) NOT NULL COMMENT '创建时间',
   `module` varchar(20) NOT NULL COMMENT '模块',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='后台行为限制';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='后台行为限制';
 
 
 DROP TABLE IF EXISTS `ocenter_action_log`;
@@ -53,7 +53,7 @@ CREATE TABLE `ocenter_action_log` (
   KEY `action_ip_ix` (`action_ip`),
   KEY `action_id_ix` (`action_id`),
   KEY `user_id_ix` (`user_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED COMMENT='行为日志表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED COMMENT='行为日志表';
 
 
 DROP TABLE IF EXISTS `ocenter_addons`;
@@ -69,7 +69,7 @@ CREATE TABLE `ocenter_addons` (
   `create_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '安装时间',
   `has_adminlist` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '是否有后台列表',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='插件表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='插件表';
 
 
 DROP TABLE IF EXISTS `ocenter_attachment`;
@@ -89,7 +89,7 @@ CREATE TABLE `ocenter_attachment` (
   `status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '状态',
   PRIMARY KEY (`id`),
   KEY `idx_record_status` (`record_id`,`status`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='附件表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='附件表';
 
 
 DROP TABLE IF EXISTS `ocenter_auth_extend`;
@@ -100,7 +100,7 @@ CREATE TABLE `ocenter_auth_extend` (
   UNIQUE KEY `group_extend_type` (`group_id`,`extend_id`,`type`),
   KEY `uid` (`group_id`),
   KEY `group_id` (`extend_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='用户组与分类的对应关系表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户组与分类的对应关系表';
 
 
 DROP TABLE IF EXISTS `ocenter_auth_group`;
@@ -113,7 +113,7 @@ CREATE TABLE `ocenter_auth_group` (
   `status` tinyint(1) NOT NULL DEFAULT '1' COMMENT '用户组状态：为1正常，为0禁用,-1为删除',
   `rules` text NOT NULL COMMENT '用户组拥有的规则id，多个规则 , 隔开',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='用户组';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户组';
 
 
 DROP TABLE IF EXISTS `ocenter_auth_group_access`;
@@ -123,7 +123,7 @@ CREATE TABLE `ocenter_auth_group_access` (
   UNIQUE KEY `uid_group_id` (`uid`,`group_id`),
   KEY `uid` (`uid`),
   KEY `group_id` (`group_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='用户组内用户';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户组内用户';
 
 
 DROP TABLE IF EXISTS `ocenter_auth_rule`;
@@ -137,7 +137,7 @@ CREATE TABLE `ocenter_auth_rule` (
   `condition` varchar(300) NOT NULL DEFAULT '' COMMENT '规则附加条件',
   PRIMARY KEY (`id`),
   KEY `module` (`module`,`status`,`type`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='权限规则';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='权限规则';
 
 
 DROP TABLE IF EXISTS `ocenter_avatar`;
@@ -149,7 +149,7 @@ CREATE TABLE `ocenter_avatar` (
   `status` int(11) NOT NULL COMMENT '状态',
   `is_temp` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='用户头像';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户头像';
 
 
 DROP TABLE IF EXISTS `ocenter_channel`;
@@ -169,7 +169,7 @@ CREATE TABLE `ocenter_channel` (
   `icon` varchar(20) NOT NULL COMMENT '图标',
   PRIMARY KEY (`id`),
   KEY `pid` (`pid`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='频道';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='频道';
 
 
 DROP TABLE IF EXISTS `ocenter_config`;
@@ -190,7 +190,7 @@ CREATE TABLE `ocenter_config` (
   UNIQUE KEY `uk_name` (`name`),
   KEY `type` (`type`),
   KEY `group` (`group`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='配置信息';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='配置信息';
 
 
 DROP TABLE IF EXISTS `ocenter_field`;
@@ -203,7 +203,7 @@ CREATE TABLE `ocenter_field` (
   `createTime` int(11) NOT NULL COMMENT '创建时间',
   `changeTime` int(11) NOT NULL COMMENT '更改时间',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='字段信息';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='字段信息';
 
 
 DROP TABLE IF EXISTS `ocenter_field_group`;
@@ -215,7 +215,7 @@ CREATE TABLE `ocenter_field_group` (
   `sort` int(11) NOT NULL COMMENT '排序',
   `visiable` tinyint(4) NOT NULL DEFAULT '1' COMMENT '可见性',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='字段组合';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='字段组合';
 
 
 DROP TABLE IF EXISTS `ocenter_field_setting`;
@@ -234,7 +234,7 @@ CREATE TABLE `ocenter_field_setting` (
   `child_form_type` varchar(25) NOT NULL COMMENT '子表单类型',
   `input_tips` varchar(100) NOT NULL COMMENT '输入提示',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='字段配置';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='字段配置';
 
 
 DROP TABLE IF EXISTS `ocenter_file`;
@@ -253,7 +253,7 @@ CREATE TABLE `ocenter_file` (
   `driver` varchar(50) NOT NULL COMMENT '存储引擎驱动',
   PRIMARY KEY (`id`),
   UNIQUE KEY `uk_md5` (`md5`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='文件表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='文件表';
 
 
 DROP TABLE IF EXISTS `ocenter_follow`;
@@ -263,7 +263,7 @@ CREATE TABLE `ocenter_follow` (
   `who_follow` int(11) NOT NULL COMMENT '谁关注',
   `create_time` int(11) NOT NULL COMMENT '创建时间',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='关注表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='关注表';
 
 
 DROP TABLE IF EXISTS `ocenter_hooks`;
@@ -276,7 +276,7 @@ CREATE TABLE `ocenter_hooks` (
   `addons` varchar(255) NOT NULL DEFAULT '' COMMENT '钩子挂载的插件 ''，''分割',
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='钩子';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='钩子';
 
 
 DROP TABLE IF EXISTS `ocenter_invite`;
@@ -291,7 +291,7 @@ CREATE TABLE `ocenter_invite` (
   `status` tinyint(2) NOT NULL COMMENT '0：已用完，1：还可注册，2：用户取消邀请，-1：管理员删除',
   `create_time` int(11) NOT NULL COMMENT '创建时间',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='邀请码表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='邀请码表';
 
 
 DROP TABLE IF EXISTS `ocenter_invite_buy_log`;
@@ -303,7 +303,7 @@ CREATE TABLE `ocenter_invite_buy_log` (
   `content` varchar(200) NOT NULL COMMENT '记录信息',
   `create_time` int(11) NOT NULL COMMENT '创建时间（做频率用）',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='用户购买邀请名额记录';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户购买邀请名额记录';
 
 
 DROP TABLE IF EXISTS `ocenter_invite_log`;
@@ -315,7 +315,7 @@ CREATE TABLE `ocenter_invite_log` (
   `content` varchar(200) NOT NULL COMMENT '记录内容',
   `create_time` int(11) NOT NULL COMMENT '创建时间',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='邀请注册成功记录表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='邀请注册成功记录表';
 
 
 DROP TABLE IF EXISTS `ocenter_invite_type`;
@@ -337,7 +337,7 @@ CREATE TABLE `ocenter_invite_type` (
   `create_time` int(11) NOT NULL COMMENT '创建时间',
   `update_time` int(11) NOT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='邀请注册码类型表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='邀请注册码类型表';
 
 
 DROP TABLE IF EXISTS `ocenter_invite_user_info`;
@@ -349,7 +349,7 @@ CREATE TABLE `ocenter_invite_user_info` (
   `already_num` int(11) NOT NULL COMMENT '已邀请名额',
   `success_num` int(11) NOT NULL COMMENT '成功邀请名额',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='邀请注册用户信息';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='邀请注册用户信息';
 
 
 DROP TABLE IF EXISTS `ocenter_local_comment`;
@@ -365,7 +365,7 @@ CREATE TABLE `ocenter_local_comment` (
   `pid` int(11) NOT NULL COMMENT '被回复的评论ID',
   `status` int(11) NOT NULL COMMENT '状态',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='内置评论功能表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='内置评论功能表';
 
 
 DROP TABLE IF EXISTS `ocenter_member`;
@@ -395,7 +395,7 @@ CREATE TABLE `ocenter_member` (
   PRIMARY KEY (`uid`),
   KEY `status` (`status`),
   KEY `name` (`nickname`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='会员表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='会员表';
 
 
 DROP TABLE IF EXISTS `ocenter_menu`;
@@ -413,7 +413,7 @@ CREATE TABLE `ocenter_menu` (
   `module` varchar(50) NOT NULL COMMENT '模块',
   PRIMARY KEY (`id`),
   KEY `pid` (`pid`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='菜单';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='菜单';
 
 
 DROP TABLE IF EXISTS `ocenter_message`;
@@ -435,7 +435,7 @@ CREATE TABLE `ocenter_message` (
   `find_id` int(11) NOT NULL COMMENT '查找ID',
   `status` tinyint(4) NOT NULL COMMENT '状态',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='消息表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='消息表';
 
 
 DROP TABLE IF EXISTS `ocenter_module`;
@@ -458,7 +458,7 @@ CREATE TABLE `ocenter_module` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`),
   KEY `name_2` (`name`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='模块管理表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='模块管理表';
 
 
 DROP TABLE IF EXISTS `ocenter_picture`;
@@ -472,7 +472,7 @@ CREATE TABLE `ocenter_picture` (
   `status` tinyint(2) NOT NULL DEFAULT '0' COMMENT '状态',
   `create_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '创建时间',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='图片附件';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='图片附件';
 
 
 DROP TABLE IF EXISTS `ocenter_rank`;
@@ -484,7 +484,7 @@ CREATE TABLE `ocenter_rank` (
   `create_time` int(11) NOT NULL COMMENT '创建时间',
   `types` tinyint(2) NOT NULL DEFAULT '1' COMMENT '前台是否可申请',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='头衔';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='头衔';
 
 
 DROP TABLE IF EXISTS `ocenter_rank_user`;
@@ -497,7 +497,7 @@ CREATE TABLE `ocenter_rank_user` (
   `create_time` int(11) NOT NULL COMMENT '创建时间',
   `status` tinyint(2) NOT NULL COMMENT '状态',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='用户头衔';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户头衔';
 
 
 DROP TABLE IF EXISTS `ocenter_role`;
@@ -515,7 +515,7 @@ CREATE TABLE `ocenter_role` (
   `create_time` int(11) NOT NULL COMMENT '创建时间',
   `update_time` int(11) NOT NULL COMMENT '修改时间',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='角色表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='角色表';
 
 
 DROP TABLE IF EXISTS `ocenter_role_config`;
@@ -528,7 +528,7 @@ CREATE TABLE `ocenter_role_config` (
   `data` text NOT NULL COMMENT '该配置的其它值',
   `update_time` int(11) NOT NULL COMMENT '更改时间',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='角色配置表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='角色配置表';
 
 
 DROP TABLE IF EXISTS `ocenter_role_group`;
@@ -537,7 +537,7 @@ CREATE TABLE `ocenter_role_group` (
   `title` varchar(25) NOT NULL COMMENT '标题',
   `update_time` int(11) NOT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='角色分组';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='角色分组';
 
 
 DROP TABLE IF EXISTS `ocenter_seo_rule`;
@@ -553,7 +553,7 @@ CREATE TABLE `ocenter_seo_rule` (
   `seo_title` text NOT NULL COMMENT 'SEO标题',
   `sort` int(11) NOT NULL COMMENT '排序',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='SEO规则';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='SEO规则';
 
 
 DROP TABLE IF EXISTS `ocenter_sso_app`;
@@ -566,7 +566,7 @@ CREATE TABLE `ocenter_sso_app` (
   `create_time` int(11) NOT NULL COMMENT '创建时间',
   `config` text NOT NULL COMMENT '配置',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='单点登录应用';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='单点登录应用';
 
 
 DROP TABLE IF EXISTS `ocenter_super_links`;
@@ -580,7 +580,7 @@ CREATE TABLE `ocenter_super_links` (
   `status` tinyint(2) NOT NULL DEFAULT '1' COMMENT '状态（0：禁用，1：正常）',
   `create_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '添加时间',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='友情连接表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='友情连接表';
 
 
 DROP TABLE IF EXISTS `ocenter_support`;
@@ -592,7 +592,7 @@ CREATE TABLE `ocenter_support` (
   `create_time` int(11) NOT NULL COMMENT '发布时间',
   `table` varchar(20) NOT NULL COMMENT '表名',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='支持的表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='支持的表';
 
 
 DROP TABLE IF EXISTS `ocenter_sync_login`;
@@ -605,7 +605,7 @@ CREATE TABLE `ocenter_sync_login` (
   `oauth_token_secret` varchar(255) NOT NULL COMMENT '签名安全码',
   `is_sync` tinyint(4) NOT NULL COMMENT '是否同步',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='同步登录';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='同步登录';
 
 
 DROP TABLE IF EXISTS `ocenter_talk`;
@@ -625,7 +625,7 @@ CREATE TABLE `ocenter_talk` (
   `other_uid` int(11) NOT NULL COMMENT '其他用户',
   `title` varchar(50) NOT NULL COMMENT '标题',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='会话表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='会话表';
 
 
 DROP TABLE IF EXISTS `ocenter_talk_message`;
@@ -636,7 +636,7 @@ CREATE TABLE `ocenter_talk_message` (
   `create_time` int(11) NOT NULL COMMENT '创建时间',
   `talk_id` int(11) NOT NULL COMMENT '会话ID',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='聊天消息表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='聊天消息表';
 
 
 DROP TABLE IF EXISTS `ocenter_talk_message_push`;
@@ -648,7 +648,7 @@ CREATE TABLE `ocenter_talk_message_push` (
   `status` tinyint(4) NOT NULL COMMENT '状态，0为未提示，1为未点击，-1为已点击',
   `talk_id` int(11) NOT NULL COMMENT '会话ID',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=gbk COMMENT='消息推送';
+) ENGINE=InnoDB DEFAULT CHARSET=gbk COMMENT='消息推送';
 
 
 DROP TABLE IF EXISTS `ocenter_talk_push`;
@@ -659,7 +659,7 @@ CREATE TABLE `ocenter_talk_push` (
   `create_time` int(11) NOT NULL COMMENT '创建时间',
   `status` tinyint(4) NOT NULL COMMENT '状态，0为未提示，1为未点击，-1为已点击',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='对话推送表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='对话推送表';
 
 
 DROP TABLE IF EXISTS `ocenter_ucenter_admin`;
@@ -668,7 +668,7 @@ CREATE TABLE `ocenter_ucenter_admin` (
   `member_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '管理员用户ID',
   `status` tinyint(3) unsigned NOT NULL DEFAULT '0' COMMENT '管理员状态',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='管理员表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='管理员表';
 
 
 DROP TABLE IF EXISTS `ocenter_ucenter_member`;
@@ -687,7 +687,7 @@ CREATE TABLE `ocenter_ucenter_member` (
   `type` tinyint(4) NOT NULL COMMENT '1为用户名注册，2为邮箱注册，3为手机注册',
   PRIMARY KEY (`id`),
   KEY `status` (`status`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='用户表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户表';
 
 
 DROP TABLE IF EXISTS `ocenter_ucenter_score_type`;
@@ -697,7 +697,7 @@ CREATE TABLE `ocenter_ucenter_score_type` (
   `status` tinyint(4) NOT NULL COMMENT '状态',
   `unit` varchar(20) NOT NULL COMMENT '单位',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='积分分类';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='积分分类';
 
 
 DROP TABLE IF EXISTS `ocenter_ucenter_setting`;
@@ -706,7 +706,7 @@ CREATE TABLE `ocenter_ucenter_setting` (
   `type` tinyint(3) unsigned NOT NULL DEFAULT '0' COMMENT '配置类型（1-用户配置）',
   `value` text NOT NULL COMMENT '配置数据',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='设置表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='设置表';
 
 
 DROP TABLE IF EXISTS `ocenter_url`;
@@ -718,7 +718,7 @@ CREATE TABLE `ocenter_url` (
   `create_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '创建时间',
   PRIMARY KEY (`id`),
   UNIQUE KEY `idx_url` (`url`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='链接表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='链接表';
 
 
 DROP TABLE IF EXISTS `ocenter_user_config`;
@@ -730,7 +730,7 @@ CREATE TABLE `ocenter_user_config` (
   `model` varchar(30) NOT NULL COMMENT '模型',
   `value` varchar(100) NOT NULL COMMENT '设置值',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='用户配置信息表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户配置信息表';
 
 
 DROP TABLE IF EXISTS `ocenter_user_role`;
@@ -742,7 +742,7 @@ CREATE TABLE `ocenter_user_role` (
   `step` varchar(50) NOT NULL COMMENT '记录当前执行步骤',
   `init` tinyint(2) NOT NULL DEFAULT '0' COMMENT '是否初始化',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='用户角色关联';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户角色关联';
 
 
 DROP TABLE IF EXISTS `ocenter_user_tag`;
@@ -753,7 +753,7 @@ CREATE TABLE `ocenter_user_tag` (
   `pid` int(11) NOT NULL COMMENT '父标签',
   `sort` tinyint(6) NOT NULL COMMENT '排序',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='标签分类表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='标签分类表';
 
 
 DROP TABLE IF EXISTS `ocenter_user_tag_link`;
@@ -762,7 +762,7 @@ CREATE TABLE `ocenter_user_tag_link` (
   `uid` int(11) NOT NULL COMMENT '用户UID',
   `tags` varchar(200) NOT NULL COMMENT '标签ids',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='用户标签关联表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户标签关联表';
 
 
 DROP TABLE IF EXISTS `ocenter_user_token`;
@@ -772,7 +772,7 @@ CREATE TABLE `ocenter_user_token` (
   `token` varchar(255) NOT NULL COMMENT '签名',
   `time` int(11) NOT NULL COMMENT '时间',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='用户签名表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户签名表';
 
 
 DROP TABLE IF EXISTS `ocenter_verify`;
@@ -784,7 +784,7 @@ CREATE TABLE `ocenter_verify` (
   `verify` varchar(50) NOT NULL COMMENT '验证字串',
   `create_time` int(11) NOT NULL COMMENT '创建时间',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='验证码表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='验证码表';
 
 
 
@@ -1408,12 +1408,12 @@ INSERT INTO `ocenter_menu` (`id`, `title`, `pid`, `sort`, `url`, `hide`, `tip`, 
 (168, '测底删除回收站内容', 164, 0, 'UserTag/userTagClear', 1, '', '', 0, ''),
 (169, '可拥有标签配置', 116, 0, 'role/configusertag', 1, '', '', 0, ''),
 (170, '编辑模块', 107, 0, 'Module/edit', 1, '', '模块管理', 0, ''),
-(156, '主题管理', 105, 0, 'Theme/tpls', 0, '', '云市场', 0, ''),
-(157, '使用主题', 105, 0, 'Theme/setTheme', 1, '', '云市场', 0, ''),
-(158, '查看主题', 105, 0, 'Theme/lookTheme', 1, '', '云市场', 0, ''),
-(159, '主题打包下载', 105, 0, 'Theme/packageDownload', 1, '', '云市场', 0, ''),
-(160, '卸载删除主题', 105, 0, 'Theme/delete', 1, '', '云市场', 0, ''),
-(161, '上传安装主题', 105, 0, 'Theme/add', 1, '', '云市场', 0, '');
+(171, '主题管理', 105, 0, 'Theme/tpls', 0, '', '云市场', 0, ''),
+(172, '使用主题', 105, 0, 'Theme/setTheme', 1, '', '云市场', 0, ''),
+(173, '查看主题', 105, 0, 'Theme/lookTheme', 1, '', '云市场', 0, ''),
+(174, '主题打包下载', 105, 0, 'Theme/packageDownload', 1, '', '云市场', 0, ''),
+(175, '卸载删除主题', 105, 0, 'Theme/delete', 1, '', '云市场', 0, ''),
+(176, '上传安装主题', 105, 0, 'Theme/add', 1, '', '云市场', 0, '');
 
 
 
@@ -1440,7 +1440,7 @@ INSERT INTO `ocenter_super_links` ( `type`, `title`, `cover_id`, `link`, `level`
 ( 2, '想天科技', 0, 'http://www.ourstu.com', 0, 1, 1407156786),
 ( 2, 'Onethink', 0, 'http://www.onethink.cn', 0, 1, 1407156813),
 ( 1, 'OpenCenter', 0, 'http://www.ocenter.cn', 0, 1, 1407156830),
-( 1, 'OpenSNS', 0, 'http://www.opensns.cn', 0, 1, 1407156830),;
+( 1, 'OpenSNS', 0, 'http://www.opensns.cn', 0, 1, 1407156830);
 
 
 

@@ -115,12 +115,10 @@ class InstallController extends Controller {
 		//创建配置文件
 		$conf = write_config($dbconfig, $auth);
 		session('config_file', $conf);
-
 		if (session('error')) {
 			//show_msg();
 		} else {
 			session('step', 3);
-
 			$this->redirect('Index/complete');
 		}
 	}
