@@ -6,11 +6,10 @@
 // +----------------------------------------------------------------------
 // | Author: 朱亚杰 <zhuyajie@topthink.net>
 // +----------------------------------------------------------------------
-
 namespace Admin\Controller;
-
 use Admin\Model\AuthGroupModel;
 use Admin\Model\AuthRuleModel;
+use Admin\Model\AgModel;
 
 /**
  * 权限管理控制器
@@ -215,7 +214,7 @@ class AuthManagerController extends AdminController {
 	 */
 	public function group() {
 		$uid = I('uid');
-		$auth_groups = D('Admin/AuthGroup')->getGroups();
+		$auth_groups = D('AuthGroup')->getGroups();
 		$user_groups = AuthGroupModel::getUserGroup($uid);
 		$ids = array();
 		foreach ($user_groups as $value) {

@@ -9,6 +9,7 @@
 
 namespace Admin\Model;
 use Common\Model\Base;
+use Think\Model;
 
 /**
  * 用户组模型类
