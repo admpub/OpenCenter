@@ -19,6 +19,10 @@ use Admin\Model\AuthRuleModel;
  */
 class AuthManagerController extends AdminController {
 
+	protected function _initialize() {
+		parent::_initialize();
+	}
+
 	/**
 	 * 后台节点配置的url作为规则存入auth_rule
 	 * 执行新节点的插入,已有节点的更新,无效规则的删除三项任务
@@ -56,9 +60,7 @@ class AuthManagerController extends AdminController {
 				//如果数据库中的规则与配置的节点匹配,说明是需要更新的节点
 				$data[$key]['id'] = $rule['id']; //为需要更新的节点补充id值
 				$update[] = $data[$key];
-				unset($data[$key]);
-				unset($rules[$index]);
-				unset($rule['condition']);
+				unset($data[$key], $rules[$index], $rule['condition']);
 				$diff[$rule['id']] = $rule;
 			} elseif ($rule['status'] == 1) {
 				$ids[] = $rule['id'];
@@ -213,7 +215,7 @@ class AuthManagerController extends AdminController {
 	 */
 	public function group() {
 		$uid = I('uid');
-		$auth_groups = D('AuthGroup')->getGroups();
+		$auth_groups = D('Admin/AuthGroup')->getGroups();
 		$user_groups = AuthGroupModel::getUserGroup($uid);
 		$ids = array();
 		foreach ($user_groups as $value) {
