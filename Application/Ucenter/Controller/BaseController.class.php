@@ -3,8 +3,9 @@ namespace Ucenter\Controller;
 use Common\Controller\Base;
 
 class BaseController extends Base {
-	public function _initialize() {
-		$uid = intval($_REQUEST['uid']) ? intval($_REQUEST['uid']) : is_login();
+	protected function _initialize() {
+		parent::_initialize();
+		$uid = isset($_REQUEST['uid']) && ($_REQUEST['uid'] = intval($_REQUEST['uid'])) > 0 ? $_REQUEST['uid'] : is_login();
 		if (!$uid) {
 			$this->error('需要登录');
 		}
@@ -13,7 +14,7 @@ class BaseController extends Base {
 	}
 
 	protected function defaultTabHash($tabHash) {
-		$tabHash = op_t($_REQUEST['tabHash']) ? op_t($_REQUEST['tabHash']) : $tabHash;
+		$tabHash = isset($_REQUEST['tabHash']) && ($_REQUEST['tabHash'] = op_t($_REQUEST['tabHash'])) ? $_REQUEST['tabHash'] : $tabHash;
 		$this->assign('tabHash', $tabHash);
 	}
 

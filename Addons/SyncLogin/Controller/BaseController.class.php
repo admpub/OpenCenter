@@ -5,7 +5,7 @@ namespace Addons\SyncLogin\Controller;
 use Home\Controller\AddonsController;
 use User\Api\UserApi;
 
-require_once dirname(dirname(__FILE__)) . "/ThinkSDK/ThinkOauth.class.php";
+require_once dirname(dirname(__FILE__)) . '/ThinkSDK/ThinkOauth.class.php';
 
 class BaseController extends AddonsController {
 
@@ -14,11 +14,12 @@ class BaseController extends AddonsController {
 	private $type = '';
 	private $token = array();
 
-	public function _initialize() {
+	protected function _initialize() {
 		$this->token = session('SYNCLOGIN_TOKEN');
 		$this->type = session('SYNCLOGIN_TYPE');
 		$this->openid = session('SYNCLOGIN_OPENID');
 		$this->access_token = session('SYNCLOGIN_ACCESS_TOKEN');
+		parent::_initialize();
 	}
 
 	//登录地址

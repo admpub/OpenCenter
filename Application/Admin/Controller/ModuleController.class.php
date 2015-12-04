@@ -14,7 +14,7 @@ use Admin\Builder\AdminListBuilder;
 class ModuleController extends AdminController {
 	protected $moduleModel;
 
-	function _initialize() {
+	protected function _initialize() {
 		$this->moduleModel = D('Module');
 		parent::_initialize();
 	}

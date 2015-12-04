@@ -8,22 +8,16 @@
 // +----------------------------------------------------------------------
 
 namespace Home\Controller;
-use Think\Controller;
+use Common\Controller\Base;
 
 /**
  * 扩展控制器
  * 用于调度各个扩展的URL访问需求
  */
-class AddonsController extends Controller {
+class AddonsController extends Base {
 
-	public function _initialize() {
-		/* 读取数据库中的配置 */
-		$config = S('DB_CONFIG_DATA');
-		if (!$config) {
-			$config = api('Config/lists');
-			S('DB_CONFIG_DATA', $config);
-		}
-		C($config); //添加配置
+	protected function _initialize() {
+		parent::_initialize();
 	}
 
 	protected $addons = null;

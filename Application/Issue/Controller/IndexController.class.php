@@ -7,7 +7,8 @@ class IndexController extends Base {
 	 * 业务逻辑都放在 WeiboApi 中
 	 * @var
 	 */
-	public function _initialize() {
+	protected function _initialize() {
+		parent::_initialize();
 		$tree = D('Issue')->getTree();
 		$this->assign('tree', $tree);
 	}

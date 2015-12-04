@@ -6,11 +6,11 @@
  * Time: PM9:01
  */
 namespace Core\Model;
-use Think\Model;
+use Common\Model\Base;
 
-class ExpressionModel extends Model {
+class ExpressionModel extends Base {
 	public $pkg = '';
-	public function _initialize() {
+	protected function _initialize() {
 		parent::_initialize();
 		$this->pkg = modC('EXPRESSION', 'miniblog', 'EXPRESSION');
 		define('ROOT_PATH', str_replace('/Application/Core/Model/ExpressionModel.class.php', '', str_replace('\\', '/', __FILE__)));

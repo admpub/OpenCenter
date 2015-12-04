@@ -20,8 +20,8 @@ namespace Common\Api;
  * 04 - 具体的错误代码。
  */
 class ErrorCodeApi {
-    /**
-     * 需要登录
-     */
-    const REQUIRE_LOGIN = 10000;
+	/**
+	 * 需要登录
+	 */
+	const REQUIRE_LOGIN = 10000;
 }

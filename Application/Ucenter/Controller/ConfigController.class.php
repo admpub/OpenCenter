@@ -8,7 +8,7 @@
 namespace Ucenter\Controller;
 
 class ConfigController extends BaseController {
-	public function _initialize() {
+	protected function _initialize() {
 		parent::_initialize();
 		if (!is_login()) {
 			$this->error('请登陆后再访问本页面。');

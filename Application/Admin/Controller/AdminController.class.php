@@ -28,13 +28,7 @@ class AdminController extends Base {
 			// 还没登录 跳转到登录页面
 			$this->redirect('Public/login');
 		}
-		/* 读取数据库中的配置 */
-		$config = S('DB_CONFIG_DATA');
-		if (!$config) {
-			$config = api('Config/lists');
-			S('DB_CONFIG_DATA', $config);
-		}
-		C($config); //添加配置
+		parent::_initialize();
 
 		// 是否是超级管理员
 		define('IS_ROOT', is_administrator());

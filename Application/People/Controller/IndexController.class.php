@@ -1,13 +1,14 @@
 <?php
 namespace People\Controller;
-use Think\Controller;
+use Common\Controller\Base;
 
-class IndexController extends Controller {
+class IndexController extends Base {
 	/**
 	 * 业务逻辑都放在 WeiboApi 中
 	 * @var
 	 */
-	public function _initialize() {
+	protected function _initialize() {
+		parent::_initialize();
 	}
 
 	public function index($page = 1, $keywords = '') {

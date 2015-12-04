@@ -16,94 +16,98 @@ use Think\Upload\Driver\Qiniu\QiniuStorage;
  */
 class QiniuController extends AdminController {
 
-    public function _initialize(){
-        $config = array(
-            'accessKey'=>'xNBzD_m7hoJrb60Qtyomdr2WVJSb4vnO0MkSYCym',
-            'secrectKey'=>'g-p3P9vOWrg_WZOd_3OtL4FNTh8xhgBOeEVPJw3Y',
-            'bucket'=>'tox-shang',
-            'domain'=>'tox-shang.qiniudn.com'
-        );
-        $this->qiniu = new QiniuStorage($config);
-        parent:: _initialize();
-    }
+	protected function _initialize() {
+		$config = array(
+			'accessKey' => 'xNBzD_m7hoJrb60Qtyomdr2WVJSb4vnO0MkSYCym',
+			'secrectKey' => 'g-p3P9vOWrg_WZOd_3OtL4FNTh8xhgBOeEVPJw3Y',
+			'bucket' => 'tox-shang',
+			'domain' => 'tox-shang.qiniudn.com',
+		);
+		$this->qiniu = new QiniuStorage($config);
+		parent::_initialize();
+	}
 
-    //获取文件列表
-    public function index(){
-        $this->meta_title = '七牛云存储测试';
-        $map = array();
-        $prefix = trim(I('post.prefix'));
-        if($prefix)
-            $map['prefix'] = $prefix;
-        $list = $this->qiniu->getList($map);
-        if(!$list)
-            trace($this->qiniu->error);
-        $this->assign('qiniu', $this->qiniu);
-        $this->assign('_list', $list['items']);
-        $this->display();
-    }
+	//获取文件列表
+	public function index() {
+		$this->meta_title = '七牛云存储测试';
+		$map = array();
+		$prefix = trim(I('post.prefix'));
+		if ($prefix) {
+			$map['prefix'] = $prefix;
+		}
 
-    public function del(){
-        $file = trim(I('file'));
-        if($file){
-            $result = $this->qiniu->del($file);
-            if(false === $result){
-                $this->error($this->qiniu->errorStr);
-            }else{
-                $this->success('删除成功');
-            }
-        }else{
-            $this->error('错误的文件名');
-        }
-    }
+		$list = $this->qiniu->getList($map);
+		if (!$list) {
+			trace($this->qiniu->error);
+		}
 
-    public function dealImage($key){
-        $url = $this->qiniu->dealWithType($key, 'img') ;
-        redirect($url);
-    }
+		$this->assign('qiniu', $this->qiniu);
+		$this->assign('_list', $list['items']);
+		$this->display();
+	}
 
-    public function dealDoc($key){
-        $url = $this->qiniu->dealWithType($key, 'doc');
-        redirect($url);
-    }
+	public function del() {
+		$file = trim(I('file'));
+		if ($file) {
+			$result = $this->qiniu->del($file);
+			if (false === $result) {
+				$this->error($this->qiniu->errorStr);
+			} else {
+				$this->success('删除成功');
+			}
+		} else {
+			$this->error('错误的文件名');
+		}
+	}
 
-    public function rename(){
-        $key = I('get.file');
-        $new = I('new_name');
-        $result = $this->qiniu->rename($key, $new);
-        if(false === $result){
-            trace($this->qiniu->error);
-            $this->error($this->qiniu->errorStr);
-        }else{
-            $this->success('改名成功');
-        }
-    }
+	public function dealImage($key) {
+		$url = $this->qiniu->dealWithType($key, 'img');
+		redirect($url);
+	}
 
-    public function batchDel(){
-        $files = $_GET['key'];
-        if(is_array($files) && $files !== array()){
-            $files = array_column($files,'value');
-            $result = $this->qiniu->delBatch($files);
-            if(false === $result){
-                $this->error($this->qiniu->errorStr);
-            }else{
-                $this->success('删除成功');
-            }
-        }else{
-            $this->error('请至少选择一个文件');
-        }
-    }
+	public function dealDoc($key) {
+		$url = $this->qiniu->dealWithType($key, 'doc');
+		redirect($url);
+	}
 
-    public function detail($key){
-        $result = $this->qiniu->info($key);
-        if($result){
-            if(in_array($result['mimeType'], array('image/jpeg','image/png'))){
-                $img = "<img src='{$this->qiniu->downlink($key)}?imageView/2/w/203/h/203'>";
-            }else{
-                $img = '<img class="file-prev" src="https://dn-portal-static.qbox.me/v104/static/theme/default/image/resource/no-prev.png">';
-            }
-            $time = date('Y-m-d H:i:s', bcmul(substr(strval($result['putTime']), 0, 11),"1000000000"));
-            $filesize = format_bytes($result['fsize']);
-            $tpl = <<<tpl
+	public function rename() {
+		$key = I('get.file');
+		$new = I('new_name');
+		$result = $this->qiniu->rename($key, $new);
+		if (false === $result) {
+			trace($this->qiniu->error);
+			$this->error($this->qiniu->errorStr);
+		} else {
+			$this->success('改名成功');
+		}
+	}
+
+	public function batchDel() {
+		$files = $_GET['key'];
+		if (is_array($files) && $files !== array()) {
+			$files = array_column($files, 'value');
+			$result = $this->qiniu->delBatch($files);
+			if (false === $result) {
+				$this->error($this->qiniu->errorStr);
+			} else {
+				$this->success('删除成功');
+			}
+		} else {
+			$this->error('请至少选择一个文件');
+		}
+	}
+
+	public function detail($key) {
+		$result = $this->qiniu->info($key);
+		if ($result) {
+			if (in_array($result['mimeType'], array('image/jpeg', 'image/png'))) {
+				$img = "<img src='{$this->qiniu->downlink($key)}?imageView/2/w/203/h/203'>";
+			} else {
+				$img = '<img class="file-prev" src="https://dn-portal-static.qbox.me/v104/static/theme/default/image/resource/no-prev.png">';
+			}
+			$time = date('Y-m-d H:i:s', bcmul(substr(strval($result['putTime']), 0, 11), "1000000000"));
+			$filesize = format_bytes($result['fsize']);
+			$tpl = <<<tpl
             <div class="right-head">
                 {$key}
             </div>
@@ -124,32 +128,32 @@ class QiniuController extends AdminController {
                 </div>
             </div>
 tpl;
-            $this->success('as', '', array('tpl'=>$tpl));
-        }else{
-            $this->error('获取文件信息失败');
-        }
+			$this->success('as', '', array('tpl' => $tpl));
+		} else {
+			$this->error('获取文件信息失败');
+		}
 
-    }
+	}
 
-    //上传单个文件 用uploadify
-    public function uploadOne(){
-        $file = $_FILES['qiniu_file'];
-        $file = array(
-            'name'=>'file',
-            'fileName'=>$file['name'],
-            'fileBody'=>file_get_contents($file['tmp_name'])
-        );
-        $config = array();
-        $result = $this->qiniu->upload($config, $file);
-        if($result){
-            $this->success('上传成功','', $result);
-        }else{
-            $this->error('上传失败','', array(
-                'error'=>$this->qiniu->error,
-                'errorStr'=>$this->qiniu->errorStr
-            ));
-        }
-        exit;
-    }
+	//上传单个文件 用uploadify
+	public function uploadOne() {
+		$file = $_FILES['qiniu_file'];
+		$file = array(
+			'name' => 'file',
+			'fileName' => $file['name'],
+			'fileBody' => file_get_contents($file['tmp_name']),
+		);
+		$config = array();
+		$result = $this->qiniu->upload($config, $file);
+		if ($result) {
+			$this->success('上传成功', '', $result);
+		} else {
+			$this->error('上传失败', '', array(
+				'error' => $this->qiniu->error,
+				'errorStr' => $this->qiniu->errorStr,
+			));
+		}
+		exit;
+	}
 
 }

@@ -11,7 +11,7 @@ namespace Ucenter\Controller;
 class MessageController extends BaseController {
 	protected $mTalkModel;
 
-	public function _initialize() {
+	protected function _initialize() {
 		parent::_initialize();
 		$this->mTalkModel = D('Talk');
 		$this->setTitle('个人中心');

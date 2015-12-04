@@ -16,7 +16,7 @@ use Admin\Builder\AdminTreeListBuilder;
 class UserTagController extends AdminController {
 	protected $userTagModel;
 
-	public function _initialize() {
+	protected function _initialize() {
 		parent::_initialize();
 		$this->userTagModel = D('Ucenter/UserTag');
 	}

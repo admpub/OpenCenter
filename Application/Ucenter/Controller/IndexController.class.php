@@ -10,15 +10,13 @@
 namespace Ucenter\Controller;
 
 class IndexController extends BaseController {
-	public function _initialize() {
+	protected function _initialize() {
 		parent::_initialize();
-		$uid = isset($_GET['uid']) ? op_t($_GET['uid']) : is_login();
+		$uid = isset($_GET['uid']) && ($_GET['uid'] = intval($_GET['uid'])) > 0 ? $_GET['uid'] : is_login();
 		//调用API获取基本信息
 		$this->userInfo($uid);
 		$this->_fans_and_following($uid);
-
 		$this->_tab_menu();
-
 	}
 
 	public function index($uid = null, $page = 1, $count = 10) {
