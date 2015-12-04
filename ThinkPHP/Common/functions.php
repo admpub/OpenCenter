@@ -251,15 +251,15 @@ function T($template='',$layer=''){
     }elseif('/' != $depr){
         $file   =   substr_count($file,'/')>1 ? substr_replace($file,$depr,strrpos($file,'/'),1) : str_replace('/', $depr, $file);
     }
-    return tempaleFileChecker($baseUrl.($theme?$theme.'/':'').$file.C('TMPL_TEMPLATE_SUFFIX'),$file,$theme);
+    return templateFileChecker($baseUrl.($theme?$theme.'/':'').$file.C('TMPL_TEMPLATE_SUFFIX'),$file,$theme);
 }
 
 /**
  * [SWH|+] OpenCenter/ThinkOX 新增对common下的模板检测
  * 在上面的T函数最后调用：
- * return tempaleFileChecker($baseUrl.($theme?$theme.'/':'').$file.C('TMPL_TEMPLATE_SUFFIX'),$file,$theme);
+ * return templateFileChecker($baseUrl.($theme?$theme.'/':'').$file.C('TMPL_TEMPLATE_SUFFIX'),$file,$theme);
  */
-function tempaleFileChecker($result,$file,$theme){
+function templateFileChecker($result,$file,$theme){
 	//如果模版存在，则返回该模版
 	if (file_exists($result)) {
 		return $result;
