@@ -281,3 +281,10 @@ label {
   margin-top: 10px;
   margin-left: 20px;
 }
+.form-horizontal .item-label{
+  margin-top:10px;
+}
+.item-label .check-tips{
+  font-weight:normal;
+  color:gray;
+}
