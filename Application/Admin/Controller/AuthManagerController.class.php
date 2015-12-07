@@ -9,7 +9,6 @@
 namespace Admin\Controller;
 use Admin\Model\AuthGroupModel;
 use Admin\Model\AuthRuleModel;
-use Admin\Model\AgModel;
 
 /**
  * 权限管理控制器
