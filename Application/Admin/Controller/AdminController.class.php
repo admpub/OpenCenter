@@ -232,9 +232,10 @@ class AdminController extends Base {
 		}
 	}
 
-	/**获取模块列表，用于显示在左侧
-		     * @auth 陈一枭 <yixiao2020@qq.com>
-	*/
+	/**
+	 * 获取模块列表，用于显示在左侧
+	 * @auth 陈一枭 <yixiao2020@qq.com>
+	 */
 	public function getModules() {
 		$modules = D('Module')->getAll();
 		foreach ($modules as $key => &$v) {
@@ -475,7 +476,7 @@ class AdminController extends Base {
 	}
 
 	public function getReport() {
-
+		return;
 		$result = S('os_report');
 		if (!$result) {
 			$url = '/index.php?s=/report/index/check.html';
@@ -483,7 +484,7 @@ class AdminController extends Base {
 			S('os_report', $result, 60 * 60);
 		}
 		$report = json_decode($result[1], true);
-		$ctime = filemtime("version.ini");
+		$ctime = filemtime('version.ini');
 		$check_exists = file_exists('./Application/Admin/Data/' . $report['title'] . '.txt');
 		if (!$check_exists) {
 			$this_update = explode("\n", $report['this_update']);
@@ -492,9 +493,10 @@ class AdminController extends Base {
 			$this->assign('future_update', $future_update);
 			$this->assign('report', $report);
 		}
-
 	}
+
 	public function submitReport() {
+		$this->error('此功能已关闭！');
 		$aQ1 = $data['q1'] = I('post.q1', '', 'op_t');
 		$aQ2 = $data['q2'] = I('post.q2', '', 'op_t');
 		$aQ3 = $data['q3'] = I('post.q3', '', 'op_t');
@@ -503,7 +505,6 @@ class AdminController extends Base {
 		if (empty($aQ1) || empty($aQ2) || empty($aQ3) || empty($aQ4)) {
 			$this->error('请确保已经答完所有题目了~');
 		}
-
 		$data['host'] = 'http://' . $_SERVER['HTTP_HOST'] . __ROOT__;
 		$data['ip'] = get_client_ip(1);
 		$url = '/index.php?s=/report/index/addFeedback.html';
@@ -521,12 +522,12 @@ class AdminController extends Base {
 		$host = 'http://demo.ocenter.cn';
 		$url = $host . $url;
 		$requester = new requester($url);
-		$requester->charset = "utf-8";
+		$requester->charset = 'utf-8';
 		$requester->content_type = 'application/x-www-form-urlencoded';
 		$requester->data = http_build_query($data);
 		$requester->enableCookie = true;
 		$requester->enableHeaderOutput = false;
-		$requester->method = "post";
+		$requester->method = 'post';
 		$arr = $requester->request();
 		return $arr;
 	}

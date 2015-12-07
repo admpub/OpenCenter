@@ -4,6 +4,76 @@ use Think\Model;
 
 class Base extends Model {
 	static protected $_startedTrans = null;
+
+	/**
+	 * 生成搜索条件
+	 * @param  array  &$where 		where条件数组
+	 * @param  string &$keywords 	关键词
+	 * @param  string $field 		查询字段，如有多个可用半角逗号或空格隔开
+	 * @param  string $pk 			主键字段
+	 * @return void
+	 * @author swh <swh@admpub.com>
+	 */
+	static public function genSearchSql(&$where, &$keywords, $field, $pk = 'id') {
+
+		$keywords = trim($keywords);
+		if ($keywords === '') {
+			return;
+		}
+
+		$sql = '';
+
+		if (preg_match('/^[\\d]+((,|\\s)[\\d]+)*$/', $keywords)) {
+			//1,2,3或者1 2或者1
+			$keywords = trim($keywords, ',');
+			$ids = preg_split('/[^\\d]+/', $keywords);
+			$ids = array_unique($ids);
+			$sql = $pk . ' IN (' . implode(',', $ids) . ')';
+		} elseif (preg_match('/^[\\d]+(-[\\d]+)?$/', $keywords)) {
+			//范围：1-50
+			$ids = explode('-', $keywords);
+			$sql = $pk . ' >= ' . $ids[0];
+			if (count($ids) > 1 && $ids[1] != 0) {
+				if ($ids[0] < $ids[1]) {
+					$sql .= ' AND ' . $pk . ' <= ' . $ids[1];
+				} else {
+					$sql = $pk . ' >= ' . $ids[1] . ' AND ' . $pk . ' <= ' . $ids[0];
+				}
+			}
+		} else {
+			//a "b d e" f
+			$fields = preg_split('/[,\\s]+/', $field);
+			$kw = preg_replace_callback('/"([^"]+)"/', function ($p) use (&$sql, $fields) {
+				foreach ($fields as $f) {
+					if ($sql) {
+						$sql .= ' OR ';
+					}
+					$sql .= $f . ' LIKE \'%' . addcslashes($p[1], '\\_%\'') . '%\'';
+				}
+				return '';
+			}, $keywords);
+			if ($kw) {
+				$arr = preg_split('/[\\s]+/', $kw);
+				$arr = array_unique($arr);
+				$arr = array_map(function ($item) {
+					return addcslashes($item, '\\_%\'');
+				}, $arr);
+				foreach ($fields as $f) {
+					if ($sql) {
+						$sql .= ' OR ';
+					}
+
+					$sql .= $f . ' LIKE \'%' . implode('%\' OR ' . $f . ' LIKE \'%', $arr) . '%\'';
+				}
+			}
+		}
+		if (!empty($where['_string'])) {
+			$where['_string'] .= ' AND (' . $sql . ')';
+		} else {
+			$where['_string'] = $sql;
+		}
+	}
+
 	/**
 	 * 便捷分页查询
 	 * @access public

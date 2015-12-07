@@ -8,6 +8,7 @@
 // +----------------------------------------------------------------------
 
 namespace Admin\Controller;
+use Common\Model\Base;
 
 /**
  * 后台配置控制器
@@ -23,13 +24,14 @@ class ConfigController extends AdminController {
 		/* 查询条件初始化 */
 		$map = array();
 		$map = array('status' => 1, 'title' => array('neq', ''));
-		if (isset($_GET['group'])) {
-			$map['group'] = I('group', 0);
+		if (isset($_GET['group']) && ($_GET['group'] = trim($_GET['group'])) && is_numeric($_GET['group'])) {
+			$map['group'] = $_GET['group'];
 		}
-		if (isset($_GET['name'])) {
-			$map['name'] = array('like', '%' . (string) I('name') . '%');
+		if (isset($_GET['name']) && ($_GET['name'] = trim($_GET['name']))) {
+			Base::genSearchSql($map, $_GET['name'], 'name,title');
+			//$map['name|title'] = array('like', '%' . addcslashes($_GET['name'], '_%') . '%');
 		}
-		//   $map=
+
 		$list = $this->lists('Config', $map, 'sort,id');
 		// 记录当前列表页的cookie
 		Cookie('__forward__', $_SERVER['REQUEST_URI']);
