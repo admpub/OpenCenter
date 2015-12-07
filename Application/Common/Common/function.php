@@ -1,11 +1,8 @@
 <?php
-// +----------------------------------------------------------------------
-// | OneThink [ WE CAN DO IT JUST THINK IT ]
-// +----------------------------------------------------------------------
-// | Copyright (c) 2013 http://www.onethink.cn All rights reserved.
-// +----------------------------------------------------------------------
-// | Author: 麦当苗儿 <zuojiazi@vip.qq.com> <http://www.zjzit.cn>
-// +----------------------------------------------------------------------
+// ===============================
+// 通用全局函数
+// 也是本目录下所有函数的入口
+// ===============================
 
 // OneThink常量定义
 use Admin\Model\AuthRuleModel;
@@ -26,7 +23,7 @@ require_once APP_PATH . '/Common/Common/parse.php';
 require_once APP_PATH . '/Common/Common/user.php';
 require_once APP_PATH . '/Common/Common/limit.php';
 require_once APP_PATH . '/Common/Common/role.php';
-/*require_once(APP_PATH . '/Common/Common/extend.php');*/
+require_once APP_PATH . '/Common/Common/extend.php';
 
 /**
  * 系统公共库文件
@@ -151,8 +148,8 @@ function arr2str($arr, $glue = ',') {
  * @param string $suffix 截断显示字符
  * @return string
  */
-function msubstr($str, $start = 0, $length, $charset = "utf-8", $suffix = true) {
-	if (function_exists("mb_substr")) {
+function msubstr($str, $start = 0, $length, $charset = 'utf-8', $suffix = true) {
+	if (function_exists('mb_substr')) {
 		$slice = mb_substr($str, $start, $length, $charset);
 	} elseif (function_exists('iconv_substr')) {
 		$slice = iconv_substr($str, $start, $length, $charset);
@@ -165,7 +162,7 @@ function msubstr($str, $start = 0, $length, $charset = "utf-8", $suffix = true) 
 		$re['gbk'] = "/[\x01-\x7f]|[\x81-\xfe][\x40-\xfe]/";
 		$re['big5'] = "/[\x01-\x7f]|[\x81-\xfe]([\x40-\x7e]|\xa1-\xfe])/";
 		preg_match_all($re[$charset], $str, $match);
-		$slice = join("", array_slice($match[0], $start, $length));
+		$slice = join('', array_slice($match[0], $start, $length));
 	}
 	return $suffix ? $slice . '...' : $slice;
 }
@@ -765,22 +762,22 @@ function parse_action($action = null, $self) {
 	}
 	unset($key, $rule);
 
-/*    $rules = str_replace('{$self}', $self, $rules);
-$rules = explode(';', $rules);
-$return = array();
-foreach ($rules as $key => &$rule) {
-$rule = explode('|', $rule);
-foreach ($rule as $k => $fields) {
-$field = empty($fields) ? array() : explode(':', $fields);
-if (!empty($field)) {
-$return[$key][$field[0]] = $field[1];
-}
-}
-//cycle(检查周期)和max(周期内最大执行次数)必须同时存在，否则去掉这两个条件
-if (!array_key_exists('cycle', $return[$key]) || !array_key_exists('max', $return[$key])) {
-unset($return[$key]['cycle'], $return[$key]['max']);
-}
-}*/
+	// $rules = str_replace('{$self}', $self, $rules);
+	// $rules = explode(';', $rules);
+	// $return = array();
+	// foreach ($rules as $key => &$rule) {
+	// 	$rule = explode('|', $rule);
+	// 	foreach ($rule as $k => $fields) {
+	// 		$field = empty($fields) ? array() : explode(':', $fields);
+	// 		if (!empty($field)) {
+	// 			$return[$key][$field[0]] = $field[1];
+	// 		}
+	// 	}
+	// 	//cycle(检查周期)和max(周期内最大执行次数)必须同时存在，否则去掉这两个条件
+	// 	if (!array_key_exists('cycle', $return[$key]) || !array_key_exists('max', $return[$key])) {
+	// 		unset($return[$key]['cycle'], $return[$key]['max']);
+	// 	}
+	// }
 
 	return $rules;
 }
@@ -1053,7 +1050,6 @@ function check_document_position($pos = 0, $contain = 0) {
  * 获取数据的所有子孙数据的id值
  * @author 朱亚杰 <xcoolcc@gmail.com>
  */
-
 function get_stemma($pids, Model &$model, $field = 'id') {
 	$collection = array();
 
@@ -1153,7 +1149,8 @@ function op_t($text) {
 	return $text;
 }
 
-/**过滤函数，别名函数，op_t的别名
+/**
+ * 过滤函数，别名函数，op_t的别名
  * @param $text
  * @auth 陈一枭
  */
@@ -1161,7 +1158,8 @@ function text($text) {
 	return op_t($text);
 }
 
-/**过滤函数，别名函数，op_h的别名
+/**
+ * 过滤函数，别名函数，op_h的别名
  * @param $text
  * @auth 陈一枭
  */
@@ -1207,12 +1205,13 @@ function op_h($text, $type = 'html') {
 	return $text;
 }
 
-function real_strip_tags($str, $allowable_tags = "") {
+function real_strip_tags($str, $allowable_tags = '') {
 	$str = html_entity_decode($str, ENT_QUOTES, 'UTF-8');
 	return strip_tags($str, $allowable_tags);
 }
 
-/**span
+/**
+ * span
  * 获取楼层信息
  * @param $k
  */
@@ -1227,11 +1226,8 @@ function getLou($k) {
 	return $res;
 }
 
-/**获取当前的积分
- * @return mixed
- * @auth 陈一枭
- */
-/**获取当前的积分
+/**
+ * 获取当前的积分
  * @param string $score_name
  * @return mixed
  * @auth 陈一枭
@@ -1242,7 +1238,8 @@ function getMyScore($score_name = 'score1') {
 	return $score;
 }
 
-/**根据积分的变动返回提示文本
+/**
+ * 根据积分的变动返回提示文本
  * @param $before 变动前的积分
  * @param $after 变动后的积分
  * @return string
@@ -1257,7 +1254,8 @@ function getScoreTip($before, $after) {
 	return $tip;
 }
 
-/**获取我的货币数
+/**
+ * 获取我的货币数
  * @return mixed
  * @author 郑钟良<zzl@ourstu.com>
  */
@@ -1267,7 +1265,8 @@ function getMyToxMoney() {
 	return $tox_money;
 }
 
-/**获取货币名称
+/**
+ * 获取货币名称
  * @return string
  * @author 郑钟良<zzl@ourstu.com>
  */
@@ -1277,7 +1276,8 @@ function getToxMoneyName() {
 	return $tox_money_name;
 }
 
-/**获取货币提示消息
+/**
+ * 获取货币提示消息
  * @param $before
  * @param $after
  * @return string
