@@ -524,12 +524,13 @@ class UcenterMemberModel extends Model {
 		return $password;
 	}
 
-	/**修改密码
-		     * @param $old_password
-		     * @param $new_password
-		     * @return bool
-		     * @auth 陈一枭
-	*/
+	/**
+	 * 修改密码
+	 * @param $old_password
+	 * @param $new_password
+	 * @return bool
+	 * @auth 陈一枭
+	 */
 	public function changePassword($old_password, $new_password) {
 		//检查旧密码是否正确
 		if (!$this->verifyUser(get_uid(), $old_password)) {

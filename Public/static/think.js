@@ -25,7 +25,7 @@
 			"query"    : parse[5],
 			"fragment" : parse[6]
 		};
-	}
+	};
 
 	ThinkPHP.parse_str = function(str){
 		var value = str.split("&"), vars = {}, param;
@@ -34,7 +34,7 @@
 			vars[param[0]] = param[1];
 		}
 		return vars;
-	}
+	};
 
 	ThinkPHP.parse_name = function(name, type){
 		if(type){
@@ -59,7 +59,7 @@
 			}
 		}
 		return name;
-	}
+	};
 
 	//scheme://host:port/path?query#fragment
 	ThinkPHP.U = function(url, vars, suffix){
@@ -127,7 +127,7 @@
 
 		url = this.APP + url;
 		return url;
-	}
+	};
 
 	/* 设置表单的值 */
 	ThinkPHP.setValue = function(name, value){
@@ -154,6 +154,87 @@
 		} else {  //其他表单选项直接设置值
 			input.val(value);
 		}
-	}
+	};
+    
+    /* 搜索功能 author: swh <swh@admpub.com> */
+    ThinkPHP.search = function(element){
+        var evt=function(event,isForm,vets){
+                event.preventDefault();
+                var url,query;
+                if (isForm) {
+                    url = $(element).attr('action');
+                    query = $(element).serialize();
+                }else{
+                    url = $(element).attr('url');
+                    if(vets){
+                        query = $(vets).serialize();
+                    }else{
+                        query = $(element).parents('form').serialize();
+                    }
+                }
+                query = query.replace(/(&|^)(\w*?\d*?\-*?_*?)*?=?((?=&)|(?=$))/g,'');
+                query = query.replace(/^&/g,'');
+                if( url.indexOf('?')>0 ){
+                    url += '&' + query;
+                }else{
+                    url += '?' + query;
+                }
+                window.location.href = url;
+            };
+        var tagName=$(element).get(0).tagName;
+        if (tagName=='BUTTON'){
+            var btnType=$(element).attr('type');
+            if(typeof(btnType)=='undefined'||btnType=='submit'){
+                tagName='FORM';
+            }else{
+                tagName='INPUT';
+            }
+        }
+        switch (tagName) {
+        case 'FORM':
+            $(element).submit(function(event){
+                evt(event,true,false);
+            });
+            $(element).find('input').keyup(function(e){
+                if(e.keyCode === 13){
+                    $(element).submit();
+                    return false;
+                }
+            });
+            break;
+              
+        case 'INPUT':
+        case 'A':
+           var tag=$(element).attr('val'),vets='.search-form input';
+           if(typeof(tag)!='undefined'){
+                if(tag=='1'||tag=='true'){
+                    vets='[val="'+tag+'"]';
+                }else if(tag!='0'&&tag!='false'){
+                    vets=tag;
+                }
+            }
+            $(element).click(function(event){
+                evt(event,false,vets);
+            });
+            $(vets+':input').keyup(function(e){
+                if(e.keyCode === 13){
+                    $(element).click();
+                    return false;
+                }
+            });
+            break;
 
+        default:
+            var form=$(element).parents('form');
+            form.submit(function(event){
+                evt(event,true,false);
+            });
+            form.find('input').keyup(function(e){
+                if(e.keyCode === 13){
+                    form.submit();
+                    return false;
+                }
+            });
+        }
+    };
 })(jQuery);

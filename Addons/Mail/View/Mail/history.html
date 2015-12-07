@@ -5,15 +5,15 @@
         <h2>邮箱历史</h2>
     </div>
 
-
-    <ul class="tab-nav nav">
-
-        <li><a href="{:U('Admin/Addons/adminList',array('name'=>'Mail'))}">邮件配置</a></li>
-        <li><a href="{:addons_url('Mail://Mail/mailList')}">邮箱列表</a></li>
-        <li><a href="{:addons_url('Mail://Mail/sendEmail')}">发送邮件</a></li>
-        <li class="current"><a href="{:addons_url('Mail://Mail/history')}">邮件历史</a></li>
-
-    </ul>
+<div class="with-padding">
+<div class="btn-group">
+    <a class="btn" href="{:U('Admin/Addons/adminList',array('name'=>'Mail'))}">邮件配置</a>
+    <a class="btn" href="{:addons_url('Mail://Mail/mailList')}">邮箱列表</a>
+    <a class="btn" href="{:addons_url('Mail://Mail/sendEmail')}">发送邮件</a>
+    <a class="btn btn-warning" href="{:addons_url('Mail://Mail/history')}">邮件历史</a>
+</div>
+</div>
+<div class="with-padding">
 
 
 
@@ -26,38 +26,16 @@
         }
     </php>
 
-    <div style="margin-bottom: 10px;" <eq name='show' value="">class="hidden" </eq>id="search_form">
-
-    <style>
-        .tb_search td{
-            padding: 5px 10px;
-        }
-    </style>
-    <form id="searchForm" method="post" action="{:addons_url('Mail://Mail/history')}" class="form-dont-clear-url-param">
-        <div class="search-form  cf " style="margin-bottom: 10px">
-            <table class="tb_search">
-
-
-                    <tr style="line-height: 28px">
-                        <td>
-                           邮件标题
-                        </td>
-                        <td>
-                            <input style="float: none" type="text" name="title" class="search-input"
-                                   value="{:I('title')}">
-                        </td>
-
-                    </tr>
-
-                <tr><td></td>
-                    <td><input type="submit" class="btn" value="确定"/> <button class="btn ajax-post btn" onclick="toggle_search()">关闭</button></td>
-                    <td></td>
-                </tr>
-            </table>
+    <div style="margin-bottom: 10px;">
+        <!-- 高级搜索 -->
+        <div class="search-form pull-right">
+            <form action="{:addons_url('Mail://Mail/history')}" method="get">
+            <div class="input-group">
+                <input type="text" name="title" class="text form-control pull-left search-input" value="{:I('title')}" placeholder="请输入邮件标题">
+                <span class="input-group-btn"><input type="button" url="{:addons_url('Mail://Mail/history')}" id="search" class="btn btn-primary" value="确定"/></span>
+            </div>
+            </form>
         </div>
-    </form>
-    <div style="border-top:1px solid #ccc;border-bottom: 1px solid white"></div>
-    </div>
     <!-- 按钮工具栏 -->
     <div class="cf">
         <div class="fl">
@@ -68,13 +46,12 @@
 
         </div>
     </div>
-
+    </div>
 
 
     <form action="{:addons_url('Mail://Mail/sendEmail')}" method="post">
 
-        <div class="data-table table-striped">
-            <table>
+            <table class="table table-bordered table-striped">
                 <thead>
                 <tr>
                     <th class="row-selected">
@@ -110,39 +87,14 @@
                 </tbody>
             </table>
 
-        </div>
     </form>
+    </div>
 </block>
 
 <block name="script">
-    <script type="text/javascript">
-        function toggle_search(){
-            $('#search_form').toggle('slide');
-        }
-        $(function(){
-
-
-            //搜索功能
-            $("#search").click(function(){
-                var url = $(this).attr('url');
-                var query  = $('.search-form').find('input').serialize();
-                query = query.replace(/(&|^)(\w*?\d*?\-*?_*?)*?=?((?=&)|(?=$))/g,'');
-                query = query.replace(/^&/g,'');
-                if( url.indexOf('?')>0 ){
-                    url += '&' + query;
-                }else{
-                    url += '?' + query;
-                }
-                window.location.href = url;
-            });
-            //回车搜索
-            $(".search-input").keyup(function(e){
-                if(e.keyCode === 13){
-                    $("#search").click();
-                    return false;
-                }
-            });
-
-        });
-    </script>
+<script type="text/javascript">
+$(function(){
+    Think.search("#search");
+});
+</script>
 </block>

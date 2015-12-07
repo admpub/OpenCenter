@@ -776,9 +776,10 @@ class MemberController extends Base {
 		return $result;
 	}
 
-	/**修改用户扩展信息
-		     * @author 郑钟良<zzl@ourstu.com>
-	*/
+	/**
+	 * 修改用户扩展信息
+	 * @author 郑钟良<zzl@ourstu.com>
+	 */
 	public function edit_expandinfo() {
 		$result = A('Ucenter/RegStep', 'Widget')->edit_expandinfo();
 		if ($result['status']) {

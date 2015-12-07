@@ -6,31 +6,33 @@
     </div>
 
 
-    <ul class="tab-nav nav">
-
-        <li><a href="{:U('Admin/Addons/adminList',array('name'=>'Mail'))}">邮件配置</a></li>
-        <li class="current"><a href="{:addons_url('Mail://Mail/mailList')}">邮箱列表</a></li>
-        <li><a href="{:addons_url('Mail://Mail/sendEmail')}">发送邮件</a></li>
-        <li><a href="{:addons_url('Mail://Mail/history')}">邮件历史</a></li>
-
-    </ul>
-
-    <form action="{:addons_url('Mail://Mail/sendEmail')}" method="post">
-    <div class="cf">
+<div class="with-padding">
+<div class="btn-group">
+    <a class="btn" href="{:U('Admin/Addons/adminList',array('name'=>'Mail'))}">邮件配置</a>
+    <a class="btn btn-warning" href="{:addons_url('Mail://Mail/mailList')}">邮箱列表</a>
+    <a class="btn" href="{:addons_url('Mail://Mail/sendEmail')}">发送邮件</a>
+    <a class="btn" href="{:addons_url('Mail://Mail/history')}">邮件历史</a>
+</div>
+</div>
+<div class="with-padding"> 
+        <!-- 高级搜索 -->
+        <div class="search-form pull-right">
+            <form action="{:addons_url('Mail://Mail/sendEmail')}" method="get">
+            <div class="input-group">
+                <input type="text" name="address" class="text form-control pull-left" value="{:I('address')}" placeholder="请输入邮箱地址">
+                <span class="input-group-btn"><a class="btn btn-primary" href="javascript:;" id="search" url="{:addons_url('Mail://Mail/mailList')}"><i class="icon-search"></i></a></span>
+            </div>
+            </form>
+        </div>
+<form action="{:addons_url('Mail://Mail/sendEmail')}" method="post">
+    <div style="margin-bottom:10px">
         <a class="btn" href="{:addons_url('Mail://Mail/addEmail')}">新 增</a>
         <button class="btn ajax-post btn" url="{:addons_url('Mail://Mail/delEmail')}" target-form="ids">删除</button>
-        <button type="submit" class="btn" >发送邮件</button>
-        <!-- 高级搜索 -->
-        <div class="search-form fr cf">
-            <div class="sleft">
-                <input type="text" name="address" class="search-input" value="{:I('address')}" placeholder="请输入邮箱地址">
-                <a class="sch-btn" href="javascript:;" id="search" url="{:addons_url('Mail://Mail/mailList')}"><i class="btn-search"></i></a>
-            </div>
-        </div>
+        <button type="submit" class="btn">发送邮件</button>
     </div>
 
-    <div class="data-table table-striped">
-        <table>
+
+        <table class="table table-bordered table-striped">
             <thead>
             <tr>
                 <th class="row-selected">
@@ -55,9 +57,8 @@
             </notempty>
             </tbody>
         </table>
-
-    </div>
 </form>
+</div>
 </block>
 
 <block name="script">

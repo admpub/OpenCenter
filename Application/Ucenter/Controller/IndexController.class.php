@@ -544,7 +544,7 @@ class IndexController extends BaseController {
 		return $this->multi_array_sort($apps, 'sort', SORT_DESC);
 	}
 
-	function multi_array_sort($multi_array, $sort_key, $sort = SORT_ASC) {
+	public function multi_array_sort($multi_array, $sort_key, $sort = SORT_ASC) {
 		if (is_array($multi_array)) {
 			foreach ($multi_array as $row_array) {
 				if (is_array($row_array)) {

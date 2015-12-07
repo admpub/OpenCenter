@@ -501,7 +501,7 @@ class ConfigController extends BaseController {
 	 * @return mixed
 	 * @author 郑钟良<zzl@ourstu.com>
 	 */
-	function _getValidation($validation) {
+	protected function _getValidation($validation) {
 		$data['min'] = $data['max'] = 0;
 		if ($validation != '') {
 			$items = explode('&', $validation);

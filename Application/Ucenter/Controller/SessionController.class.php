@@ -47,10 +47,11 @@ class SessionController extends BaseController {
 		echo json_encode($talk);
 	}
 
-	/**消息页面
-		     * @param int    $page
-		     * @param string $tab 当前tab
-	*/
+	/**
+	 * 消息页面
+	 * @param int    $page
+	 * @param string $tab 当前tab
+	 */
 	public function message($page = 1, $tab = 'unread') {
 		//从条件里面获取Tab
 		$map = $this->getMapByTab($tab, $map);
@@ -94,11 +95,12 @@ class SessionController extends BaseController {
 		$this->display();
 	}
 
-	/**对话页面
-		     * 创建聊天或显示现有聊天。
-		     * @param int $message_id 消息ID 只提供消息则从消息自动创建一个聊天
-		     * @param int $talk_id 聊天ID
-	*/
+	/**
+	 * 对话页面
+	 * 创建聊天或显示现有聊天。
+	 * @param int $message_id 消息ID 只提供消息则从消息自动创建一个聊天
+	 * @param int $talk_id 聊天ID
+	 */
 	public function talk($message_id = 0, $talk_id = 0) {
 		//获取当前聊天
 		$talk = $this->getTalk($message_id, $talk_id);
@@ -150,10 +152,11 @@ class SessionController extends BaseController {
 		$this->success('删除成功', 'refresh');
 	}
 
-	/**回复的时候调用，通过该函数，会回调应用对应的postMessage函数实现对原始内容的数据添加。
-		     * @param $content 内容文本
-		     * @param $talk_id 聊天ID
-	*/
+	/**
+	 * 回复的时候调用，通过该函数，会回调应用对应的postMessage函数实现对原始内容的数据添加。
+	 * @param $content 内容文本
+	 * @param $talk_id 聊天ID
+	 */
 	public function postMessage($content, $talk_id) {
 		//空的内容不能发送
 		if (!trim($content)) {
@@ -267,9 +270,10 @@ class SessionController extends BaseController {
 		return $map;
 	}
 
-	/**创建聊天，
-		     * @auth 陈一枭
-	*/
+	/**
+	 * 创建聊天，
+	 * @auth 陈一枭
+	 */
 	public function createTalk($uids = '') {
 		if ($uids == '') {
 			exit;

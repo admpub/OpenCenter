@@ -1,13 +1,10 @@
-    <div class="tab-wrap">
-        <ul class="tab-nav nav">
-
-            <li class="current"><a href="{:U('Admin/Addons/adminList',array('name'=>'Mail'))}">邮件配置</a></li>
-            <li><a href="{:addons_url('Mail://Mail/mailList')}">邮箱列表</a></li>
-            <li><a href="{:addons_url('Mail://Mail/sendEmail')}">发送邮件</a></li>
-            <li><a href="{:addons_url('Mail://Mail/history')}">邮件历史</a></li>
-
-        </ul>
-        <div class="tab-content">
+<div class="with-padding"><div class="btn-group">
+        <a class="btn btn-warning" href="{:U('Admin/Addons/adminList',array('name'=>'Mail'))}">邮件配置</a>
+        <a class="btn" href="{:addons_url('Mail://Mail/mailList')}">邮箱列表</a>
+        <a class="btn" href="{:addons_url('Mail://Mail/sendEmail')}">发送邮件</a>
+        <a class="btn" href="{:addons_url('Mail://Mail/history')}">邮件历史</a>
+      </div>
+</div><div class="with-padding">
             <form action="{:addons_url('Mail://Mail/saveConfig')}" method="post" class="form-horizontal">
                 <volist name="_list" id="config">
                     <div class="form-item">
@@ -62,10 +59,8 @@
                     </div>
                 </div>
             </form>
-        </div>
-    </div>
 
-
+</div>
 
 
 <block name="script">
