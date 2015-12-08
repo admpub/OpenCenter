@@ -53,7 +53,6 @@ class IndexController extends Base {
 		$aTag = I('tag', 0, 'intval');
 		$map = array();
 		if ($aTag) {
-			!isset($_GET['tag']) && $_GET['tag'] = $_POST['tag'];
 			$map_uids['tags'] = array('like', '%[' . $aTag . ']%');
 			$links = D('Ucenter/UserTagLink')->getListByMap($map_uids);
 			$uids = array_column($links, 'uid');
