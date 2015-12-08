@@ -55,6 +55,7 @@
 $('.time').datetimepicker({format: 'yyyy-mm-dd hh:ii',language: 'zh-CN',minView: 2,autoclose: true});
 $('.time').change(function () {
     var fieldName = $(this).attr('data-field-name'),dateString = $(this).val();
+    if(dateString=='') return $('[name=' + fieldName + ']').val('0');
     var date = new Date(dateString),timestamp = date.getTime();
     if(isNaN(timestamp)){
         var s = dateString.replace(/[^\d-]+/g,'-'),arr = s.split('-');
@@ -68,6 +69,7 @@ $('.time').change(function () {
         date = new Date(Date.UTC(arr[0],arr[1]-1,arr[2],arr[3]-8,arr[4],arr[5]));
         timestamp = date.getTime();
     }
+    if(isNaN(timestamp)) return $('[name=' + fieldName + ']').val('0');
     $('[name=' + fieldName + ']').val(Math.floor(Number(timestamp) / 1000));
 });
 </script>
