@@ -7,6 +7,12 @@
  */
 function templateFileChecker($baseUrl, $file, $theme, $extend) {
 	if ($extend == 'Addons') {
+		if ($theme) {
+			$result = $baseUrl . $theme . '/' . $file . C('TMPL_TEMPLATE_SUFFIX');
+			if (file_exists($result)) {
+				return $result;
+			}
+		}
 		$result = $baseUrl . $file . C('TMPL_TEMPLATE_SUFFIX');
 	} else {
 		$result = $baseUrl . ($theme ? $theme . '/' : '') . $file . C('TMPL_TEMPLATE_SUFFIX');
@@ -15,16 +21,11 @@ function templateFileChecker($baseUrl, $file, $theme, $extend) {
 	if (file_exists($result)) {
 		return $result;
 	}
-	if ($extend == 'Addons') {
-		$result = $baseUrl . $file . C('TMPL_TEMPLATE_SUFFIX');
-		return $result;
-	}
 	//如果模版不存在，则返回公共目录下的模版
 	$baseUrl = APP_PATH . 'Common/View/' . ($theme ? $theme . '/' : '');
 	$result = $baseUrl . $file . C('TMPL_TEMPLATE_SUFFIX');
 	return $result;
 }
-
 
 并照上面注释中所述修改T函数。
 

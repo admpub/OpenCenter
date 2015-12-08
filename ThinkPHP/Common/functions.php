@@ -284,16 +284,18 @@ function T($template = '', $layer = '') {
  */
 function templateFileChecker($baseUrl, $file, $theme, $extend) {
 	if ($extend == 'Addons') {
+		if ($theme) {
+			$result = $baseUrl . $theme . '/' . $file . C('TMPL_TEMPLATE_SUFFIX');
+			if (file_exists($result)) {
+				return $result;
+			}
+		}
 		$result = $baseUrl . $file . C('TMPL_TEMPLATE_SUFFIX');
 	} else {
 		$result = $baseUrl . ($theme ? $theme . '/' : '') . $file . C('TMPL_TEMPLATE_SUFFIX');
 	}
 	//如果模版存在，则返回该模版
 	if (file_exists($result)) {
-		return $result;
-	}
-	if ($extend == 'Addons') {
-		$result = $baseUrl . $file . C('TMPL_TEMPLATE_SUFFIX');
 		return $result;
 	}
 	//如果模版不存在，则返回公共目录下的模版
