@@ -172,19 +172,21 @@ function thinkox_hash($message, $salt = 'ThinkOX') {
  * @auth 陈一枭
  */
 function modC($key, $default = '', $module = '') {
+    static $_oldC=array();
 	$mod = $module ? $module : MODULE_NAME;
-	$umod = strtoupper($mod);
-	$ukey = strtoupper($key);
-	$result = S('conf_' . $umod . '_' . $ukey);
+	$ukey = $mod . '_' . $key;
+    if(isset($_oldC[$ukey]))return $_oldC[$ukey];
+	$result = S('conf_' . $ukey);
 	if (empty($result)) {
-		$config = D('Config')->where(array('name' => '_' . $umod . '_' . $ukey))->find();
+		$config = D('Config')->where(array('name' => '_' . strtoupper($mod) . '_' . strtoupper($key)))->find();
 		if (!$config) {
 			$result = $default;
 		} else {
 			$result = $config['value'];
 		}
-		S('conf_' . $umod . '_' . $ukey, $result);
+		S('conf_' . $ukey, $result);
 	}
+    $_oldC[$ukey]=$result;
 	return $result;
 }
 
