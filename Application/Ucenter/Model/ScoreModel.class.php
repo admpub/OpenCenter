@@ -108,10 +108,12 @@ class ScoreModel extends Base {
 
 		$model = D('Member');
 		switch ($action) {
+		case '+':
 		case 'inc':
 			$score = abs($score);
 			$res = $model->where(array('uid' => array('in', $uids)))->setInc('score' . $type, $score);
 			break;
+		case '-':
 		case 'dec':
 			$score = abs($score);
 			$res = $model->where(array('uid' => array('in', $uids)))->setDec('score' . $type, $score);

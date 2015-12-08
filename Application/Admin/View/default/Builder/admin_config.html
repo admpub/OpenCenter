@@ -48,30 +48,33 @@
 
 <block name="script">
 
-    <if condition="$importDatetimePicker">
-        <link href="__ZUI__/lib/datetimepicker/datetimepicker.css" rel="stylesheet" type="text/css">
-        <script type="text/javascript" src="__ZUI__/lib/datetimepicker/datetimepicker.min.js"></script>
+<if condition="$importDatetimePicker">
+<link href="__ZUI__/lib/datetimepicker/datetimepicker.css" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="__ZUI__/lib/datetimepicker/datetimepicker.min.js"></script>
+<script>
+$('.time').datetimepicker({format: 'yyyy-mm-dd hh:ii',language: 'zh-CN',minView: 2,autoclose: true});
+$('.time').change(function () {
+    var fieldName = $(this).attr('data-field-name'),dateString = $(this).val();
+    var date = new Date(dateString),timestamp = date.getTime();
+    if(isNaN(timestamp)){
+        var s = dateString.replace(/[^\d-]+/g,'-'),arr = s.split('-');
+        for (var i = 5; i >= 0; i--) {
+            if(typeof(arr[i])=='undefined'){
+                arr[i]=i>0&&i<3?1:0;
+                continue;
+            }
+            break;
+        };
+        date = new Date(Date.UTC(arr[0],arr[1]-1,arr[2],arr[3]-8,arr[4],arr[5]));
+        timestamp = date.getTime();
+    }
+    $('[name=' + fieldName + ']').val(Math.floor(Number(timestamp) / 1000));
+});
+</script>
+</if>
 
-        <script>
-            $('.time').datetimepicker({
-                format: 'yyyy-mm-dd hh:ii',
-                language: "zh-CN",
-                minView: 2,
-                autoclose: true
-            });
-
-            $('.time').change(function () {
-                var fieldName = $(this).attr('data-field-name');
-                var dateString = $(this).val();
-                var date = new Date(dateString);
-                var timestamp = date.getTime();
-                $('[name=' + fieldName + ']').val(Math.floor(timestamp / 1000));
-            });
-        </script>
-    </if>
-
-    <if condition="$importCheckBox">
-        <script>
+<if condition="$importCheckBox">
+<script>
             $(function () {
                 function implode(x, list) {
                     var result = "";
@@ -97,54 +100,45 @@
                     $('.oneplus-checkbox-hidden[data-field-name=' + fieldName + ']').val(result);
                 });
             })
-        </script>
-    </if>
+</script>
+</if>
 
-    <script type="text/javascript">
-        $(function () {
-            $('.group_nav li a').click(function () {
-                $('.group_list').hide();
-                $('.group_list').eq($(".group_nav li a").index(this)).show();
-                $('.group_nav li').removeClass('active');
-                $(this).parent().addClass('active');
-            })
-        })
-        Think.setValue("type", {$info.type|default=0});
-        Think.setValue("group", {$info.group|default=0});
-        //导航高亮
-        highlight_subnav('{:U('Config / index')}');
-    </script>
-    <link type="text/css" rel="stylesheet" href="__PUBLIC__/js/ext/magnific/magnific-popup.css"/>
-    <script type="text/javascript" src="__PUBLIC__/js/ext/magnific/jquery.magnific-popup.min.js"></script>
+<script type="text/javascript">
+$(function () {
+    $('.group_nav li a').click(function () {
+        $('.group_list').hide();
+        $('.group_list').eq($(".group_nav li a").index(this)).show();
+        $('.group_nav li').removeClass('active');
+        $(this).parent().addClass('active');
+    });
 
-    <script type="text/javascript" charset="utf-8" src="__PUBLIC__/js/ext/webuploader/js/webuploader.js"></script>
-    <link href="__PUBLIC__/js/ext/webuploader/css/webuploader.css" type="text/css" rel="stylesheet">
+    Think.setValue("type", {$info.type|default=0});
+    Think.setValue("group", {$info.group|default=0});
+    //导航高亮
+    highlight_subnav('{:U('Config / index')}');
+});
+</script>
+<link type="text/css" rel="stylesheet" href="__PUBLIC__/js/ext/magnific/magnific-popup.css"/>
+<script type="text/javascript" src="__PUBLIC__/js/ext/magnific/jquery.magnific-popup.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="__PUBLIC__/js/ext/webuploader/js/webuploader.js"></script>
+<link href="__PUBLIC__/js/ext/webuploader/css/webuploader.css" type="text/css" rel="stylesheet">
 
-
-    <script>
-        $(document).ready(function () {
-            $('.popup-gallery').each(function () { // the containers for all your galleries
-                $(this).magnificPopup({
-                    delegate: 'a',
-                    type: 'image',
-                    tLoading: '正在载入 #%curr%...',
-                    mainClass: 'mfp-img-mobile',
-                    gallery: {
-                        enabled: true,
-                        navigateByImgClick: true,
-                        preload: [0, 1] // Will preload 0 - before current, and 1 after the current image
-
-                    },
-                    image: {
-                        tError: '<a href="%url%">图片 #%curr%</a> 无法被载入.',
-                        titleSrc: function (item) {
-                            /*           return item.el.attr('title') + '<small>by Marsel Van Oosten</small>';*/
-                            return '';
-                        },
-                        verticalFit: true
-                    }
-                });
-            });
+<script>
+$(function () {
+    $('.popup-gallery').each(function () { // the containers for all your galleries
+        $(this).magnificPopup({
+            delegate: 'a',type: 'image',tLoading: '正在载入 #%curr%...',
+            mainClass: 'mfp-img-mobile',
+            gallery: {enabled: true,navigateByImgClick: true,preload: [0, 1] // Will preload 0 - before current, and 1 after the current image
+            },
+            image: {tError: '<a href="%url%">图片 #%curr%</a> 无法被载入.',
+                titleSrc: function (item) {
+                    return '';
+                },
+                verticalFit: true
+            }
         });
-    </script>
+    });
+});
+</script>
 </block>

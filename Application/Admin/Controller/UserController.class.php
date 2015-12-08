@@ -141,10 +141,10 @@ class UserController extends AdminController {
 			}
 		}
 		$builder = new AdminListBuilder();
-		$builder->title("用户扩展资料列表");
+		$builder->title('用户扩展资料列表');
 		$builder->meta_title = '用户扩展资料列表';
 		$builder->setSearchPostUrl(U('Admin/User/expandinfo_select'))->search('搜索', 'nickname', 'text', '请输入用户昵称或者ID');
-		$builder->keyId()->keyLink('nickname', "昵称", 'User/expandinfo_details?uid=###');
+		$builder->keyId()->keyLink('nickname', '昵称', 'User/expandinfo_details?uid=###');
 		foreach ($fields_list as $vt) {
 			$builder->keyText($vt['field_name'], $vt['field_name']);
 		}
@@ -199,9 +199,9 @@ class UserController extends AdminController {
 				$member[$key] = $field_data;
 			}
 			$builder = new AdminConfigBuilder();
-			$builder->title("用户扩展资料详情");
+			$builder->title('用户扩展资料详情');
 			$builder->meta_title = '用户扩展资料详情';
-			$builder->keyId()->keyReadOnly('username', "用户名称")->keyReadOnly('nickname', '昵称');
+			$builder->keyId()->keyReadOnly('username', '用户名称')->keyReadOnly('nickname', '昵称');
 			$field_key = array('id', 'username', 'nickname');
 			foreach ($fields_list as $vt) {
 				$field_key[] = $vt['field_name'];
@@ -238,10 +238,10 @@ class UserController extends AdminController {
 		$profileList = D('field_group')->where($map)->order("sort asc")->page($page, $r)->select();
 		$totalCount = D('field_group')->where($map)->count();
 		$builder = new AdminListBuilder();
-		$builder->title("扩展信息分组列表");
+		$builder->title('扩展信息分组列表');
 		$builder->meta_title = '扩展信息分组';
 		$builder->buttonNew(U('editProfile', array('id' => '0')))->buttonDelete(U('changeProfileStatus', array('status' => '-1')))->setStatusUrl(U('changeProfileStatus'))->buttonSort(U('sortProfile'));
-		$builder->keyId()->keyText('profile_name', "分组名称")->keyText('sort', '排序')->keyTime("createTime", "创建时间")->keyBool('visiable', '是否公开');
+		$builder->keyId()->keyText('profile_name', '分组名称')->keyText('sort', '排序')->keyTime("createTime", "创建时间")->keyBool('visiable', '是否公开');
 		$builder->keyStatus()->keyDoAction('User/field?id=###', '管理字段')->keyDoAction('User/editProfile?id=###', '编辑');
 		$builder->data($profileList);
 		$builder->pagination($totalCount, $r);
@@ -756,6 +756,9 @@ class UserController extends AdminController {
 		$scoreTypes = D('Ucenter/Score')->getTypeList(array('status' => 1));
 		if (IS_POST) {
 			$aUids = I('post.uid', '', 'op_t');
+			if (!$aUids) {
+				$this->error('请输入一个有效的用户ID');
+			}
 			foreach ($scoreTypes as $v) {
 				$aAction = I('post.action_score' . $v['id'], '', 'op_t');
 				$aValue = I('post.value_score' . $v['id'], 0, 'intval');
@@ -763,7 +766,6 @@ class UserController extends AdminController {
 			}
 			$this->success('设置成功', 'refresh');
 		} else {
-
 			$this->assign('scoreTypes', $scoreTypes);
 			$this->display();
 		}

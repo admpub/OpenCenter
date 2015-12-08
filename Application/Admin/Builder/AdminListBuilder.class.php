@@ -18,11 +18,12 @@ class AdminListBuilder extends AdminBuilder {
 	private $_search = array();
 	private $_select = array();
 
-	/**设置页面标题
-		     * @param $title 标题文本
-		     * @return $this
-		     * @auth 陈一枭
-	*/
+	/**
+	 * 设置页面标题
+	 * @param $title 标题文本
+	 * @return $this
+	 * @auth 陈一枭
+	 */
 	public function title($title) {
 		$this->_title = $title;
 		$this->meta_title = $title;
@@ -49,11 +50,12 @@ class AdminListBuilder extends AdminBuilder {
 		return $this;
 	}
 
-	/**设置回收站根据ids彻底删除的URL
-		     * @param $url
-		     * @return $this
-		     * @author 郑钟良<zzl@ourstu.com>
-	*/
+	/**
+	 * 设置回收站根据ids彻底删除的URL
+	 * @param $url
+	 * @return $this
+	 * @author 郑钟良<zzl@ourstu.com>
+	 */
 	public function setClearUrl($url) {
 		$this->_setClearUrl = $url;
 		return $this;
@@ -71,28 +73,14 @@ class AdminListBuilder extends AdminBuilder {
 	}
 
 	/**
-	 * 设置搜索提交表单的URL
-	 * @param $url
-	 * @return $this
-	 * @auth 陈一枭
-	 */
-	/**
-	 * 原@auth 陈一枭
-	 *public function setSearchPostUrl($url)
-	 *{
-	 *  $this->_searchPostUrl = $url;
-	 *  return $this;
-	 *}
-	 */
-	/**
 	 * 更新筛选搜索功能 ，修正连续提交多出N+个GET参数的BUG
 	 * @param $url   提交的getURL
 	 * @param $param GET参数
 	 * @param $val   GET值
+	 * @return $this
 	 */
-	public function setSearchPostUrl($url, $param, $val) {
-		$dd = array($param => $val);
-		$this->_searchPostUrl = U($url);
+	public function setSearchPostUrl($url, $param = null, $val = null) {
+		$this->_searchPostUrl = $param === null ? U($url) : U($url, array($param => $val));
 		return $this;
 	}
 
@@ -103,7 +91,6 @@ class AdminListBuilder extends AdminBuilder {
 	 * @return $this
 	 * @auth 陈一枭
 	 */
-
 	public function button($title, $attr) {
 		$this->_buttonList[] = array('title' => $title, 'attr' => $attr);
 		return $this;

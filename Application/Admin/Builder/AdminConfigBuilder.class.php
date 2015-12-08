@@ -17,6 +17,7 @@ class AdminConfigBuilder extends AdminBuilder {
 	private $_savePostUrl = array();
 	private $_group = array();
 	private $_callback = null;
+
 	public function title($title) {
 		$this->_title = $title;
 		$this->meta_title = $title;
@@ -125,7 +126,7 @@ class AdminConfigBuilder extends AdminBuilder {
 	}
 
 	public function keyEditor($name, $title, $subtitle = null, $config = '', $style = array('width' => '500px', 'height' => '400px')) {
-		$toolbars = "toolbars:[[" . $config . "]]";
+		$toolbars = 'toolbars:[[' . $config . ']]';
 		if (empty($config)) {
 			$toolbars = "toolbars:[['source','|','bold','italic','underline','fontsize','forecolor','justifyleft','fontfamily','|','map','emotion','insertimage','insertcode']]";
 		}
@@ -137,12 +138,12 @@ class AdminConfigBuilder extends AdminBuilder {
 		return $this;
 	}
 
-	public function keyTime($name, $title, $subtitle = null) {
-		return $this->key($name, $title, $subtitle, 'time');
+	public function keyTime($name, $title, $subtitle = null, $opt = null) {
+		return $this->key($name, $title, $subtitle, 'time', $opt);
 	}
 
-	public function keyCreateTime($name = 'create_time', $title = '创建时间', $subtitle = null) {
-		return $this->keyTime($name, $title, $subtitle);
+	public function keyCreateTime($name = 'create_time', $title = '创建时间', $subtitle = null, $opt = null) {
+		return $this->keyTime($name, $title, $subtitle, $opt);
 	}
 
 	public function keyBool($name, $title, $subtitle = null) {
@@ -150,8 +151,8 @@ class AdminConfigBuilder extends AdminBuilder {
 		return $this->keyRadio($name, $title, $subtitle, $map);
 	}
 
-	public function keyUpdateTime($name = 'update_time', $title = '修改时间', $subtitle = null) {
-		return $this->keyTime($name, $title, $subtitle);
+	public function keyUpdateTime($name = 'update_time', $title = '修改时间', $subtitle = null, $opt = null) {
+		return $this->keyTime($name, $title, $subtitle, $opt);
 	}
 
 	public function keyKanban($name, $title, $subtitle = null) {

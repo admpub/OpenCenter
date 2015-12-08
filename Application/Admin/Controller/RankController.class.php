@@ -190,7 +190,7 @@ class RankController extends AdminController {
 		$builder
 			->title($u_name . '的头衔列表')
 			->buttonNew(U('Rank/userAddRank?id=' . $id), '关联新头衔')
-			->keyId()->keyText('title', '头衔名称')->keyText('reason', '颁发理由')->keyText('is_show', '是否显示在昵称右侧')->keyCreateTime()->keyDoActionEdit('Rank/userChangeRank?id=###')->keyDoAction('Rank/deleteUserRank?id=###', '删除')
+			->keyId()->keyText('title', '头衔名称')->keyText('reason', '颁发理由')->keyText('is_show', '是否显示在昵称右侧')->keyCreateTime()->keyTime('expire_time', '过期时间')->keyDoActionEdit('Rank/userChangeRank?id=###')->keyDoAction('Rank/deleteUserRank?id=###', '删除')
 			->data($rankList)
 			->pagination($totalCount, 20)
 			->display();
@@ -205,10 +205,16 @@ class RankController extends AdminController {
 	 * @param string $rank_id
 	 * @author 郑钟良<zzl@ourstu.com>
 	 */
-	public function userAddRank($id = null, $uid = '', $reason = '', $is_show = '', $rank_id = '') {
+	public function userAddRank($id = null, $uid = '', $reason = '', $is_show = '', $rank_id = '', $expire_time = null) {
 		if (IS_POST) {
 			$is_Edit = $id ? true : false;
-			$data = array('uid' => $uid, 'reason' => $reason, 'is_show' => $is_show, 'rank_id' => $rank_id);
+			$data = array(
+				'uid' => $uid,
+				'reason' => $reason,
+				'is_show' => $is_show,
+				'rank_id' => $rank_id,
+				'expire_time' => $expire_time ? $expire_time : 0,
+			);
 			$model = D('rank_user');
 			if ($is_Edit) {
 				$data = $model->create($data);
@@ -257,7 +263,7 @@ class RankController extends AdminController {
 			$builder = new AdminConfigBuilder();
 			$builder
 				->title('添加头衔关联')
-				->keyId()->keyReadOnly('uid', '用户ID')->keyText('reason', '关联理由')->keyRadio('is_show', '是否显示在昵称右侧', null, array(1 => '是', 0 => '否'))->keySelect('rank_id', '头衔编号', null, $rank_ids)
+				->keyId()->keyReadOnly('uid', '用户ID')->keyText('reason', '关联理由')->keyRadio('is_show', '是否显示在昵称右侧', null, array(1 => '是', 0 => '否'))->keySelect('rank_id', '头衔编号', null, $rank_ids)->keyTime('expire_time', '过期时间')
 				->data($data)
 				->buttonSubmit(U('userAddRank'))->buttonBack()
 				->display();
@@ -273,10 +279,16 @@ class RankController extends AdminController {
 	 * @param string $rank_id
 	 * @author 郑钟良<zzl@ourstu.com>
 	 */
-	public function userChangeRank($id = null, $uid = '', $reason = '', $is_show = '', $rank_id = '') {
+	public function userChangeRank($id = null, $uid = '', $reason = '', $is_show = '', $rank_id = '', $expire_time = null) {
 		if (IS_POST) {
 			$is_Edit = $id ? true : false;
-			$data = array('uid' => $uid, 'reason' => $reason, 'is_show' => $is_show, 'rank_id' => $rank_id);
+			$data = array(
+				'uid' => $uid,
+				'reason' => $reason,
+				'is_show' => $is_show,
+				'rank_id' => $rank_id,
+				'expire_time' => $expire_time ? $expire_time : 0,
+			);
 			$model = D('rank_user');
 			if ($is_Edit) {
 				$data = $model->create($data);
@@ -326,7 +338,7 @@ class RankController extends AdminController {
 			$builder = new AdminConfigBuilder();
 			$builder
 				->title('编辑头衔关联')
-				->keyId()->keyReadOnly('uid', '用户ID')->keyText('reason', '关联理由')->keyRadio('is_show', '是否显示在昵称右侧', null, array(1 => '是', 0 => '否'))->keySelect('rank_id', '头衔编号', null, $rank_ids)
+				->keyId()->keyReadOnly('uid', '用户ID')->keyText('reason', '关联理由')->keyRadio('is_show', '是否显示在昵称右侧', null, array(1 => '是', 0 => '否'))->keySelect('rank_id', '头衔编号', null, $rank_ids)->keyTime('expire_time', '过期时间')
 				->data($data)
 				->buttonSubmit(U('userChangeRank'))->buttonBack()
 				->display();

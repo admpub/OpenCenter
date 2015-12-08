@@ -4,17 +4,7 @@
     <label class="item-label">
         搜索用户： <span class="check-tips">（输入用户ID查询）</span>
     </label>
-    <input type="text" data-row="searchUser" class="text input-large form-control" style="width: 400px"/>
-<script>
-    $(function () {
-        $('[data-row="searchUser"]').keypress(function (e) {
-            if ( e.which == 13 || e.which == 10) {
-                $(this).blur();
-
-            }
-        });
-        });
-</script>
+    <input type="number" data-row="searchUser" class="text input-large form-control" style="width: 400px"/>
 
     <div style="border-top:1px dashed #ccc;margin-top: 15px;margin-bottom: 15px "></div>
     <strong>当前选中用户：</strong>
@@ -57,9 +47,8 @@
     function delUser(){
         $('[data-row="delUser"]').unbind('click');
         $('[data-row="delUser"]').click(function(){
-            var obj = $(this);
-            obj.remove();
-        })
+            $(this).remove();
+        });
     }
 
     $(function () {
@@ -75,21 +64,29 @@
                 })
                 if(flag){
                     $.get(U('admin/user/getNickname'),{uid:val},function(res){
+                        if (typeof(res.uid)=='undefined') {
+                            toast.warning('用户不存在。', '温馨提示');
+                            return;
+                        };
                         obj.parents('form').find('#userlist').append(' <div class="btn" data-row="delUser">'+res.nickname+' <input type="hidden" name="uid[]" value="'+res.uid+'"/></div>');
                         delUser();
-                        obj.val('')
+                        obj.val('');
                         obj.focus();
                     },'json')
                 }
             }
-        })
-
+        });
+        $('[data-row="searchUser"]').keypress(function (e) {
+            if ( e.which == 13 || e.which == 10) {
+                $(this).blur();
+            }
+        });
 
         $('.frm_change_group .submit').click(function () {
-                $.post($(this).attr('url'), $('.frm_change_group').serialize(), function (msg) {
-                    handleAjax(msg);
-                });
+            $.post($(this).attr('url'), $('.frm_change_group').serialize(), function (msg) {
+                handleAjax(msg);
+            });
 
-        })
+        });
     })
 </script>
