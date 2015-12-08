@@ -187,7 +187,7 @@ class IndexController extends BaseController {
 				$info_list[$val['id']]['field_data'] = $items[$info_list[$val['id']]['field_data']];
 			}
 			//当扩展资料为join时，读取数据并进行处理再显示到前端@MingYang
-			if ($val['child_form_type'] == "join") {
+			if ($val['child_form_type'] == 'join') {
 				$j = explode('|', $val['form_default_value']);
 				$a = explode(' ', $info_list[$val['id']]['field_data']);
 				$info_list[$val['id']]['field_data'] = get_userdata_join($a, $j[0], $j[1]);
@@ -199,19 +199,19 @@ class IndexController extends BaseController {
 	public function _get_field_data($data = null) {
 		$result = null;
 		$result['field_name'] = $data['field_name'];
-		$result['field_data'] = "还未设置";
+		$result['field_data'] = '还未设置';
 		switch ($data['form_type']) {
 		case 'input':
 		case 'radio':
 		case 'textarea':
 		case 'select':
-			$result['field_data'] = isset($data['field_content']['field_data']) ? $data['field_content']['field_data'] : "还未设置";
+			$result['field_data'] = isset($data['field_content']['field_data']) ? $data['field_content']['field_data'] : '还未设置';
 			break;
 		case 'checkbox':
-			$result['field_data'] = isset($data['field_content']['field_data']) ? implode(' ', explode('|', $data['field_content']['field_data'])) : "还未设置";
+			$result['field_data'] = isset($data['field_content']['field_data']) ? implode(' ', explode('|', $data['field_content']['field_data'])) : '还未设置';
 			break;
 		case 'time':
-			$result['field_data'] = isset($data['field_content']['field_data']) ? date("Y-m-d", $data['field_content']['field_data']) : "还未设置";
+			$result['field_data'] = isset($data['field_content']['field_data']) ? date('Y-m-d', $data['field_content']['field_data']) : '还未设置';
 			break;
 		}
 		$result['field_data'] = op_t($result['field_data']);
@@ -254,43 +254,26 @@ class IndexController extends BaseController {
 	 * @return void
 	 */
 	public function _tab_menu() {
-		// 根据应用目录取全部APP信息
-		$map['status'] = 1;
-		$dir = APP_PATH;
-		$appList = null;
-		if (is_dir($dir)) {
-			if ($dh = opendir($dir)) {
-				while (($file = readdir($dh)) !== false) {
-					$appList[]['app_name'] = $file;
+		$appList = D('Module')->getAll();
+		static $apps = null;
+		if (is_null($apps)) {
+			$apps = array();
+			// 获取APP的HASH数组
+			foreach ($appList as $appName => $module) {
+				$className = $appName;
+				if (!$this->protocol_exists($className)) {
+					continue;
 				}
-				closedir($dh);
+
+				$dao = D($className . '/' . $className . 'Protocol');
+				if (method_exists($dao, 'profileContent') && $module['is_setup']) {
+					$appName = strtolower($appName);
+					$apps[$appName] = $dao->getModelInfo();
+				}
+				unset($dao);
 			}
+			$apps = $this->sortApps($apps);
 		}
-		$apps = array();
-		// 获取APP的HASH数组
-		foreach ($appList as $app) {
-			$appName = strtolower($app['app_name']);
-			if ($appName == '.' || $appName == '..') {
-				continue;
-			}
-
-			$module = D('Module')->getModule($appName);
-			if (!$module) {
-				continue;
-			}
-
-			$className = ucfirst($appName);
-			if (!$this->protocol_exists($className)) {
-				continue;
-			}
-
-			$dao = D($className . '/' . $className . 'Protocol');
-			if (method_exists($dao, 'profileContent') && $module['is_setup']) {
-				$apps[$appName] = $dao->getModelInfo();
-			}
-			unset($dao);
-		}
-		$apps = $this->sortApps($apps);
 		$this->assign('appArr', $apps);
 
 		return $apps;
@@ -374,7 +357,7 @@ class IndexController extends BaseController {
 		$this->userInfo($uid);
 		$this->_tab_menu();
 
-		$rankList = D('rank_user')->where(array('uid' => $uid, 'status' => 1))->field('rank_id,reason,create_time')->select();
+		$rankList = D('rank_user')->where(array('uid' => $uid, 'status' => 1, '_string' => 'expire_time=0 OR expire_time>' . NOW_TIME))->field('rank_id,reason,create_time,expire_time')->select();
 		foreach ($rankList as &$val) {
 			$rank = D('rank')->where(array('id' => $val['rank_id']))->find();
 			$val['title'] = $rank['title'];
@@ -474,7 +457,7 @@ class IndexController extends BaseController {
 		if ($rank_user_id) {
 			$model = D('rank_user')->where(array('id' => $rank_user_id));
 			$old_rank_user = $model->field('id,rank_id,reason')->find();
-			if (!$old_rank_user) {
+			if (!$old_rank_user || !D('rank')->canApply($old_rank_user['rank_id'])) {
 				$this->error('请正确选择要重新申请的头衔');
 			}
 			$this->assign('old_rank_user', $old_rank_user);
@@ -519,7 +502,7 @@ class IndexController extends BaseController {
 		$data['status'] = 0;
 		if ($rank_user_id) {
 			$model = D('rank_user')->where(array('id' => $rank_user_id));
-			if (!$model->select()) {
+			if (!($old_rank_user = $model->find()) || !D('rank')->canApply($old_rank_user['rank_id'])) {
 				$this->error('请正确选择要重新申请的头衔');
 			}
 			$result = D('rank_user')->where(array('id' => $rank_user_id))->save($data);
@@ -545,6 +528,7 @@ class IndexController extends BaseController {
 	}
 
 	public function multi_array_sort($multi_array, $sort_key, $sort = SORT_ASC) {
+		$key_array = array();
 		if (is_array($multi_array)) {
 			foreach ($multi_array as $row_array) {
 				if (is_array($row_array)) {

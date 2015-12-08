@@ -401,7 +401,11 @@ class MemberModel extends Base {
 			if (count($ranks)) {
 				//查询已拥有头衔
 				$rankUserModel = D('RankUser');
-				$have_rank_ids = $rankUserModel->where(array('uid' => $uid))->select();
+				$have_rank_ids = $rankUserModel->where(array(
+                    'uid' => $uid,
+					'status' => 1,
+					'_string' => 'expire_time=0 OR expire_time>' . NOW_TIME
+                ))->select();
 				$have_rank_ids = array_column($have_rank_ids, 'rank_id');
 				//查询已拥有头衔 end
 

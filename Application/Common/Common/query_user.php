@@ -99,7 +99,6 @@ function query_user($fields = null, $uid = null) {
 
 	//读取用户名拼音
 	if (in_array('pinyin', $fields)) {
-
 		$result['pinyin'] = D('Pinyin')->pinYin($result['nickname']);
 	}
 
@@ -124,7 +123,11 @@ function query_user($fields = null, $uid = null) {
 
 	//获取用户头衔链接
 	if (in_array('rank_link', $fields)) {
-		$rank_List = D('rank_user')->where(array('uid' => $uid, 'status' => 1))->select();
+		$rank_List = D('rank_user')->where(array(
+			'uid' => $uid,
+			'status' => 1,
+			'_string' => 'expire_time=0 OR expire_time>' . NOW_TIME,
+		))->select();
 		$num = 0;
 		foreach ($rank_List as &$val) {
 			$rank = D('rank')->where(array('id' => $val['rank_id']))->find();
@@ -140,22 +143,38 @@ function query_user($fields = null, $uid = null) {
 		} else {
 			$result['rank_link'] = array();
 		}
+	} elseif(isset($cacheResult['rank_link']) && is_array($cacheResult['rank_link'])) {
+		//验证是否已经过期，如果过期查询数据库是否有更新
+		foreach ($cacheResult['rank_link'] as $key => &$val) {
+			if ($val['expire_time'] > 0 && $val['expire_time'] <= NOW_TIME) {
+				$_rank = D('rank_user')->where(array(
+					'uid' => $uid,
+					'status' => 1,
+					'_string' => 'expire_time=0 OR expire_time>' . NOW_TIME,
+				))->find();
+				if ($_rank) {
+					$cacheResult['rank_link'][$key] = $_rank;
+				} else {
+					unset($cacheResult['rank_link'][$key]);
+				}
+			}
+			#clean_query_user_cache($uid, 'rank_link');
+		}
 	}
 
 	//获取用户认证图标
 	if (in_array('icons_html', $fields)) {
-
 		//判断是否有手机图标
 		$static = C('TMPL_PARSE_STRING.__STATIC__');
 		$iconUrls = array();
 		$user = query_user(array('mobile'), $uid);
 		if ($user['mobile']) {
-			$iconUrls[] = "$static/oneplus/images/mobile-bind.png";
+			$iconUrls[] = $static . '/oneplus/images/mobile-bind.png';
 		}
 		//生成结果
 		$result['icons_html'] = '<span class="usercenter-verify-icon-list">';
 		foreach ($iconUrls as $e) {
-			$result['icons_html'] .= "<img src=\"{$e}\" title=\"对方已绑定手机\"/>";
+			$result['icons_html'] .= '<img src="' . $e . '" title="对方已绑定手机"/>';
 		}
 		$result['icons_html'] .= '</span>';
 	}
@@ -174,7 +193,7 @@ function query_user($fields = null, $uid = null) {
 			if ($field_data == null || $field_data == '') {
 				unset($fields_list[$key]);
 			} else {
-				if ($val['form_type'] == "checkbox") {
+				if ($val['form_type'] == 'checkbox') {
 					$field_data = explode('|', $field_data);
 				}
 				$fields_list[$key]['data'] = $field_data;
@@ -215,7 +234,6 @@ function query_user($fields = null, $uid = null) {
 		if (!in_array($field, array('rank_link', 'icons_html', 'space_link', 'expand_info'))) {
 			$value = str_replace('"', '', op_t($value));
 		}
-
 		$result[$field] = $value;
 		write_query_user_cache($uid, $field, str_replace('"', '', $value));
 	}
@@ -223,7 +241,7 @@ function query_user($fields = null, $uid = null) {
 	//合并结果，包括缓存
 	$result = array_merge($result, $cacheResult);
 
-	$result['score'] = $result['score1'];
+	$result['score'] = isset($result['score1'])?$result['score1']:null;
 	//返回结果
 	return $result;
 }
@@ -236,7 +254,8 @@ function write_query_user_cache($uid, $field, $value) {
 	return S("query_user_{$uid}_{$field}", $value, 1800);
 }
 
-/**清理用户数据缓存，即时更新query_user返回结果。
+/**
+ * 清理用户数据缓存，即时更新query_user返回结果。
  * @param $uid
  * @param $field
  * @auth 陈一枭
@@ -246,6 +265,7 @@ function clean_query_user_cache($uid, $field) {
 		foreach ($field as $field_item) {
 			S("query_user_{$uid}_{$field_item}", null);
 		}
+		return;
 	}
 	S("query_user_{$uid}_{$field}", null);
 }

@@ -59,7 +59,7 @@ class AddonsModel extends Base {
 	                $tmp_dirs = array_map('basename',glob($module_dir.'*', GLOB_ONLYDIR));
 	                $dirs=array_merge($dirs,$tmp_dirs);
 	            }
-*/
+        */
 
 		if ($dirs === FALSE || !file_exists($addon_dir)) {
 			$this->error = '插件目录不可读或者不存在';

@@ -29,8 +29,8 @@ function ucard() {
                         '<div style="font-size: 16px;font-weight: bold;"><a href="{$userProfile.space_url}" title="">{$userProfile.nickname}</a>{$userProfile.rank_link}' +
                         '</div>' +
                         '<div>' +
-                        '<a href="{$userProfile.following_url}" title="我的关注" target="_black">关注：{$userProfile.following}</a>&nbsp;&nbsp;&nbsp;&nbsp;' +
-                        '<a href="{$userProfile.fans_url}" title="我的关注" target="_black">粉丝：{$userProfile.fans}</a>&nbsp;&nbsp;&nbsp;&nbsp;' +
+                        '<a href="{$userProfile.following_url}" title="关注数" target="_black">关注：{$userProfile.following}</a>&nbsp;&nbsp;&nbsp;&nbsp;' +
+                        '<a href="{$userProfile.fans_url}" title="粉丝数" target="_black">粉丝：{$userProfile.fans}</a>&nbsp;&nbsp;&nbsp;&nbsp;' +
                         '</div>' +
                         '<div style="margin-bottom: 15px;color: #848484">' +
                         '个性签名：' +

@@ -30,8 +30,7 @@
                     <span>
                 <if condition="$user_info['rank_link'][0]['num']">
                     <volist name="user_info['rank_link']" id="vl">
-                            <img src="{$vl.logo_url}" title="{$vl.title}" alt="{$vl.title}"
-                                 style="width: 18px;height: 18px;vertical-align: middle;margin-left: 2px;"/>
+                    <img src="{$vl.logo_url}" title="{$vl.title}" alt="{$vl.title}" style="max-width:32px;max-height:32px;vertical-align:middle;margin-left:2px;"/>
                     </volist>
                 </if>
             </span>
