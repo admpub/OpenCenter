@@ -5,7 +5,6 @@
  * Date: 14-3-12
  * Time: AM10:08
  */
-
 namespace Admin\Builder;
 
 class AdminConfigBuilder extends AdminBuilder {
@@ -225,7 +224,7 @@ class AdminConfigBuilder extends AdminBuilder {
 		$this->savePostUrl($url);
 
 		$attr = array();
-		$attr['class'] = "btn submit-btn ajax-post";
+		$attr['class'] = 'btn submit-btn ajax-post';
 		$attr['id'] = 'submit';
 		$attr['type'] = 'submit';
 		$attr['target-form'] = 'form-horizontal';

@@ -58,7 +58,7 @@ class ModuleModel extends Base {
 		*/
 	}
 
-	private function cleanModulesCache() {
+	public function cleanModulesCache() {
 		S('module_all', null);
 	}
 

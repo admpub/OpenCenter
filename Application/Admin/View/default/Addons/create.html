@@ -69,22 +69,22 @@
                 <div class="controls">
                     <label class="checkbox checkbox-inline"><input type="checkbox" id="has_config" name="has_config" value="1" /></label>
                     <label class="textarea input-large has_config hidden">
-                        <textarea class="textarea" name="config">
-                            &lt;?php
-                            return array(
-                            'random'=>array(//配置在表单中的键名 ,这个会是config[random]
-                            'title'=>'是否开启随机:',//表单的文字
-                            'type'=>'radio',		 //表单的类型：text、textarea、checkbox、radio、select等
-                            'options'=>array(		 //select 和radion、checkbox的子选项
-                            '1'=>'开启',		 //值=>文字
-                            '0'=>'关闭',
-                            ),
-                            'value'=>'1',			 //表单的默认值
-                            ),
-                            );
+                        <textarea class="form-text-area-size form-control" rows="12" name="config">
+&lt;?php
+return array(
+        'random'=>array(			//配置在表单中的键名 ,这个会是config[random]
+        'title'=>'是否开启随机:',	//表单的文字
+        'type'=>'radio',			//表单的类型：text、textarea、checkbox、radio、select等
+        'options'=>array(		 	//select 和radion、checkbox的子选项
+            '1'=>'开启',		 	//值=>文字
+            '0'=>'关闭',
+        ),
+        'value'=>'1',			 	//表单的默认值
+    ),
+);
                         </textarea>
                     </label>
-                    <input type="text" class="text input-large has_config hidden" name="custom_config">
+                    <input type="text" class="text input-large form-control form-input-width has_config hidden" name="custom_config">
                     <span class="check-tips has_config hidden">自定义模板,注意：自定义模板里的表单name必须为config[name]这种，获取保存后配置的值用$data.config.name</span>
                 </div>
             </div>
@@ -111,17 +111,17 @@
                         <input type="checkbox" class=" " id="has_adminlist" name="has_adminlist" value="1" />勾选，扩展里已装插件后台列表会出现插件名的列表菜单，如系统的附件
                     </label>
                     <label class="textarea input-large has_adminlist hidden">
-                        <textarea name="admin_list">
-                            'model'=>'Example',		//要查的表
-                            'fields'=>'*',			//要查的字段
-                            'map'=>'',				//查询条件, 如果需要可以再插件类的构造方法里动态重置这个属性
-                            'order'=>'id desc',		//排序,
-                            'listKey'=>array( 		//这里定义的是除了id序号外的表格里字段显示的表头名
-                            '字段名'=>'表头显示名'
-                            ),
+                        <textarea name="admin_list" rows="7" class="form-text-area-size form-control">
+    'model'=>'Example',		//要查的表
+    'fields'=>'*',			//要查的字段
+    'map'=>'',				//查询条件, 如果需要可以再插件类的构造方法里动态重置这个属性
+    'order'=>'id desc',		//排序,
+    'listKey'=>array( 		//这里定义的是除了id序号外的表格里字段显示的表头名
+    '字段名'=>'表头显示名'
+),
                         </textarea>
                     </label>
-                    <input type="text" class="text has_adminlist hidden" name="custom_adminlist">
+                    <input type="text" class="text input-large form-control form-input-width has_adminlist hidden" name="custom_adminlist">
                     <span class="check-tips block has_adminlist hidden">自定义模板,注意：自定义模板里的列表变量为$_list这种,遍历后可以用listkey可以控制表头显示,也可以完全手写，分页变量用$_page</span>
                 </div>
             </div>
@@ -148,7 +148,7 @@
 	<script type="text/javascript">
 		function bindShow(radio_bind, selectors){
 			$(radio_bind).click(function(){
-				$(selectors).toggleClass('hidden');
+				$(selectors).toggleClass('hidden',!$(radio_bind).prop('checked'));
 			})
 		}
 

@@ -43,8 +43,7 @@ class AddonsController extends AdminController {
 		if ($data['has_config'] && $custom_config) {
 			$custom_config = <<<str
 
-
-        public \$custom_config = '{$custom_config}';
+    public \$custom_config = '{$custom_config}';
 str;
 			$extend[] = $custom_config;
 		}
@@ -53,10 +52,9 @@ str;
 		if ($data['has_adminlist'] && $admin_list) {
 			$admin_list = <<<str
 
-
-        public \$admin_list = array(
-            {$admin_list}
-        );
+    public \$admin_list = array(
+        {$admin_list}
+    );
 str;
 			$extend[] = $admin_list;
 		}
@@ -65,8 +63,7 @@ str;
 		if ($data['has_adminlist'] && $custom_adminlist) {
 			$custom_adminlist = <<<str
 
-
-        public \$custom_adminlist = '{$custom_adminlist}';
+    public \$custom_adminlist = '{$custom_adminlist}';
 str;
 			$extend[] = $custom_adminlist;
 		}
@@ -75,17 +72,16 @@ str;
 		$hook = '';
 		foreach ($data['hook'] as $value) {
 			$hook .= <<<str
-        //实现的{$value}钩子方法
-        public function {$value}(\$param){
+    //实现的{$value}钩子方法
+    public function {$value}(\$param){
 
-        }
+    }
 
 str;
 		}
 
 		$tpl = <<<str
 <?php
-
 namespace Addons\\{$data['info']['name']};
 use Common\Controller\Addon;
 
@@ -93,28 +89,28 @@ use Common\Controller\Addon;
  * {$data['info']['title']}插件
  * @author {$data['info']['author']}
  */
+class {$data['info']['name']}Addon extends Addon{
 
-    class {$data['info']['name']}Addon extends Addon{
+    public \$info = array(
+        'name'=>'{$data['info']['name']}',
+        'title'=>'{$data['info']['title']}',
+        'description'=>'{$data['info']['description']}',
+        'status'=>{$data['info']['status']},
+        'author'=>'{$data['info']['author']}',
+        'version'=>'{$data['info']['version']}'
+    );
+	{$extend}
 
-        public \$info = array(
-            'name'=>'{$data['info']['name']}',
-            'title'=>'{$data['info']['title']}',
-            'description'=>'{$data['info']['description']}',
-            'status'=>{$data['info']['status']},
-            'author'=>'{$data['info']['author']}',
-            'version'=>'{$data['info']['version']}'
-        );{$extend}
+    public function install(){
+        return true;
+    }
 
-        public function install(){
-            return true;
-        }
-
-        public function uninstall(){
-            return true;
-        }
+    public function uninstall(){
+        return true;
+    }
 
 {$hook}
-    }
+}
 str;
 		if ($output) {
 			exit($tpl);
@@ -176,7 +172,6 @@ str;
 		if ($data['has_outurl']) {
 			$addonController = <<<str
 <?php
-
 namespace Addons\\{$data['info']['name']}\Controller;
 use Home\Controller\AddonsController;
 
@@ -188,7 +183,6 @@ str;
 			file_put_contents("{$addon_dir}Controller/{$data['info']['name']}Controller.class.php", $addonController);
 			$addonModel = <<<str
 <?php
-
 namespace Addons\\{$data['info']['name']}\Model;
 use Think\Model;
 
@@ -308,7 +302,7 @@ str;
 	 * 启用插件
 	 */
 	public function enable() {
-		$id = I('id');
+		$id = I('id', 0, 'intval');
 		$msg = array('success' => '启用成功', 'error' => '启用失败');
 		S('hooks', null);
 		$this->resume('Addons', "id={$id}", $msg);
@@ -318,7 +312,7 @@ str;
 	 * 禁用插件
 	 */
 	public function disable() {
-		$id = I('id');
+		$id = I('id', 0, 'intval');
 		$msg = array('success' => '禁用成功', 'error' => '禁用失败');
 		S('hooks', null);
 		$this->forbid('Addons', "id={$id}", $msg);
@@ -328,7 +322,7 @@ str;
 	 * 设置插件页面
 	 */
 	public function config() {
-		$id = (int) I('id');
+		$id = I('id', 0, 'intval');
 		$addon = M('Addons')->find($id);
 		if (!$addon) {
 			$this->error('插件未安装');
@@ -371,11 +365,11 @@ str;
 	 * 保存插件设置
 	 */
 	public function saveConfig() {
-		$id = (int) I('id');
+		$id = I('id', 0, 'intval');
 		$config = I('config');
 		$flag = M('Addons')->where("id={$id}")->setField('config', json_encode($config));
 		if (isset($config['addons_cache'])) {
-//清除缓存
+			//清除缓存
 			S($config['addons_cache'], null);
 		}
 		if ($flag !== false) {
@@ -441,7 +435,7 @@ str;
 	 */
 	public function uninstall() {
 		$addonsModel = M('Addons');
-		$id = trim(I('id'));
+		$id = I('id', 0, 'intval');
 		$db_addons = $addonsModel->find($id);
 		$class = get_addon_class($db_addons['name']);
 		$this->assign('jumpUrl', U('index'));
@@ -618,7 +612,7 @@ str;
 	}
 
 	public function del($id = '', $name) {
-		$ids = array_unique((array) I('ids', 0));
+		$ids = I('ids', 0, 'toInt');
 
 		if (empty($ids)) {
 			$this->error('请选择要操作的数据!');
