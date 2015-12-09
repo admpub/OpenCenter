@@ -17,7 +17,7 @@
                 <div class="row">
                     <div class="col-md-2">
                         <button class="btn btn-block btn-primary" id="submit-comment"
-                                data-url="{:tox_addons_url('LocalComment/Index/addComment', array('app'=>$app,'mod'=>$mod, 'row_id'=>$row_id,'uid'=>$uid))}">
+                                data-url="{:simple_addons_url('LocalComment/Index/addComment', array('app'=>$app,'mod'=>$mod, 'row_id'=>$row_id,'uid'=>$uid))}">
                             发表
                         </button>
                     </div>
@@ -134,7 +134,7 @@
         });
 
         $('.local-comment-delete').click(function (e) {
-            $.post("{:tox_addons_url('LocalComment/Index/deleteComment')}", {id: $(this).attr('data-cid')}, function (msg) {
+            $.post("{:simple_addons_url('LocalComment/Index/deleteComment')}", {id: $(this).attr('data-cid')}, function (msg) {
                 handleAjax(msg);
             })
         });

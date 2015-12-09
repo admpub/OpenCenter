@@ -501,17 +501,18 @@ function get_username($uid = 0) {
 		$User = new User\Api\UserApi();
 		$info = $User->info($uid);
 		if ($info && isset($info[1])) {
-			$name = $list[$key] = $info[1];
-			/* 缓存用户 */
-			$count = count($list);
-			$max = C('USER_MAX_CACHE');
-			while ($count-- > $max) {
-				array_shift($list);
-			}
-			S('sys_active_user_list', $list);
+			$name = $info[1];
 		} else {
 			$name = '';
 		}
+		$list[$key] = $name;
+		/* 缓存用户 */
+		$count = count($list);
+		$max = C('USER_MAX_CACHE');
+		while ($count-- > $max) {
+			array_shift($list);
+		}
+		S('sys_active_user_list', $list);
 	}
 	return $name;
 }
@@ -543,17 +544,18 @@ function get_nickname($uid = 0) {
 		$info = M('Member')->field('nickname')->find($uid);
 		if ($info !== false && $info['nickname']) {
 			$nickname = $info['nickname'];
-			$name = $list[$key] = $nickname;
-			/* 缓存用户 */
-			$count = count($list);
-			$max = C('USER_MAX_CACHE');
-			while ($count-- > $max) {
-				array_shift($list);
-			}
-			S('sys_user_nickname_list', $list);
+			$name = $nickname;
 		} else {
 			$name = '';
 		}
+		$list[$key] = $name;
+		/* 缓存用户 */
+		$count = count($list);
+		$max = C('USER_MAX_CACHE');
+		while ($count-- > $max) {
+			array_shift($list);
+		}
+		S('sys_user_nickname_list', $list);
 	}
 	return $name;
 }
@@ -1112,14 +1114,11 @@ function get_nav_active($url) {
 			$MODULE_NAME = $url_array[1];
 		} else {
 			$MODULE_NAME = $url_array[0]; //发现模块就是当前模块即选中。
-
 		}
 		if (strtolower($MODULE_NAME) === strtolower(MODULE_NAME)) {
 			return 1;
 		}
-		;
 		break;
-
 	}
 	return 0;
 }
@@ -1261,10 +1260,9 @@ function getScoreTip($before, $after) {
  * @return mixed
  * @author 郑钟良<zzl@ourstu.com>
  */
-function getMyToxMoney() {
-	$user = query_user(array('tox_money'), is_login());
-	$tox_money = $user['tox_money'];
-	return $tox_money;
+function getMyMoney() {
+	$user = query_user(array('money'), is_login());
+	return isset($user['money']) ? $user['money'] : 0;
 }
 
 /**
@@ -1272,10 +1270,10 @@ function getMyToxMoney() {
  * @return string
  * @author 郑钟良<zzl@ourstu.com>
  */
-function getToxMoneyName() {
-	$tox_money_name = '金币';
-	$tox_money_name = D('shop_config')->where('ename=\'tox_money\'')->getField('cname');
-	return $tox_money_name;
+function getMoneyName() {
+	$money_name = '金币';
+	$money_name = D('shop_config')->where('ename=\'money\'')->getField('cname');
+	return $money_name;
 }
 
 /**
@@ -1285,11 +1283,11 @@ function getToxMoneyName() {
  * @return string
  * @author 郑钟良<zzl@ourstu.com>
  */
-function getToxMoneyTip($before, $after) {
-	$tox_money_change = $after - $before;
+function getMoneyTip($before, $after) {
+	$money_change = $after - $before;
 	$tip = '';
-	if ($tox_money_change) {
-		$tip = getToxMoneyName() . ($tox_money_change > 0 ? '加&nbsp;' . $tox_money_change : '减&nbsp;' . $tox_money_change) . ' 。';
+	if ($money_change) {
+		$tip = getMoneyName() . ($money_change > 0 ? '加&nbsp;' . $money_change : '减&nbsp;' . $money_change) . ' 。';
 	}
 	return $tip;
 }
@@ -1315,7 +1313,13 @@ function array_subtract($a, $b) {
 	return array_diff($a, array_intersect($a, $b));
 }
 
-function tox_addons_url($url, $param) {
+/**
+ * 简化版本的插件网址生成函数
+ * @param  string $url   格式为: addon/controller/action
+ * @param  array  $param 参数
+ * @return string        插件网址
+ */
+function simple_addons_url($url, $param) {
 	// 拆分URL
 	$url = explode('/', $url);
 	$addon = $url[0];
@@ -1326,7 +1330,7 @@ function tox_addons_url($url, $param) {
 	$param['_addons'] = $addon;
 	$param['_controller'] = $controller;
 	$param['_action'] = $action;
-	return U("Home/Addons/execute", $param);
+	return U('Home/Addons/execute', $param);
 }
 
 /**
@@ -1335,15 +1339,15 @@ function tox_addons_url($url, $param) {
  * @param $pKey 数组的键的名称
  * @return 返回新的一维数组
  */
-function getSubByKey($pArray, $pKey = "", $pCondition = "") {
+function getSubByKey($pArray, $pKey = '', $pCondition = '') {
 	$result = array();
 	if (is_array($pArray)) {
 		foreach ($pArray as $temp_array) {
 			if (is_object($temp_array)) {
 				$temp_array = (array) $temp_array;
 			}
-			if (("" != $pCondition && $temp_array[$pCondition[0]] == $pCondition[1]) || "" == $pCondition) {
-				$result[] = ("" == $pKey) ? $temp_array : isset($temp_array[$pKey]) ? $temp_array[$pKey] : "";
+			if (('' != $pCondition && $temp_array[$pCondition[0]] == $pCondition[1]) || '' == $pCondition) {
+				$result[] = ('' == $pKey) ? $temp_array : isset($temp_array[$pKey]) ? $temp_array[$pKey] : '';
 			}
 		}
 		return $result;
