@@ -117,7 +117,7 @@ abstract class ThinkOauth {
 	 */
 	public static function getInstance($type, $token = null) {
 		if (!$type || !preg_match('/^[\\w]+$/', $type)) {
-			halt(L('_CLASS_NOT_EXIST_') . ':' . $name);
+			halt(L('_CLASS_NOT_EXIST_') . ':' . htmlspecialchars($type));
 			return;
 		}
 		$name = ucfirst(strtolower($type)) . 'SDK';
@@ -140,13 +140,17 @@ abstract class ThinkOauth {
 			$this->Callback = 'http://' . $_SERVER['HTTP_HOST'] . str_replace('\\', '/', $GLOBALS['_root']) . addons_url('SyncLogin://Base/callback', array('type' => strtolower($this->Type)));
 		}
 
-/*		$config = C("THINK_SDK_{$this->Type}");
-if(!empty($config['AUTHORIZE']))
-$this->Authorize = $config['AUTHORIZE'];
-if(!empty($config['CALLBACK']))
-$this->Callback = $config['CALLBACK'];
-else
-throw new Exception('请配置回调页面地址');*/
+		// $config = C("THINK_SDK_{$this->Type}");
+		// if (!empty($config['AUTHORIZE'])) {
+		// 	$this->Authorize = $config['AUTHORIZE'];
+		// }
+
+		// if (!empty($config['CALLBACK'])) {
+		// 	$this->Callback = $config['CALLBACK'];
+		// } else {
+		// 	throw new Exception('请配置回调页面地址');
+		// }
+
 	}
 
 	/**

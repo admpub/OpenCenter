@@ -18,7 +18,7 @@ class MailController extends AddonsController {
 	 */
 	public function saveConfig() {
 
-		if ($_POST['config'] && is_array($_POST['config'])) {
+		if (!empty($_POST['config']) && is_array($_POST['config'])) {
 			$Config = M('Config');
 			foreach ($_POST['config'] as $name => $value) {
 				$map = array('name' => $name);
@@ -49,7 +49,7 @@ class MailController extends AddonsController {
 	 * autor:xjw129xjt
 	 */
 	public function mailList() {
-		$address = op_t(I('address'));
+		$address = I('request.address', '', 'op_t');
 		$map = array('status' => 1);
 		if ($address != '') {
 			$map['address'] = array('like', '%' . $address . '%');
@@ -67,7 +67,7 @@ class MailController extends AddonsController {
 	 * autor:xjw129xjt
 	 */
 	public function addEmail() {
-		$address = op_t(I('address'));
+		$address = I('request.address', '', 'op_t');
 		if (IS_POST) {
 			$check = D('MailList')->where(array('address' => $address))->find();
 			if ($check) {
@@ -98,7 +98,7 @@ class MailController extends AddonsController {
 	 * autor:xjw129xjt
 	 */
 	public function delEmail() {
-		$ids = I('ids');
+		$ids = I('request.ids', '', 'toInt');
 		$res = D('MailList')->where(array('id' => array('in', $ids)))->setField('status', 0);
 		if ($res) {
 			$this->success('删除成功');
@@ -113,7 +113,7 @@ class MailController extends AddonsController {
 	 * autor:xjw129xjt
 	 */
 	public function sendEmail() {
-		$ids = I('ids');
+		$ids = I('request.ids', '', 'toInt');
 		$list = D('MailList')->where(array('id' => array('in', $ids)))->select();
 		foreach ($list as $k => $v) {
 			$address[$v['id']] = $v['address'];
@@ -131,11 +131,11 @@ class MailController extends AddonsController {
 	 * autor:xjw129xjt
 	 */
 	public function doSendEmail() {
-		$address = op_h(I('address'));
-		$title = op_h(I('title'));
-		$body = op_h(I('body'));
+		$address = I('request.address', '', 'op_h');
+		$title = I('request.title', '', 'op_h');
+		$body = I('request.body', '', 'op_h');
 
-		$server_host = "http://" . $_SERVER['HTTP_HOST'];
+		$server_host = 'http://' . $_SERVER['HTTP_HOST'];
 		if ($title == '' || $body == '') {
 			$this->error('请填写完整！');
 		}
@@ -197,7 +197,7 @@ class MailController extends AddonsController {
 	}
 	public function subscribe() {
 		$email_address = I('email_address');
-		$match = preg_match("/^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/", $email_address);
+		$match = preg_match('/^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$/', $email_address);
 
 		if ($email_address == '' || !$match) {
 			$this->error('邮箱格式不正确');
@@ -228,10 +228,10 @@ class MailController extends AddonsController {
 	 * autor:xjw129xjt
 	 */
 	public function history() {
-		$title = I('title');
+		$title = I('request.title', '', 'trim');
 		$map = array('status' => 1);
 		if ($title != '') {
-			$map['title'] = array('like', '%' . $title . '%');
+			$map['title'] = array('like', '%' . addcslashes($title, '\'\\%_') . '%');
 		}
 
 		$mailList = D('MailHistory')->where($map)->order('create_time desc')->select();
@@ -246,11 +246,13 @@ class MailController extends AddonsController {
 	}
 
 	public function setStatus() {
-		$ids = I('ids');
+		$ids = I('request.ids', '', 'toInt');
+		if (!$ids) {
+			return;
+		}
 		$status = I('get.status');
 		$builder = new AdminListBuilder();
 		$builder->doSetStatus('mail_history', $ids, $status);
-
 	}
 
 	/**
@@ -259,7 +261,7 @@ class MailController extends AddonsController {
 	 * autor:xjw129xjt
 	 */
 	public function mailDetail() {
-		$id = I('id');
+		$id = I('request.id', 0, 'intval');
 		$history = D('MailHistory')->where(array('id' => $id))->find();
 		$link = D('MailHistoryLink')->where(array('mail_id' => $id))->select();
 		$this->assign('history', $history);

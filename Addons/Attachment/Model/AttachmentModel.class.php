@@ -11,9 +11,9 @@ namespace Addons\Attachment\Model;
 use Think\Model;
 
 /**
- * 分类模型
+ * 附件模型
  */
-class AttachmentModel extends Model{
+class AttachmentModel extends Model {
 	/**
 	 * 附件模型自动完成
 	 * @var array
@@ -27,15 +27,15 @@ class AttachmentModel extends Model{
 		array('status', 1, self::MODEL_BOTH),
 	);
 
-	protected function _after_find(&$result,$options) {
+	protected function _after_find(&$result, $options) {
 		$result['update_time_text'] = date('Y-m-d H:i:s', $result['update_time']);
 		$result['document_title'] = D('Document')->getFieldById($result['record_id'], 'title');
 		$result['size'] = format_bytes($result['size']);
 	}
 
-	protected function _after_select(&$result,$options){
-		foreach($result as &$record){
-			$this->_after_find($record,$options);
+	protected function _after_select(&$result, $options) {
+		foreach ($result as &$record) {
+			$this->_after_find($record, $options);
 		}
 	}
 
@@ -47,25 +47,25 @@ class AttachmentModel extends Model{
 	 * @param  integer $dir    是否为目录
 	 * @return boolean
 	 */
-	public function saveFile($title, $file, $record, $dir = 0){
+	public function saveFile($title, $file, $record, $dir = 0) {
 		$data = array(
-			'title'     => $title,
-			'type'      => 2,
-			'source'    => $file['id'],
+			'title' => $title,
+			'type' => 2,
+			'source' => $file['id'],
 			'record_id' => $record,
-			'dir'       => $dir,
-			'size'      => $file['size'],
+			'dir' => $dir,
+			'size' => $file['size'],
 		);
 
 		/* 保存附件 */
-		if($this->create($data) && $this->add()){
+		if ($this->create($data) && $this->add()) {
 			return true;
 		} else {
 			return false;
 		}
 	}
 
-	public function saveDir(){
+	public function saveDir() {
 
 	}
 
@@ -74,28 +74,30 @@ class AttachmentModel extends Model{
 	 * @param  number $id 附件ID
 	 * @return boolean    下载失败返回false
 	 */
-	public function download($id){
+	public function download($id) {
 		$info = $this->field(true)->find($id);
-		if($info && $info['status'] == 1){
+		if ($info && $info['status'] == 1) {
 			/* 下载附件 */
 			$this->downloadId = $id;
-			switch($info['type']){
-				case 0:
-					//TODO: 下载目录？
-					break;
-				case 1:
-					//TODO: 下载外部附件
-					break;
-				case 2:
-					$File = D('File');
-					$root = C('ATTACHMENT_UPLOAD.rootPath');
-					$call = array($this, 'setDownload');
-					if(false === $File->download($root, $info['source'], $call, $id)){
-						$this->error = $File->getError();
-					}
-					break;
-				default:
-					$this->error = '无效附件类型！';
+			switch ($info['type']) {
+			case 0:
+				//TODO: 下载目录？
+				break;
+			case 1:
+				//TODO: 下载外部附件
+				break;
+			case 2:
+				$File = D('File');
+				$root = C('ATTACHMENT_UPLOAD.rootPath');
+				$call = array($this, 'setDownload');
+				if (false === $File->download($root, $info['source'], $call, $id)) {
+					$this->error = $File->getError();
+				} else {
+					return true;
+				}
+				break;
+			default:
+				$this->error = '无效附件类型！';
 			}
 		} else {
 			$this->error = '附件已删除或被禁用！';
@@ -106,7 +108,7 @@ class AttachmentModel extends Model{
 	/**
 	 * 新增下载次数（File模型回调方法）
 	 */
-	public function setDownload($id){
+	public function setDownload($id) {
 		$map = array('id' => $id);
 		$this->where($map)->setInc('download');
 	}
