@@ -234,7 +234,7 @@ class MenuController extends AdminController {
 			$this->meta_title = '菜单排序';
 			$this->display();
 		} elseif (IS_POST) {
-			$ids = I('post.ids');
+			$ids = I('post.ids', '', 'toInt');
 			$ids = explode(',', $ids);
 			foreach ($ids as $key => $value) {
 				$res = M('Menu')->where(array('id' => $value))->setField('sort', $key + 1);
