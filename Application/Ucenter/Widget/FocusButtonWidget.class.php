@@ -9,20 +9,18 @@
 
 namespace Ucenter\Widget;
 
-use Think\Action;
+use Think\Controller;
 
 /**input类型输入渲染
  * Class InputWidget
  * @package Usercenter\Widget
  * @郑钟良
  */
-class FocusButtonWidget extends Action
-{
+class FocusButtonWidget extends Controller {
 
-    public function  display($uid)
-    {
-        $this->assign($uid);
-        $this->display(T('Ucenter@Widget/focusbutton'));
-    }
+	public function display($uid) {
+		$this->assign($uid);
+		$this->display(T('Ucenter@Widget/focusbutton'));
+	}
 
-} 
+}

@@ -8,7 +8,8 @@
 use Admin\Model\AuthRuleModel;
 const ONETHINK_VERSION = '1.0.131218';
 const ONETHINK_ADDON_PATH = './Addons/';
-
+/**
+//改在Application/Common/Conf/core.php中定义引用，以便于在生产模式下，自动合并
 require_once APP_PATH . '/Common/Common/pagination.php';
 require_once APP_PATH . '/Common/Common/query_user.php';
 require_once APP_PATH . '/Common/Common/thumb.php';
@@ -24,6 +25,7 @@ require_once APP_PATH . '/Common/Common/user.php';
 require_once APP_PATH . '/Common/Common/limit.php';
 require_once APP_PATH . '/Common/Common/role.php';
 require_once APP_PATH . '/Common/Common/extend.php';
+// */
 
 /**
  * 系统公共库文件

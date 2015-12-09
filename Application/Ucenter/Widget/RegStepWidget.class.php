@@ -9,14 +9,14 @@
 
 namespace Ucenter\Widget;
 
-use Think\Action;
+use Think\Controller;
 
 /**
  * Class RegStepWidget  注册步骤
  * @package Usercenter\Widget
  * @author:xjw129xjt(肖骏涛) xjt@ourstu.com
  */
-class RegStepWidget extends Action {
+class RegStepWidget extends Controller {
 
 	public $mStep = array(
 		'change_avatar' => '修改头像',
@@ -124,52 +124,52 @@ class RegStepWidget extends Action {
 	 * @author 郑钟良<zzl@ourstu.com>
 	 */
 	private function _checkInput($data) {
-		if ($data['form_type'] == "textarea") {
+		if ($data['form_type'] == 'textarea') {
 			$validation = $this->_getValidation($data['validation']);
-			if (($validation['min'] != 0 && mb_strlen($data['value'], "utf-8") < $validation['min']) || ($validation['max'] != 0 && mb_strlen($data['value'], "utf-8") > $validation['max'])) {
+			if (($validation['min'] != 0 && mb_strlen($data['value'], 'utf-8') < $validation['min']) || ($validation['max'] != 0 && mb_strlen($data['value'], 'utf-8') > $validation['max'])) {
 				if ($validation['max'] == 0) {
 					$validation['max'] = '';
 				}
 				$info['succ'] = 0;
-				$info['msg'] = $data['field_name'] . "长度必须在" . $validation['min'] . "-" . $validation['max'] . "之间";
+				$info['msg'] = $data['field_name'] . '长度必须在' . $validation['min'] . '-' . $validation['max'] . '之间';
 			}
 		} else {
 			switch ($data['child_form_type']) {
 			case 'string':
 				$validation = $this->_getValidation($data['validation']);
-				if (($validation['min'] != 0 && mb_strlen($data['value'], "utf-8") < $validation['min']) || ($validation['max'] != 0 && mb_strlen($data['value'], "utf-8") > $validation['max'])) {
+				if (($validation['min'] != 0 && mb_strlen($data['value'], 'utf-8') < $validation['min']) || ($validation['max'] != 0 && mb_strlen($data['value'], 'utf-8') > $validation['max'])) {
 					if ($validation['max'] == 0) {
 						$validation['max'] = '';
 					}
 					$info['succ'] = 0;
-					$info['msg'] = $data['field_name'] . "长度必须在" . $validation['min'] . "-" . $validation['max'] . "之间";
+					$info['msg'] = $data['field_name'] . '长度必须在' . $validation['min'] . '-' . $validation['max'] . '之间';
 				}
 				break;
 			case 'number':
-				if (preg_match("/^\d*$/", $data['value'])) {
+				if (preg_match('/^\\d*$/', $data['value'])) {
 					$validation = $this->_getValidation($data['validation']);
-					if (($validation['min'] != 0 && mb_strlen($data['value'], "utf-8") < $validation['min']) || ($validation['max'] != 0 && mb_strlen($data['value'], "utf-8") > $validation['max'])) {
+					if (($validation['min'] != 0 && mb_strlen($data['value'], 'utf-8') < $validation['min']) || ($validation['max'] != 0 && mb_strlen($data['value'], 'utf-8') > $validation['max'])) {
 						if ($validation['max'] == 0) {
 							$validation['max'] = '';
 						}
 						$info['succ'] = 0;
-						$info['msg'] = $data['field_name'] . "长度必须在" . $validation['min'] . "-" . $validation['max'] . "之间，且为数字";
+						$info['msg'] = $data['field_name'] . '长度必须在' . $validation['min'] . '-' . $validation['max'] . '之间，且为数字';
 					}
 				} else {
 					$info['succ'] = 0;
-					$info['msg'] = $data['field_name'] . "必须是数字";
+					$info['msg'] = $data['field_name'] . '必须是数字';
 				}
 				break;
 			case 'email':
-				if (!preg_match("/^([0-9A-Za-z\\-_\\.]+)@([0-9a-z]+\\.[a-z]{2,3}(\\.[a-z]{2})?)$/i", $data['value'])) {
+				if (!preg_match('/^([0-9A-Za-z\\-_\\.]+)@([0-9a-z]+\\.[a-z]{2,3}(\\.[a-z]{2})?)$/i', $data['value'])) {
 					$info['succ'] = 0;
-					$info['msg'] = $data['field_name'] . "格式不正确，必需为邮箱格式";
+					$info['msg'] = $data['field_name'] . '格式不正确，必需为邮箱格式';
 				}
 				break;
 			case 'phone':
-				if (!preg_match("/^\d{11}$/", $data['value'])) {
+				if (!preg_match('/^\\d{11}$/', $data['value'])) {
 					$info['succ'] = 0;
-					$info['msg'] = $data['field_name'] . "格式不正确，必须为手机号码格式";
+					$info['msg'] = $data['field_name'] . '格式不正确，必须为手机号码格式';
 				}
 				break;
 			}
