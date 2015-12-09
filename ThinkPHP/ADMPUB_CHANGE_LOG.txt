@@ -1,4 +1,4 @@
-1、在文件 Common/function.php 文件中的T函数后面取消return语句行，并新增：
+1、在文件 Common/function.php 中的T函数后面取消return语句行，并新增：
 
 /**
  * [SWH|+] OpenCenter/ThinkOX 新增对common下的模板检测
@@ -29,12 +29,28 @@ function templateFileChecker($baseUrl, $file, $theme, $extend) {
 
 并照上面注释中所述修改T函数。
 
-2、将 ThinkPHP.php 文件中的：
+2、在文件 Library\Think\Dispatcher.class.php 中Dispatcher类中新增以下方法：
+
+	/**
+	 * 清理掉上面getSpace、getModule、getAction、getController方法结果中的非法字符。
+	 * 在这三个函数的return部分用self::cleanNotWords(...)包裹即可。
+	 * @param  string $str 字符串
+	 * @return string
+	 * @author swh <swh@admpub.com>
+	 */
+	static private function cleanNotWords($str) {
+		$str = preg_replace('/[^\\w]+/', '', $str);
+		return $str;
+	}
+
+并照上面注释中所述修改getSpace、getModule、getAction、getController函数。 
+
+3、将 ThinkPHP.php 文件中的：
 define('_PHP_FILE_',    rtrim(str_replace($_SERVER['HTTP_HOST'],'',$_temp[0].'.php'),'/'));
 改为：
 define('_PHP_FILE_',    $_temp[0].'.php');//[SWH|+]
 
 
-3、文件 Library\Think\Page.class.php 有修改请不要直接覆盖，如果已经覆盖了，请使用 Library\Think\Page.modified-bak.class.php 文件还原。
+4、文件 Library\Think\Page.class.php 有修改请不要直接覆盖，如果已经覆盖了，请使用 Library\Think\Page.modified-bak.class.php 文件还原。
 
 -EOF-

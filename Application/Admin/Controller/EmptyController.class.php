@@ -7,11 +7,11 @@ class EmptyController extends Controller {
 
 	public function _empty($name, $args) {
 		try {
-			$appCtrlFile = APP_PATH . CONTROLLER_NAME . '/Controller/' . CONTROLLER_NAME . 'Controller.class.php';
-			if (file_exists($appCtrlFile) == false) {
-				throw new \Exception('Not Found:' . $appCtrlFile, 1);
+			$file = APP_PATH . CONTROLLER_NAME . '/Controller/' . CONTROLLER_NAME . 'Controller.class.php';
+			if (file_exists($file) == false) {
+				throw new \Exception('Not Found:' . $file, 1);
 			}
-			require_once $appCtrlFile;
+			require_once $file;
 			$controller = A('Admin/' . CONTROLLER_NAME);
 			$action = ACTION_NAME;
 			$method = new \ReflectionMethod($controller, $name);
@@ -59,7 +59,7 @@ class EmptyController extends Controller {
 				$method->invoke($controller);
 			}
 		} catch (\ReflectionException $e) {
-
+			#echo $e->getMessage();exit;
 			$this->error('404，您访问的页面不存在。');
 
 		}

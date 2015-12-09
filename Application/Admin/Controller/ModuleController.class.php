@@ -35,6 +35,8 @@ class ModuleController extends AdminController {
 		foreach ($modules as &$m) {
 			$name = $m['name'];
 			$m['alias'] = '<i class="icon-' . $m['icon'] . '"></i> ' . $m['alias'];
+			empty($m['admin_entry']) || $m['admin_entry'] = '<a href="' . U($m['admin_entry']) . '" target="_blank">' . $m['admin_entry'] . '</a>';
+			empty($m['entry']) || $m['entry'] = '<a href="' . U($m['entry']) . '" target="_blank">' . $m['entry'] . '</a>';
 			$m['do'] = '<a class="btn" href="' . U('Module/edit', array('id' => $m['id'], 'name' => $name)) . '"><span style="color: green;"><i class="icon-pencil"></i></span> 编辑</a>&nbsp;';
 			if ($m['is_setup']) {
 				$m['name'] = '<i class="icon-ok" style="color: green;"></i> ' . $m['name'];
@@ -218,7 +220,7 @@ use Admin\Builder\AdminConfigBuilder;
 use Admin\Builder\AdminListBuilder;
 use Admin\Builder\AdminTreeListBuilder;
 
-class IndexController extends AdminController {
+class ' . $name . 'Controller extends AdminController {
 	protected function _initialize() {
 		parent::_initialize();
 	}
@@ -257,7 +259,7 @@ class IndexController extends AdminController {
 	 */
 	public function config() {
 		$builder = new AdminConfigBuilder();
-		$data = $admin_config->handleConfig();
+		$data = $builder->handleConfig();
 
 		$builder->title(\'' . $module['alias'] . '基本设置\')
 			->keyBool(\'NEED_VERIFY\', \'投稿是否需要审核\', \'默认无需审核\')
