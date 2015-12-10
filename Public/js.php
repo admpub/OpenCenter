@@ -1,7 +1,8 @@
 <?php
-/*
-load: css, js 静态文件
-启用 gz压缩、缓存处理、过期处理、文件合并等优化操作
+/**
+ *load: css, js 静态文件
+ *启用 gz压缩、缓存处理、过期处理、文件合并等优化操作
+ *@modified by swh <swh@admpub.com>
  */
 error_reporting(0);
 
@@ -10,19 +11,22 @@ if (extension_loaded('zlib')) {
 	ob_start('ob_gzhandler');
 }
 
-$gettype = 'js';
-$allowed_content_types = array('js');
+$allowed_content_types = array('js', 'css');
+
 $_GET['f'] = strip_tags($_GET['f']);
-if (strpos($_GET['f'], '://') !== false) {
-	exit('/* "://" is deny. */');
-}
-$getfiles = explode(',', $_GET['f']);
+
+$gettype = ext_name($_GET['f']);
+
 $offset = 60 * 60 * 24 * 7; //过期7天
 
+$content_type = '';
 if ($gettype == 'css') {
 	$content_type = 'text/css';
 } elseif ($gettype == 'js') {
 	$content_type = 'application/x-javascript';
+} else {
+	echo PHP_EOL . '/* not allowed file type:' . $gettype . ' */' . PHP_EOL;
+	exit();
 }
 
 header('content-type: ' . $content_type . '; charset: utf-8'); //注意修改到你的编码
@@ -32,6 +36,12 @@ header('Last-Modified: ' . gmdate('D, d M Y H:i:s', time()) . 'GMT');
 header('Pragma: max-age=' . $offset);
 header('Expires:' . gmdate('D, d M Y H:i:s', time() + $offset) . ' GMT');
 set_cache_limit($offset);
+
+if (strpos($_GET['f'], '://') !== false) {
+	exit('/* "://" is deny. */');
+}
+
+$getfiles = explode(',', $_GET['f']);
 
 ob_start('compress');
 
@@ -46,31 +56,33 @@ function set_cache_limit($second = 1) {
 	if ($second == 0) {
 		return;
 	}
-	$etag = time() . '||' . base64_encode($_SERVER['REQUEST_URI']);
+	$etag = time() . '|' . md5($_SERVER['REQUEST_URI']);
 
 	if (!isset($_SERVER['HTTP_IF_NONE_MATCH'])) {
-		header('Etag:$etag', true, 200);
+		header('Etag:' . $etag, true, 200);
 		return;
 	} else {
 		$id = $_SERVER['HTTP_IF_NONE_MATCH'];
 	}
 
-	list($time, $uri) = explode('||', $id);
+	list($time, $uri) = explode('|', $id, 2);
 
 	if ($time < (time() - $second)) {
 		//过期了，发送新tag
-		header('Etag:$etag', true, 200);
+		header('Etag:' . $etag, true, 200);
 	} else {
 		//未过期，发送旧tag
-		header('Etag:$id', true, 304);
+		header('Etag:' . $id, true, 304);
 		exit(-1);
 	}
 }
 
+function ext_name($file) {
+	return strtolower(substr($file, strrpos($file, '.') + 1));
+}
+
 foreach ($getfiles as $file) {
-	$fileType = strtolower(substr($file, strrpos($file, '.') + 1));
-	if (in_array($fileType, $allowed_content_types)) {
-		//包含你的全部css文档
+	if ($gettype == ext_name($file)) {
 		readfile($file);
 	} else {
 		echo PHP_EOL . '/* not allowed file type:' . $file . ' */' . PHP_EOL;
