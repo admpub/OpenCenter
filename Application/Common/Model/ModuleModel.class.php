@@ -11,9 +11,12 @@ namespace Common\Model;
 class ModuleModel extends Base {
 
 	protected $tableName = 'module';
+	static private $_cachedAll = null;
 
-	public function getAll() {
-
+	public function getAll($_cached = true) {
+		if ($_cached && self::$_cachedAll !== null) {
+			return self::$_cachedAll;
+		}
 		$module = S('module_all');
 		if (empty($module)) {
 			$module = array();
@@ -36,26 +39,26 @@ class ModuleModel extends Base {
 			}
 			S('module_all', $module);
 		}
-
+		self::$_cachedAll = &$module;
 		return $module;
 	}
 
-	public function checkCanVisit($name) {
-		$modules = $this->getAll();
+	public function checkCanVisit($name, &$controller = null) {
 		$name = ucfirst($name);
-		if (!isset($modules[$name]) || (isset($modules[$name]['is_setup']) && $modules[$name]['is_setup'] == 0)) {
-			header('Content-Type: text/html; charset=utf-8');
-			exit('您所访问的模块未安装，禁止访问。');
+		if ($name == 'Admin') {
+			return;
 		}
 
-		/*/====以下为旧代码=======
-			foreach ($modules as $m) {
-				if (isset($m['is_setup']) && $m['is_setup'] == 0 && $m['name'] == ucfirst($name)) {
-					header('Content-Type: text/html; charset=utf-8');
-					exit('您所访问的模块未安装，禁止访问。');
-				}
+		$modules = $this->getAll();
+		if (!isset($modules[$name]) || (isset($modules[$name]['is_setup']) && $modules[$name]['is_setup'] == 0)) {
+			$errMsg = '您所访问的模块未安装，禁止访问。';
+			if (is_object($controller)) {
+				$controller->errMsg($errMsg);
+			} else {
+				header('Content-Type: text/html; charset=utf-8');
+				exit($errMsg);
 			}
-		*/
+		}
 	}
 
 	public function cleanModulesCache() {

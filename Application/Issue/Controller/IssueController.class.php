@@ -16,8 +16,8 @@ class IssueController extends AdminController {
 	protected $issueModel;
 
 	protected function _initialize() {
-		$this->issueModel = D('Issue/Issue');
 		parent::_initialize();
+		$this->issueModel = D('Issue/Issue');
 	}
 
 	public function config() {

@@ -1,18 +1,22 @@
 <?php
 namespace Admin\Controller;
 
-use Think\Controller;
+use Common\Controller\Base;
 
-class EmptyController extends Controller {
+class EmptyController extends Base {
 
 	public function _empty($name, $args) {
 		try {
+			if (!self::isFreeInstall(CONTROLLER_NAME)) {
+				$this->moduleMdl()->checkCanVisit(CONTROLLER_NAME, $this);
+			}
 			$file = APP_PATH . CONTROLLER_NAME . '/Controller/' . CONTROLLER_NAME . 'Controller.class.php';
 			if (file_exists($file) == false) {
 				throw new \Exception('Not Found:' . $file, 1);
 			}
 			require_once $file;
 			$controller = A('Admin/' . CONTROLLER_NAME);
+
 			$action = ACTION_NAME;
 			$method = new \ReflectionMethod($controller, $name);
 			// URL参数绑定检测
