@@ -55,3 +55,20 @@ function addonA($addon, $controller = array(), $action = null, $params = array()
 	}
 	return call_user_func_array($f, $params);
 }
+
+/**
+ * 获取插件中的模型
+ * @param  string 	$addon 插件英文名(首字母大写)
+ * @param  string 	$model 模型名(首字母大写)
+ * @return object
+ * @author swh <swh@admpub.com>
+ */
+function addonD($addon, $model = null) {
+	static $_addonM = array();
+	$k = $addon;
+	if ($model) {
+		$k .= '/' . $model;
+	}
+	isset($_addonM[$k]) || $_addonM[$k] = D('Addons://' . $k);
+	return $_addonM[$k];
+}

@@ -23,19 +23,20 @@ class LocalCommentAddon extends Addon {
 		$prefix = C('DB_PREFIX');
 		D()->execute("DROP TABLE IF EXISTS `{$prefix}local_comment`");
 		D()->execute(<<<SQL
-CREATE TABLE IF NOT EXISTS `{$prefix}local_comment` (
-`id` int(11) PRIMARY KEY NOT NULL AUTO_INCREMENT,
-`nickname` char(32) NOT NULL,
-`uid` int(11) NOT NULL,
-`app` varchar(100) NOT NULL,
-`mod` varchar(100) NOT NULL,
-`row_id` int(11) NOT NULL,
-`parse` int(11) NOT NULL,
-`content` varchar(1000) NOT NULL,
-`create_time` int(11) NOT NULL,
-`pid` int(11) NOT NULL,
-`status` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+CREATE TABLE `{$prefix}local_comment` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `uid` int(11) unsigned NOT NULL COMMENT '用户UID',
+  `nickname` char(32) NOT NULL COMMENT '用户名称',
+  `app` varchar(100) NOT NULL COMMENT '模块名',
+  `mod` varchar(100) NOT NULL COMMENT '模型名',
+  `row_id` int(11) unsigned NOT NULL COMMENT '模型行id',
+  `parse` tinyint(2) unsigned NOT NULL COMMENT '内容解析方式',
+  `content` varchar(1000) NOT NULL COMMENT '评论内容',
+  `create_time` int(11) unsigned NOT NULL COMMENT '创建时间',
+  `pid` int(11) unsigned NOT NULL COMMENT '被回复的评论ID',
+  `status` tinyint(1) unsigned NOT NULL COMMENT '状态',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='内置评论功能表';
 SQL
 		);
 		return true;
