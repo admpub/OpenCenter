@@ -140,23 +140,25 @@ function query_user($fields = null, $uid = null, $temped = true) {
 	//获取用户头衔链接
 	if (isset($fieldKeys['rank_link'])) {
 		$rank_List = D('RankUser')->getAllByUid($uid);
-		$num = 0;
-		foreach ($rank_List as &$val) {
-			$val['logo_url'] = fixAttachUrl($val['logo_url']);
-			if ($val['is_show']) {
-				$num = 1;
-			}
-		}
 		if ($rank_List) {
+			$num = 0;
+			foreach ($rank_List as $key => $val) {
+				$val['logo_url'] = fixAttachUrl($val['logo_url']);
+				if ($val['is_show']) {
+					$num = 1;
+				}
+				$rank_List[$key] = $val;
+			}
 			$rank_List[0]['num'] = $num;
 			$result['rank_link'] = $rank_List;
+			unset($rank_List, $key, $val);
 		} else {
 			$result['rank_link'] = array();
 		}
 
 	} elseif (isset($cacheResult['rank_link']) && is_array($cacheResult['rank_link'])) {
 		//验证是否已经过期，如果过期查询数据库是否有更新
-		foreach ($cacheResult['rank_link'] as $key => &$val) {
+		foreach ($cacheResult['rank_link'] as $key => $val) {
 			if ($val['expire_time'] > 0 && $val['expire_time'] <= NOW_TIME) {
 				$_rank = D('RankUser')->getByUid($uid, $val['id']);
 				if ($_rank) {
@@ -168,6 +170,7 @@ function query_user($fields = null, $uid = null, $temped = true) {
 			}
 			#clean_query_user_cache($uid, 'rank_link');
 		}
+		unset($key, $val);
 	}
 
 	//获取用户认证图标
@@ -196,19 +199,25 @@ function query_user($fields = null, $uid = null, $temped = true) {
 		$fields_list = D('field_setting')->where($map)->getField('id,field_name,form_type,visiable');
 		$fields_list = array_combine(array_column($fields_list, 'field_name'), $fields_list);
 		$map_field['uid'] = $uid;
-		foreach ($fields_list as $key => $val) {
-			$map_field['field_id'] = $val['id'];
-			$field_data = D('field')->where($map_field)->getField('field_data');
-			if ($field_data == null || $field_data == '') {
-				unset($fields_list[$key]);
-			} else {
-				if ($val['form_type'] == 'checkbox') {
-					$field_data = explode('|', $field_data);
+		if ($fields_list) {
+			foreach ($fields_list as $key => $val) {
+				$map_field['field_id'] = $val['id'];
+				$field_data = D('field')->where($map_field)->getField('field_data');
+				if ($field_data == null || $field_data == '') {
+					unset($fields_list[$key]);
+				} else {
+					if ($val['form_type'] == 'checkbox') {
+						$field_data = explode('|', $field_data);
+					}
+					$fields_list[$key]['data'] = $field_data;
 				}
-				$fields_list[$key]['data'] = $field_data;
 			}
+			$result['expand_info'] = $fields_list;
+			unset($fields_list, $key, $val);
+		} else {
+			$result['expand_info'] = array();
 		}
-		$result['expand_info'] = $fields_list;
+
 	}
 
 	//粉丝数、关注数、微博数
@@ -236,17 +245,19 @@ function query_user($fields = null, $uid = null, $temped = true) {
 	$result = array_merge($ucenterResult, $homeResult, $spaceUrlResult, $result);
 
 	//写入缓存
-	foreach ($result as $field => $value) {
-		if (in_array($field, array('icons_html', 'title')) || in_array(substr($field, 0, 5), array('score', 'money'))) {
+	if ($result) {
+		foreach ($result as $field => $value) {
+			if (in_array($field, array('icons_html', 'title')) || in_array(substr($field, 0, 5), array('score', 'money'))) {
+				$_user[$uid][$field] = $value;
+				continue;
+			}
+			if (!in_array($field, array('rank_link', 'icons_html', 'space_link', 'expand_info'))) {
+				$value = str_replace('"', '', op_t($value));
+			}
+			$result[$field] = $value;
 			$_user[$uid][$field] = $value;
-			continue;
+			write_query_user_cache($uid, $field, str_replace('"', '', $value));
 		}
-		if (!in_array($field, array('rank_link', 'icons_html', 'space_link', 'expand_info'))) {
-			$value = str_replace('"', '', op_t($value));
-		}
-		$result[$field] = $value;
-		$_user[$uid][$field] = $value;
-		write_query_user_cache($uid, $field, str_replace('"', '', $value));
 	}
 
 	//合并结果，包括缓存
@@ -259,6 +270,7 @@ function query_user($fields = null, $uid = null, $temped = true) {
 }
 
 function read_query_user_cache($uid, $field) {
+	#return false;
 	return S("query_user_{$uid}_{$field}");
 }
 

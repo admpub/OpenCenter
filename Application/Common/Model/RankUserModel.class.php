@@ -39,7 +39,7 @@ class RankUserModel extends Base {
 		} else {
 			$condition['id'] = $id;
 		}
-		$ranks = $this->field('a.*,b.title,c.path AS logo_url')->alias('a')->where($condition)->join('LEFT JOIN __RANK__ b ON b.id=a.rank_id LEFT JOIN __PICTURE__ c ON c.id=b.logo')->find();
-		return $ranks;
+		$rank = $this->field('a.*,b.title,c.path AS logo_url')->alias('a')->where($condition)->join('LEFT JOIN __RANK__ b ON b.id=a.rank_id LEFT JOIN __PICTURE__ c ON c.id=b.logo')->find();
+		return $rank;
 	}
 }
