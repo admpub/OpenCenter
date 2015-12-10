@@ -33,7 +33,7 @@ abstract class AdminBuilder extends AdminController {
 		$result = array();
 		foreach ($attr as $key => $value) {
 			$value = htmlspecialchars($value);
-			$result[] = "$key=\"$value\"";
+			$result[] = $key . '="' . $value . '"';
 		}
 		$result = implode(' ', $result);
 		return $result;

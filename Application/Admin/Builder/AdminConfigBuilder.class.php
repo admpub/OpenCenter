@@ -116,6 +116,10 @@ class AdminConfigBuilder extends AdminBuilder {
 		return $this->key($name, $title, $subtitle, 'select', $options);
 	}
 
+	public function keyRelationSelect($name, $title, $subtitle = null, $options, $url = null) {
+		return $this->key($name, $title, $subtitle, 'relationSelect', array('opt' => $options, 'url' => $url));
+	}
+
 	public function keyRadio($name, $title, $subtitle = null, $options) {
 		return $this->key($name, $title, $subtitle, 'radio', $options);
 	}

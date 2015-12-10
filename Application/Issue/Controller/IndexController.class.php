@@ -17,8 +17,7 @@ class IndexController extends Base {
 		$issue_id = intval($issue_id);
 		$issue = D('Issue')->find($issue_id);
 		if (!$issue_id == 0) {
-			$issue_id = intval($issue_id);
-			$issues = D('Issue')->where("id=%d OR pid=%d", array($issue_id, $issue_id))->limit(999)->select();
+			$issues = D('Issue')->where('id=%d OR pid=%d', array($issue_id, $issue_id))->limit(999)->select();
 			$ids = array();
 			foreach ($issues as $v) {
 				$ids[] = $v['id'];
@@ -87,8 +86,8 @@ class IndexController extends Base {
 				$this->success('编辑失败。', '');
 			}
 		} else {
-			if (modC('NEED_VERIFY', 0) && !is_administrator()) //需要审核且不是管理员
-			{
+			if (modC('NEED_VERIFY', 0) && !is_administrator()) {
+				//需要审核且不是管理员
 				$content['status'] = 0;
 				$tip = '但需管理员审核通过后才会显示在列表中，请耐心等待。';
 				$user = query_user(array('nickname'), is_login());

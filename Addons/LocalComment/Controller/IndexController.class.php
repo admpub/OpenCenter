@@ -66,7 +66,7 @@ class IndexController extends Controller {
 		$pid = I('request.pid', 0, 'intval');
 		$uid = I('request.uid', 0, 'intval');
 
-		if (!is_administrator() && !$this->_verifyToken($app, $mod, $row_id, $uid)) {
+		if ( /*!is_administrator() && */!$this->_verifyToken($app, $mod, $row_id, $uid)) {
 			$this->error('参数被篡改。');
 		}
 

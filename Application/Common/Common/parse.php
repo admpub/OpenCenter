@@ -34,7 +34,7 @@ function parse_topic($content) {
 		if ($tik) {
 			//D('Weibo/Topic')->add(array('name'=> $e));
 			$space_url = U('Weibo/Topic/index', array('topk' => urlencode($e)));
-			$content = str_replace("#$e#", "<a  href=\"$space_url\" target=\"_blank\">#$e# </a>", $content);
+			$content = str_replace('#' . $e . '#', '<a href="' . $space_url . '" target="_blank">#' . $e . '# </a>', $content);
 		}
 	}
 
@@ -44,7 +44,7 @@ function parse_topic($content) {
 
 function get_topic($content) {
 	//正则表达式匹配
-	$topic_pattern = "/#([^\\#|.]+)#/";
+	$topic_pattern = '/#([^\\#|.]+)#/';
 	preg_match_all($topic_pattern, $content, $users);
 
 	//返回话题列表
@@ -62,12 +62,12 @@ function shorten_white_space($content) {
 }
 
 function parse_expression($content) {
-	return preg_replace_callback("/(\\[.+?\\])/is", 'parse_expression_callback', $content);
+	return preg_replace_callback('/(\\[.+?\\])/is', 'parse_expression_callback', $content);
 }
 
 function parse_expression_callback($data) {
 
-	if (preg_match("/#.+#/i", $data[0])) {
+	if (preg_match('/#.+#/i', $data[0])) {
 		return $data[0];
 	}
 	$allexpression = D('Core/Expression')->getAll();
@@ -76,7 +76,7 @@ $data[0] = str_replace(']',':miniblog]',$data[0]);
 }*/
 	$info = $allexpression[$data[0]];
 	if ($info) {
-		return preg_replace("/\\[.+?\\]/i", "<img src='" . $info['src'] . "' />", $data[0]);
+		return preg_replace('/\\[.+?\\]/i', '<img src="' . $info['src'] . '" />', $data[0]);
 	} else {
 		return $data[0];
 	}
@@ -92,7 +92,7 @@ function parse_at_users($content) {
 		$user = D('Member')->where(array('nickname' => $e))->find();
 		if ($user) {
 			$query_user = query_user(array('space_url'), $user['uid']);
-			$content = str_replace("@$e", "<a ucard=\"$user[uid]\" href=\"$query_user[space_url]\">@$e </a>", $content);
+			$content = str_replace('@' . $e, '<a ucard="' . $user['uid'] . '" href="' . $query_user['space_url'] . '">@' . $e . ' </a>', $content);
 		}
 	}
 
@@ -111,6 +111,9 @@ function get_at_usernames($content) {
 
 function get_at_uids($content) {
 	$usernames = get_at_usernames($content);
+	if (!$usernames) {
+		return array();
+	}
 	$result = D('Member')->where(array('nickname' => array('in', $usernames)))->getField('nickname,uid');
 	return $result;
 }
@@ -160,7 +163,8 @@ function getShort($str, $length = 40, $ext = '') {
 	return $output;
 }
 
-/**带省略号的限制字符串长
+/**
+ * 带省略号的限制字符串长
  * @param $str
  * @param $num
  * @return string
@@ -174,9 +178,9 @@ function getShortSp($str, $num) {
 }
 
 function utf8_strlen($string = null) {
-// 将字符串分解为单元
-	preg_match_all("/./us", $string, $match);
-// 返回单元个数
+	// 将字符串分解为单元
+	preg_match_all('/./us', $string, $match);
+	// 返回单元个数
 	return count($match[0]);
 }
 
@@ -252,7 +256,7 @@ function checkImageSrc($file_path) {
  * @author:xjw129xjt xjt@ourstu.com
  */
 function filterImage($content) {
-	preg_match_all("/<[img|IMG].*?src=[\'|\"](.*?(?:[\.gif|\.jpg|\.png]))[\'|\"].*?[\/]?>/", $content, $arr); //匹配所有的图片
+	preg_match_all('/<img.*?src=[\'|"](.*?(?:\\.gif|\\.jpg|\\.png))[\'|"].*?[\\/]?>/i', $content, $arr); //匹配所有的图片
 	if ($arr[1]) {
 		foreach ($arr[1] as $v) {
 			$check = checkImageSrc($v);
@@ -292,7 +296,7 @@ function checkHtmlTags($content, $tags = array()) {
  * @author:xjw129xjt xjt@ourstu.com
  */
 function filterBase64($content) {
-	preg_match_all("/data:.*?,(.*?)\"/", $content, $arr); //匹配base64编码
+	preg_match_all('/data:.*?,(.*?)"/', $content, $arr); //匹配base64编码
 	if ($arr[1]) {
 		foreach ($arr[1] as $v) {
 			$base64_decode = base64_decode($v);

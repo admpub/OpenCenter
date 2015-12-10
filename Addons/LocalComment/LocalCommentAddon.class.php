@@ -59,7 +59,7 @@ SQL
 		$uid = $param['uid'];
 
 		//获取参数
-		$p = $_REQUEST['page'] ? $_REQUEST['page'] : 1;
+		$p = !empty($_REQUEST['page']) ? max(1, (int) $_REQUEST['page']) : 1;
 		$path = explode('/', $path);
 		$app = $path[0];
 		$mod = $path[1];

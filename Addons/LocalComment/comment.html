@@ -7,17 +7,14 @@
         <div class="row">
             <div class="col-md-12">
                 <p>
-                    <textarea id="comment-content" style="height: 8em; width: 100%;"
-                              class="form-control insert-face-textarea"
-                              placeholder="说点什么吧～"></textarea>
+                    <textarea id="comment-content" style="height: 8em; width: 100%;" class="form-control insert-face-textarea" placeholder="说点什么吧～"></textarea>
                 </p>
-                <a class="col-md-10" style="padding: 0;" href="javascript:" onclick="insertFace($(this))"><img
-                        src="__ROOT__/Application/Core/Static/image/bq.png"/></a>
+                <a class="col-md-10" style="padding: 0;" href="javascript:" onclick="insertFace($(this))">
+                <img src="__ROOT__/Application/Core/Static/image/bq.png"/></a>
 
                 <div class="row">
                     <div class="col-md-2">
-                        <button class="btn btn-block btn-primary" id="submit-comment"
-                                data-url="{:simple_addons_url('LocalComment/Index/addComment', array('app'=>$app,'mod'=>$mod, 'row_id'=>$row_id,'uid'=>$uid))}">
+                        <button class="btn btn-block btn-primary" id="submit-comment" data-url="{:simple_addons_url('LocalComment/Index/addComment', array('app'=>$app,'mod'=>$mod, 'row_id'=>$row_id,'uid'=>$uid,'token'=>addonA('LocalComment/Index/_makeToken', array($app, $mod, $row_id, $uid))))}">
                             发表
                         </button>
                     </div>
@@ -59,8 +56,8 @@
                                 <eq name="comment.uid" value="0">
                                     <a>游客</a>
                                     <else/>
-                                    <a href="{$comment.user.space_url}"
-                                       ucard="{$comment.user.uid}">{$comment.user.nickname|op_t}</a></eq>
+                                    <a href="{$comment.user.space_url}" ucard="{$comment.user.uid}">{$comment.user.nickname|op_t}</a>
+                                </eq>
                             </p>
 
 
@@ -73,11 +70,8 @@
                                 <if condition="check_auth('deleteLocalComment') OR is_administrator() OR ( ($comment['uid'] eq is_login()) AND (is_login() neq 0)) ">
                                     <a class="local-comment-delete" data-cid="{$comment.id}">删除</a> &nbsp;&nbsp;
                                 </if>
-                                <a class=" local-comment-reply" data-uid="{$comment.uid}"
-                                   data-username="{$comment.user.nickname|op_t}">回复</a>
+                                <a class=" local-comment-reply" data-uid="{$comment.uid}" data-username="{$comment.user.nickname|op_t}">回复</a>
                             </div>
-
-
                             </p>
                         </div>
                     </div>

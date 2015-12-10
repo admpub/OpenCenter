@@ -411,19 +411,21 @@ class AdminTreeListBuilder extends AdminBuilder {
 		return $url . $seperator . $params;
 	}
 
-	/**设置层级
-		     * @auth 陈一枭
-	*/
+	/**
+	 * 设置层级
+	 * @auth 陈一枭
+	 */
 	public function setLevel($level = 2) {
 		$this->_level = $level;
 		return $this;
 	}
 
-	/**设置当前页面的模型
-		     * @param string $model
-		     * @return $this
-		     * @auth 陈一枭
-	*/
+	/**
+	 * 设置当前页面的模型
+	 * @param string $model
+	 * @return $this
+	 * @auth 陈一枭
+	 */
 	public function setModel($model = '') {
 		$this->_model = $model;
 		return $this;
