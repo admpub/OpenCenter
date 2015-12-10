@@ -5,13 +5,31 @@ use Think\Controller;
 
 class IndexController extends Controller {
 
+	public function _verifyToken($app, $mod, $row_id, $author_uid) {
+		$token = I('request.token', '');
+		$right = $this->_makeToken($app, $mod, $row_id, $author_uid);
+		return !$right || $right == $token;
+	}
+
+	public function _makeToken($app, $mod, $row_id, $author_uid = null) {
+		$authKey = C('DATA_AUTH_KEY');
+		if (!$authKey) {
+			return '';
+		}
+		if (is_null($app)) {
+			$app = MODULE_NAME;
+		}
+		return md5(substr($authKey, 0, strlen($authKey) / 2) . '|' . $app . '|' . $mod . '|' . $row_id . '|' . $author_uid);
+	}
+
 	public function addComment() {
 
 		$config = get_addon_config('LocalComment');
 		$can_guest_comment = $config['can_guest_comment'];
+		$post_uid = get_uid();
 		if (!$can_guest_comment) {
 			//不允许游客评论
-			if (!is_login()) {
+			if (!$post_uid) {
 				$this->error('请登录后评论。');
 			}
 		}
@@ -21,7 +39,12 @@ class IndexController extends Controller {
 		$mod = I('request.mod', '', 'trim,htmlspecialchars');
 		$row_id = I('request.row_id', 0, 'intval');
 		$content = I('request.content', '', 'trim,htmlspecialchars');
+		$pid = I('request.pid', 0, 'intval');
 		$uid = I('request.uid', 0, 'intval');
+
+		if (!is_administrator() && !$this->_verifyToken($app, $mod, $row_id, $uid)) {
+			$this->error('参数被篡改。');
+		}
 
 		//调用API接口，添加新评论
 		$data = array(
@@ -29,8 +52,17 @@ class IndexController extends Controller {
 			'mod' => $mod,
 			'row_id' => $row_id,
 			'content' => $content,
-			'uid' => is_login(),
+			'uid' => $post_uid,
+			'pid' => $pid,
 		);
+		if ($post_uid > 0) {
+			$data['nickname'] = D('Member')->where(array('uid' => $post_uid))->getField('nickname');
+		} else {
+			$data['nickname'] = I('request.nickname', '', 'trim,htmlspecialchars');
+			if ($data['nickname'] === '') {
+				$this->error('请请输入您的名称。');
+			}
+		}
 		if (!preg_match('/^[\\w]+$/', $app)) {
 			$this->error('app的值不正确');
 		}
@@ -44,37 +76,34 @@ class IndexController extends Controller {
 			$this->error('评论失败：' . $commentModel->getError());
 		}
 		$commentModel->add($data);
+		$referer_url = htmlspecialchars($_SERVER['HTTP_REFERER']);
 		//游客逻辑直接跳过@环节
-		if (!is_login()) {
+		if ($post_uid <= 0) {
 			if ($uid) {
-				$title = '游客' . '评论了您';
+				$title = '游客「' . $data['nickname'] . '」评论了您';
 				$message = '评论内容：' . $content;
-				$url = htmlspecialchars($_SERVER['HTTP_REFERER']);
-				D('Common/Message')->sendMessage($uid, $message, $title, $url, 0, 0, $app);
+				D('Common/Message')->sendMessage($uid, $message, $title, $referer_url, 0, 0, $app);
 			}
 			//返回结果
-			$this->success('评论成功', 'refresh');
+			$this->success('评论成功', 'refresh');exit;
 		} else {
 			//给评论对象发送消息
-			if ($uid) {
-				$user = D('Member')->find(get_uid());
-				$title = $user['nickname'] . '评论了您';
-				$message = '评论内容：' . $content;
-				$url = htmlspecialchars($_SERVER['HTTP_REFERER']);
-				D('Common/Message')->sendMessage($uid, $message, $title, $url, get_uid(), 0, $app);
-			}
+			$title = '用户「' . $data['nickname'] . '」评论了您';
+			$message = '评论内容：' . $content;
+			D('Common/Message')->sendMessage($uid, $message, $title, $referer_url, $post_uid, 0, $app);
 		}
 
 		//通知被@到的人
 		$uids = get_at_uids($content);
-		$uids = array_unique($uids);
-		$uids = array_subtract($uids, array($uid));
-		foreach ($uids as $uid) {
-			$user = D('Member')->find(get_uid());
-			$title = $user['nickname'] . '@了您';
-			$message = '评论内容：' . $content;
-			$url = htmlspecialchars($_SERVER['HTTP_REFERER']);
-			D('Common/Message')->sendMessage($uid, $message, $title, $url, get_uid(), 0, $app);
+		if ($uids) {
+			foreach ($uids as $_uid) {
+				if ($_uid == $uid || $_uid == $post_uid) {
+					continue;
+				}
+				$title = '用户「' . $data['nickname'] . '」@了您';
+				$message = '评论内容：' . $content;
+				D('Common/Message')->sendMessage($_uid, $message, $title, $referer_url, $post_uid, 0, $app);
+			}
 		}
 
 		//返回结果
@@ -99,7 +128,7 @@ class IndexController extends Controller {
 				$this->error('删除评论失败。' . $commentModel->getError());
 			}
 		} else {
-			$this->error('删除评论失败。' . '权限不足');
+			$this->error('删除评论失败。权限不足');
 		}
 
 	}

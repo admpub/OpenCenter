@@ -27,6 +27,10 @@ class AddonsController extends Base {
 			return $this->error('没有指定插件名称，控制器或操作！');
 		}
 
+		if ($_action[0] == '_') {
+			return $this->error('以下划线开头的成员方法不能通过网址访问！');
+		}
+
 		if (C('URL_CASE_INSENSITIVE')) {
 			$_addons = ucfirst(parse_name($_addons, 1));
 			$_controller = parse_name($_controller, 1);

@@ -107,7 +107,7 @@ class Dispatcher {
 			$types = explode(',', C('URL_PATHINFO_FETCH'));
 			foreach ($types as $type) {
 				if (0 === strpos($type, ':')) {
-// 支持函数判断
+					// 支持函数判断
 					$_SERVER['PATH_INFO'] = call_user_func(substr($type, 1));
 					break;
 				} elseif (!empty($_SERVER[$type])) {
@@ -202,7 +202,7 @@ class Dispatcher {
 		if (!defined('__APP__')) {
 			$urlMode = C('URL_MODEL');
 			if ($urlMode == URL_COMPAT) {
-// 兼容模式判断
+				// 兼容模式判断
 				define('PHP_FILE', _PHP_FILE_ . '?' . $varPath . '=');
 			} elseif ($urlMode == URL_REWRITE) {
 				$url = dirname(_PHP_FILE_);
@@ -237,7 +237,7 @@ class Dispatcher {
 			$paths = explode($depr, trim($_SERVER['PATH_INFO'], $depr));
 
 			if (!defined('BIND_CONTROLLER')) {
-// 获取控制器
+				// 获取控制器
 				if (C('CONTROLLER_LEVEL') > 1) {
 					// 控制器层次
 					$_GET[$varController] = implode('/', array_slice($paths, 0, C('CONTROLLER_LEVEL')));
@@ -371,6 +371,9 @@ class Dispatcher {
 	 * @author swh <swh@admpub.com>
 	 */
 	static private function cleanNotWords($str) {
+		if ($str[0] == '_') {
+			return '';
+		}
 		$str = preg_replace('/[^\\w]+/', '', $str);
 		return $str;
 	}

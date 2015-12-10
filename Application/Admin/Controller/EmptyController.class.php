@@ -6,18 +6,21 @@ use Common\Controller\Base;
 class EmptyController extends Base {
 
 	public function _empty($name, $args) {
+		$errMsg = '404，您访问的页面不存在。';
 		try {
+			if ($name[0] == '_') {
+				$this->error($errMsg);
+			}
 			if (!self::isFreeInstall(CONTROLLER_NAME)) {
 				$this->moduleMdl()->checkCanVisit(CONTROLLER_NAME, $this);
 			}
 			$file = APP_PATH . CONTROLLER_NAME . '/Controller/' . CONTROLLER_NAME . 'Controller.class.php';
 			if (file_exists($file) == false) {
-				throw new \Exception('Not Found:' . $file, 1);
+				throw new \Exception('Not Found:' . $file, 500);
 			}
 			require_once $file;
 			$controller = A('Admin/' . CONTROLLER_NAME);
 
-			$action = ACTION_NAME;
 			$method = new \ReflectionMethod($controller, $name);
 			// URL参数绑定检测
 
@@ -64,7 +67,7 @@ class EmptyController extends Base {
 			}
 		} catch (\ReflectionException $e) {
 			#echo $e->getMessage();exit;
-			$this->error('404，您访问的页面不存在。');
+			$this->error($errMsg);
 
 		}
 

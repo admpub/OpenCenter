@@ -102,7 +102,7 @@ function parse_at_users($content) {
 
 function get_at_usernames($content) {
 	//正则表达式匹配
-	$user_pattern = "/\\@([^\\#|\\s|^\\<]+)/";
+	$user_pattern = '/\\@([^\\#|\\s|^\\<]+)/';
 	preg_match_all($user_pattern, $content, $users);
 
 	//返回用户名列表
@@ -111,17 +111,15 @@ function get_at_usernames($content) {
 
 function get_at_uids($content) {
 	$usernames = get_at_usernames($content);
-	$result = array();
-	foreach ($usernames as $username) {
-		$user = D('Member')->where(array('nickname' => op_t($username)))->field('uid')->find();
-		$result[] = $user['uid'];
-	}
+	$result = D('Member')->where(array('nickname' => array('in', $usernames)))->getField('nickname,uid');
 	return $result;
 }
 
 function parse_url_link($content) {
-	$content = preg_replace("#((http|https|ftp)://(\S*?\.\S*?))(\s|\;|\)|\]|\[|\{|\}|,|\"|'|:|\<|$|\.\s)#ie",
-		"'<a href=\"$1\" target=\"_blank\"><i class=\"glyphicon glyphicon-link\" title=\"$1\"></i></a>$4'", $content
+	$content = preg_replace('#((http|https|ftp)://(\\S*?\\.\\S*?))(\\s|\\;|\\)|\\]|\\[|\\{|\\}|,|"|\'|:|\\<|$|\\.\\s)#i',
+		function ($p) {
+			return '<a href="' . $p[1] . '" target="_blank"><i class="glyphicon glyphicon-link" title="' . $p[1] . '"></i></a>$4';
+		}, $content
 	);
 	return $content;
 }

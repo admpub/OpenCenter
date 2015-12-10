@@ -39,6 +39,9 @@ function templateFileChecker($baseUrl, $file, $theme, $extend) {
 	 * @author swh <swh@admpub.com>
 	 */
 	static private function cleanNotWords($str) {
+		if ($str[0] == '_') {
+			return '';
+		}
 		$str = preg_replace('/[^\\w]+/', '', $str);
 		return $str;
 	}
