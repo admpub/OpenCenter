@@ -366,8 +366,9 @@ class AdminConfigBuilder extends AdminBuilder {
 		if (IS_POST) {
 			$success = false;
 			$configModel = D('Config');
+			$prefix = '_' . strtoupper(CONTROLLER_NAME) . '_';
 			foreach (I('') as $k => $v) {
-				$config['name'] = '_' . strtoupper(CONTROLLER_NAME) . '_' . strtoupper($k);
+				$config['name'] = $prefix . strtoupper($k);
 				$config['type'] = 0;
 				$config['title'] = '';
 				$config['group'] = 0;
@@ -381,8 +382,8 @@ class AdminConfigBuilder extends AdminBuilder {
 				if ($configModel->add($config, null, true)) {
 					$success = 1;
 				}
-				$tag = 'conf_' . strtoupper(CONTROLLER_NAME) . '_' . strtoupper($k);
-				S($tag, null);
+				S('conf' . $config['name'], null);
+				S('DB_CONFIG_DATA', null);
 			}
 			if ($success) {
 				if ($this->_callback) {
