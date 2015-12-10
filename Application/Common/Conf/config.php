@@ -1,15 +1,11 @@
 <?php
-// +----------------------------------------------------------------------
-// | OneThink [ WE CAN DO IT JUST THINK IT ]
-// +----------------------------------------------------------------------
-// | Copyright (c) 2013 http://www.onethink.cn All rights reserved.
-// +----------------------------------------------------------------------
-// | Author: 麦当苗儿 <zuojiazi@vip.qq.com> <http://www.zjzit.cn>
-// +----------------------------------------------------------------------
 
-/**
- * UCenter客户端配置文件
- * 注意：该配置文件请使用常量方式定义
- */
-if (is_file('./Conf/common.php'))
-    return require_once('./Conf/common.php');
+$config = array();
+if (is_file('./Conf/common.php')) {
+	$config = require_once './Conf/common.php';
+}
+
+$config['TMPL_ACTION_ERROR'] = COMMON_PATH . 'View/default/Public/error.html'; // 默认错误跳转对应的模板文件
+$config['TMPL_ACTION_SUCCESS'] = COMMON_PATH . 'View/default/Public/success.html'; // 默认成功跳转对应的模板文件
+$config['TMPL_EXCEPTION_FILE'] = COMMON_PATH . 'View/default/Public/exception.html'; // 异常页面的模板文件
+return $config;
