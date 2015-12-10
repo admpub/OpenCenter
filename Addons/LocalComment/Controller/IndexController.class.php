@@ -5,12 +5,32 @@ use Think\Controller;
 
 class IndexController extends Controller {
 
+	/**
+	 * 验证签名
+	 * @param  string  $app        模块名
+	 * @param  string  $mod        模型名
+	 * @param  integer $row_id     模型表中的主键id
+	 * @param  integer $author_uid 作者udi
+	 * @return boolean
+	 * @author swh <swh@admpub.com>
+	 */
 	public function _verifyToken($app, $mod, $row_id, $author_uid) {
 		$token = I('request.token', '');
 		$right = $this->_makeToken($app, $mod, $row_id, $author_uid);
 		return !$right || $right == $token;
 	}
 
+	/**
+	 * 生成签名。外部调用方式：
+	 *	$lc = addonA('LocalComment/Index/_makeToken', array('add', 'dd', 10, $uid));
+	 *	var_dump($lc);exit;
+	 * @param  string  $app        模块名
+	 * @param  string  $mod        模型名
+	 * @param  integer $row_id     模型表中的主键id
+	 * @param  integer $author_uid 作者udi
+	 * @return string
+	 * @author swh <swh@admpub.com>
+	 */
 	public function _makeToken($app, $mod, $row_id, $author_uid = null) {
 		$authKey = C('DATA_AUTH_KEY');
 		if (!$authKey) {
@@ -22,6 +42,10 @@ class IndexController extends Controller {
 		return md5(substr($authKey, 0, strlen($authKey) / 2) . '|' . $app . '|' . $mod . '|' . $row_id . '|' . $author_uid);
 	}
 
+	/**
+	 * 提交评论
+	 * 提交网址：./addComment?app=&mod=&row_id=&uid=&pid=&token=
+	 */
 	public function addComment() {
 
 		$config = get_addon_config('LocalComment');

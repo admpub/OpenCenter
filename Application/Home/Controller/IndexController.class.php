@@ -17,8 +17,6 @@ class IndexController extends HomeController {
 
 	//系统首页
 	public function index() {
-		//$lc = addonA('LocalComment/Index/makeToken', array('add', 'dd', 10, $uid));
-		//var_dump($lc);exit;
 		hook('homeIndex');
 		$default_url = C('DEFUALT_HOME_URL'); //获得配置，如果为空则显示聚合，否则跳转
 		if ($default_url != '') {
