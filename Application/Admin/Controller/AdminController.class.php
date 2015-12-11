@@ -61,7 +61,6 @@ class AdminController extends Base {
 		$this->assign('__MANAGE_COULD__', $this->checkRule('admin/module/lists', array('in', '1,2')));
 		$this->assign('__MENU__', $this->getMenus());
 		$this->getReport();
-		echo get_class($this), '==', PHP_EOL;
 	}
 
 	/**

@@ -148,7 +148,9 @@ class IssueController extends AdminController {
 			->buttonDisable('', '审核不通过')
 			->buttonDelete()
 			->buttonNew(U('content_add'))
-			->keyId()->keyLink('title', '标题', 'Issue/Index/issueContentDetail?id=###')->keyUid()->keyCreateTime()->keyStatus()
+			->keyId()->keyLink('title', '标题', 'Issue/Index/issueContentDetail?id=###')
+			->keyUid()->keyCreateTime()
+			->keyStatus()->keyDoActionEdit('content_edit?id=###')
 			->data($list)
 			->pagination($totalCount, $r)
 			->display();
@@ -168,7 +170,9 @@ class IssueController extends AdminController {
 
 		$builder->title('审核内容')
 			->setStatusUrl(U('setIssueContentStatus'))->buttonEnable('', '审核通过')->buttonDelete()
-			->keyId()->keyLink('title', '标题', 'Issue/Index/issueContentDetail?id=###')->keyUid()->keyCreateTime()->keyStatus()
+			->keyId()->keyLink('title', '标题', 'Issue/Index/issueContentDetail?id=###')
+			->keyUid()->keyCreateTime()
+			->keyStatus()->keyDoActionEdit('content_edit?id=###')
 			->data($list)
 			->pagination($totalCount, $r)
 			->display();
@@ -266,7 +270,7 @@ class IssueController extends AdminController {
 				}
 			}
 			$data['uid'] = $temp['uid']; //权限矫正，防止被改为管理员
-			$rs = D('Issue/IssueContent')->save($data);
+			$rs = D('Issue/IssueContent')->where(array('id' => $temp['id']))->save($data);
 			if ($rs) {
 				$this->success('编辑成功。', U('contents'));
 			} else {
@@ -314,7 +318,7 @@ class IssueController extends AdminController {
 		$builder->keyId()
 			->keyRelationSelect('issue_id', '分类', null, $issues, U('issue_list'), array('cat_0' => '', 'cat_1' => ''))
 			->keyText('title', '标题')
-			->keySingleImage('covert_id', '封面图片')
+			->keySingleImage('cover_id', '封面图片')
 			->keyText('url', '网址')
 			->keyEditor('content', '内容');
 		$builder->buttonSubmit(U('content_post'))->buttonBack()->display();
@@ -336,7 +340,7 @@ class IssueController extends AdminController {
 	 * @return void
 	 */
 	public function content_edit($id) {
-		if (!check_auth('addIssueContent') && !check_auth('editIssueContent')) {
+		if (!check_auth('editIssueContent')) {
 			$this->error('抱歉，您不具备投稿权限。');
 		}
 		$issue_content = D('Issue/IssueContent')->find($id);
@@ -349,13 +353,26 @@ class IssueController extends AdminController {
 				$this->error('404 not found');
 			}
 		}
-
 		$issue = D('Issue/Issue')->find($issue_content['issue_id']);
-
-		$this->assign('top_issue', $issue['pid'] == 0 ? $issue['id'] : $issue['pid']);
-		$this->assign('issue_id', $issue['id']);
-		$issue_content['user'] = query_user(array('id', 'nickname', 'space_url', 'space_link', 'avatar64', 'rank_html', 'signature'), $issue_content['uid']);
-		$this->assign('content', $issue_content);
-		$this->display();
+		$issues = D('Issue/Issue')->where(array(
+			//'allow_post' => 1,
+			'status' => 1,
+			'pid' => 0,
+		))->order('sort')->getField('id,title');
+		$builder = new AdminConfigBuilder();
+		$this->setTitle('修改文章');
+		$builder->title('修改文章');
+		$builder->keyId()
+			->keyRelationSelect('issue_id', '分类', null, $issues, U('issue_list'), array(
+				'cat_0' => $issue['pid'],
+				'cat_1' => $issue_content['issue_id'],
+			)
+			)
+			->keyText('title', '标题')
+			->keySingleImage('cover_id', '封面图片')
+			->keyText('url', '网址')
+			->keyEditor('content', '内容');
+		$builder->data($issue_content);
+		$builder->buttonSubmit(U('content_post'))->buttonBack()->display();
 	}
 }

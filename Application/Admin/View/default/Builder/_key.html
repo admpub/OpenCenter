@@ -81,7 +81,6 @@
             <input class="attach" type="hidden" name="{$field.name}" value="{$field['value']}"/>
             <div class="upload-img-box">
                 <div class="upload-pre-item popup-gallery">
-
                 <notempty name="field.value">
                     <div class="each">
                     <a href="{$field.value|get_cover='path'}" title="点击查看大图">
@@ -243,12 +242,11 @@
 
     </case>
     <case value="editor">
-            {:W('Common/Ueditor/editor',array($field['name'],$field['name'],$field['value'],$field['style']['width'],$field['style']['height'],$field['config']))}
+        {:W('Common/Ueditor/editor',array($field['name'],$field['name'],$field['value'],$field['style']['width'],$field['style']['height'],$field['config']))}
 
     </case>
     <case value="textarea">
-        <textarea name="{$field.name}" class="text input-large form-control"
-                  style="height: 8em;width: 400px;height: 200px">{$field.value|htmlspecialchars}</textarea>
+        <textarea name="{$field.name}" class="text input-large form-control" style="height: 8em;width: 400px;height: 200px">{$field.value|htmlspecialchars}</textarea>
     </case>
     <case value="time">
         <php>
@@ -257,15 +255,14 @@
             if(!$field['value'])$field['value'] = time();
         </php>
         <input type="hidden" name="{$field.name}" value="{$field.value}"/>
-        <input type="text" data-field-name="{$field.name}" class="text input-large time form-control"
-               style="width: 400px" value="{$field.value|time_format}" placeholder="请选择时间"/>
+        <input type="text" data-field-name="{$field.name}" class="text input-large time form-control" style="width: 400px" value="{$field.value|time_format}" placeholder="请选择时间"/>
     </case>
 
     <!--添加城市选择（需安装城市联动插件,css样式不好处理排版有点怪）-->
     <case value="city">
-            <style type="text/css">.form-control {display:inline-block;width: 120px;}</style>
-            <!--修正在编辑信息时无法正常显示已经保存的地区信息-->
-            {:hook('J_China_City',array('province'=>$field['value']['0'],'city'=>$field['value']['1'],'district'=>$field['value']['2'],'community'=>$field['value']['3']))}
+        <style type="text/css">.form-control {display:inline-block;width: 120px;}</style>
+        <!--修正在编辑信息时无法正常显示已经保存的地区信息-->
+        {:hook('J_China_City',array('province'=>$field['value']['0'],'city'=>$field['value']['1'],'district'=>$field['value']['2'],'community'=>$field['value']['3']))}
     </case>
 
     <!--弹出窗口选择并返回值（目前只支持返回ID）开始-->

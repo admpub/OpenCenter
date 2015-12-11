@@ -84,8 +84,8 @@ class IndexController extends Base {
 				}
 			}
 			$data['uid'] = $temp['uid']; //权限矫正，防止被改为管理员
-			$rs = D('IssueContent')->save($data);
-			if ($rs) {
+			$rs = D('IssueContent')->where(array('id' => $temp['id']))->save($data);
+			if ($rs !== false) {
 				$this->success('编辑成功。', U('issueContentDetail', array('id' => $data['id'])));
 			} else {
 				$this->success('编辑失败。', '');
