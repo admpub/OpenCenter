@@ -303,11 +303,21 @@ class IssueController extends AdminController {
 		))->order('sort')->getField('id,title');
 		$builder = new AdminConfigBuilder();
 		$builder->keyId()
-			->keySelect('issue_id', '分类', null, $issues)
+			->keyRelationSelect('issue_id', '分类', null, $issues, U('issue_list'), array('cat_0' => '', 'cat_1' => ''))
 			->keyText('title', '标题')
 			->keySingleImage('covert_id', '封面图片')
 			->keyEditor('content', '内容');
 		$builder->buttonSubmit()->display();
+	}
+
+	public function issue_list($value = '') {
+		$ret = array('status' => 1, 'data' => array());
+		$ret['data'] = D('Issue')->where(array(
+			//'allow_post' => 1,
+			//'status' => 1,
+			'pid' => I('get.value', 0, 'intval'),
+		))->order('sort')->getField('id,title');
+		$this->ajaxr($ret);
 	}
 
 	/**

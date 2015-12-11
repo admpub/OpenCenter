@@ -116,8 +116,27 @@ class AdminConfigBuilder extends AdminBuilder {
 		return $this->key($name, $title, $subtitle, 'select', $options);
 	}
 
-	public function keyRelationSelect($name, $title, $subtitle = null, $options, $url = null) {
-		return $this->key($name, $title, $subtitle, 'relationSelect', array('opt' => $options, 'url' => $url));
+	/**
+	 * 级联选择组件
+	 * @param  string $name     字段名
+	 * @param  string $title    字段标题
+	 * @param  string $subtitle 字段子标题
+	 * @param  string $options  首个下拉框选项数组
+	 * @param  string $url      ajax查询网址
+	 * @param  array  $selects  select标签信息（array('select标签id属性值'=>'option选中项的值')）
+	 * @return AdminConfigBuilder
+	 * @author swh <swh@admpub.com>
+	 */
+	public function keyRelationSelect($name, $title, $subtitle = null, $options, $url = null, $selects = array()) {
+		if (empty($selects)) {
+			list($url, $selects) = explode('#', $url, 2);
+			parse_str($selects, $selects);
+		}
+		return $this->key($name, $title, $subtitle, 'relationSelect', array(
+			'opt' => $options,
+			'url' => $url,
+			'selects' => $selects,
+		));
 	}
 
 	public function keyRadio($name, $title, $subtitle = null, $options) {

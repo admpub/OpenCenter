@@ -11,10 +11,7 @@
     </div>
     <php>
         foreach($searches as $search){
-            if($_REQUEST[$search['name']])
-        {
-        $show=1;
-        }
+            if(!empty($_REQUEST[$search['name']]))$show=1;
         }
     </php>
 
@@ -55,8 +52,7 @@
                       {$search.title}
                   </td>
                   <td>
-                      <input style="float: none" type="text" name="{$search.name}" class="search-input form-control form-input-width"
-                             value="{:I($search['name'])}">
+                      <input style="float: none" type="text" name="{$search.name}" class="search-input form-control form-input-width" value="{:I($search['name'])}">
                   </td>
                   <td>
                       {$search.des}
@@ -90,10 +86,7 @@
 
             <php>
                 foreach($selects as $select){
-                if($_REQUEST[$select['name']])
-                {
-                $show=1;
-                }
+                    if(!empty($_REQUEST[$select['name']]))$show=1;
                 }
             </php>
             <!-- 选择框select -->
@@ -171,33 +164,12 @@
 
     <script type="text/javascript" src="__STATIC__/thinkbox/jquery.thinkbox.js"></script>
     <script type="text/javascript">
-//        //搜索功能
-//        $("#search").click(function () {
-//            var url = $(this).attr('url');
-//            var query = $('.search-form').find('input').serialize();
-//            query = query.replace(/(&|^)(\w*?\d*?\-*?_*?)*?=?((?=&)|(?=$))/g, '');
-//            query = query.replace(/^&/g, '');
-//            if (url.indexOf('?') > 0) {
-//                url += '&' + query;
-//            } else {
-//                url += '?' + query;
-//            }
-//            window.location.href = url;
-//        });
-        //回车搜索
-//        $(".search-input").keyup(function (e) {
-//            if (e.keyCode === 13) {
-//                $("#search").click();
-//                return false;
-//            }
-//        });
         function toggle_search(){
             $('#search_form').toggle('slide');
         }
 
         $(document).on('submit', '.form-dont-clear-url-param', function(e){
             e.preventDefault();
-
             var seperator = "&";
             var form = $(this).serialize();
             var action = $(this).attr('action');
@@ -206,11 +178,8 @@
             }
             var new_location = action + seperator + form;
             location.href = new_location;
-
             return false;
         });
-
-
     </script>
 
 

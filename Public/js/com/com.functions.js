@@ -10,10 +10,7 @@ function is_login() {
  * @constructor
  */
 function U(url, params, rewrite) {
-
-
     if (window.Think.MODEL[0] == 2) {
-
         var website = _ROOT_ + '/';
         url = url.split('/');
 
@@ -57,8 +54,8 @@ function U(url, params, rewrite) {
     }
     return website;
 }
-/**播放背景音乐
- *
+/**
+ * 播放背景音乐
  * @param file 文件路径
  */
 function playsound(file) {
@@ -111,9 +108,6 @@ function friendlyDate(sTime, cTime) {
         return sDate.getFullYear() + '-' + formatTime(sDate.getMonth() + 1) + '-' + formatTime(sDate.getDate()) + ' ' + formatTime(sDate.getHours()) + ':' + formatTime(sDate.getMinutes());
     }
 }
-/**
- * Ajax系列
- */
 
 /**
  * 处理ajax返回结果

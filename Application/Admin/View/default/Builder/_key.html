@@ -37,22 +37,41 @@
         <select name="{$field.name}" class="form-control" style="width:auto;">
             <volist name="field.opt" id="option">
                 <php>
-                    $selected = $field['value']==$key ? 'selected' : '';
+                    $selected = $field['value']==$key ? ' selected' : '';
                 </php>
-                <option value="{$key}"
-                {$selected}>{$option|htmlspecialchars}</option>
+                <option value="{$key}"{$selected}>{$option|htmlspecialchars}</option>
             </volist>
         </select>
+    </case>
+    <case value="relationSelect">
+        <php>
+            $url=$field['opt']['url'];
+            $elements=$field['opt']['selects'];
+            $firstSelectOpts='';
+            foreach ($field['opt']['opt'] as $key => $value){
+                $selected = $field['value']==$key ? ' selected' : '';
+                $firstSelectOpts.='<option value="'.$key.'"'.$selected.'>'.htmlspecialchars($value).'</option>';
+            }
+        </php>
+        <input type="hidden" name="{$field.name}" value="{$field.value}">
+        <volist name="elements" id="val" key="k">
+        <select class="form-control" id="{$key}" level="{$k}" rel="{$val}" style="width:auto;display:inline">
+            <if condition="$k eq 1">
+            {$firstSelectOpts}
+            <else/>
+            <option>- 请先选择左边选项 -</option>
+            </if>
+        </select>
+        </volist>
+        <script>$(function(){Think.nestedSelectedAjax(["{:implode('","',array_keys($elements))}"],'{$url}','input[type=hidden][name="{$field.name}"]');});</script>
     </case>
     <case value="radio">
         <volist name="field.opt" id="option">
             <php>
-                $checked = $field['value']==$key ? 'checked' : '';
-                $inputId = "id_$field[name]_$key";
+                $checked = $field['value']==$key ? ' checked' : '';
+                $inputId = 'id_'.$field['name'].'_'.$key;
             </php>
-            <label for="{$inputId}"> <input id="{$inputId}" name="{$field.name}" value="{$key}" type="radio"
-                {$checked}/>
-                {$option|htmlspecialchars}</label>
+            <label for="{$inputId}"> <input id="{$inputId}" name="{$field.name}" value="{$key}" type="radio"{$checked} /> {$option|htmlspecialchars}</label>
         </volist>
     </case>
 

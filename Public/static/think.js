@@ -237,4 +237,103 @@
             });
         }
     };
+
+
+
+/**
+ * 级联选择(使用前请确保第一个下拉框已有选中项)
+ * 使用方法：nestedSelected(["country_id","province_id","city_id"])
+ * @author swh <swh@admpub.com>
+ */
+ThinkPHP.nestedSelected=function (ids, initVal, attrName, timeout){
+    if(typeof(ids)=='object'){
+        var obj=ids;
+        if(typeof(obj.initVal)!='undefined') initVal=obj.initVal;
+        if(typeof(obj.attrName)!='undefined') attrName=obj.attrName;
+        if(typeof(obj.timeout)!='undefined') timeout=obj.timeout;
+        if(typeof(obj.ids)!='undefined') ids=obj.ids;
+        obj=null;
+    }
+    var id=ids[0],id2=ids[1];
+    if(initVal==null)initVal='';
+    if(attrName==null)attrName='rel';
+    if(timeout==null)timeout=5000;
+    var attr=$('#'+id2).attr(attrName);
+    if(!attr) return false;
+    if($('#'+id).val()==initVal) return false;
+    if($('#'+id2+' option:last').val()!=initVal) return false;
+    $('#'+id).trigger('change');
+    var i=0;
+    var ptimer=window.setInterval(function(){
+        i++;
+        if($('#'+id2+' option:last').val()!=initVal || i*200>timeout){
+            window.clearInterval(ptimer);
+            var sel=$('#'+id2+' option[value="'+attr+'"]');
+            if(sel.length<=0)return;
+            sel.prop('selected',true);
+            ids.shift();
+            if(ids.length>1)ThinkPHP.nestedSelected(ids,initVal,attrName,timeout);
+        }
+    },200);
+    return true;
+};
+
+/**
+ * 级联选择
+ * @param  array    idNames     selec标签的id数组，例如：["country_id","province_id","city_id"]
+ * @param  string   url         ajax查询网址
+ * @param  string   syncToEle   将选中值同步到的隐藏域元素，例如：input[type=hidden][name="cat"]
+ * @author swh <swh@admpub.com>
+ */
+ThinkPHP.nestedSelectedAjax=function (idNames,url,syncToEle){
+    if (!url) url=window.location.href;
+    ThinkPHP.nestedSelected(idNames);
+    var fixLevel=Number($('#'+idNames[0]).attr('level'));
+    if(isNaN(fixLevel)){
+    	alert('select标签中的level属性值必须是一个数字');
+    	return false;
+    }
+    if (fixLevel==0) {
+    	fixLevel=1;
+    }else{
+    	fixLevel=0;
+    }
+    $('#'+idNames.join(',#')).change(function(){
+        var id=$(this).attr('id'),level=Number($(this).attr('level')),value=$(this).val(),rel=$(this).attr('rel');
+        if (isNaN(level)||idNames.length<level+fixLevel) return false;
+        $.get(url,{from:'nestedSelect',level:level,id_name:id,value:value},function(r){
+            if(typeof(r.data)=='undefined'||r.status==0){
+                return false;
+            }
+            var str='',has=false;
+            if (typeof(r.data.length)!='undefined') {
+                for (var i = 0; i < r.data.length; i++) {
+                    var v=r.data[i];
+                    if(typeof(v)!='object')continue;
+                    var s='';
+                    if(rel==v.key){
+                        s=' selected';
+                        has=true;
+                    }
+                    str+='<option value="'+v.key+'"'+s+'>'+v.val+'</option>';
+                }
+            }else{
+                for(var k in r.data){
+                    if(typeof(r.data[k])!='string')continue;
+                    var s='';
+                    if(rel==k){
+                        s=' selected';
+                        has=true;
+                    }
+                    str+='<option value="'+k+'"'+s+'>'+r.data[k]+'</option>';
+                }
+            }
+            var nextId=idNames[level+fixLevel];
+            $('#'+nextId).html(str);
+            if(syncToEle!=null&&has)$(syncToEle).val(rel);
+        },'json');
+        if(syncToEle!=null)$(syncToEle).val(value);
+    });
+	$('#'+idNames[0]).trigger('change');
+};
 })(jQuery);
