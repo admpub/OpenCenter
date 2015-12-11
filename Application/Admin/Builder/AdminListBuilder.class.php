@@ -215,31 +215,6 @@ class AdminListBuilder extends AdminBuilder {
 	}
 
 	/**
-	 * 搜索
-	 * @param string $title 标题
-	 * @param string $name 键名
-	 * @param string $type 类型，默认文本
-	 * @param string $des 描述
-	 * @param        $attr 标签文本
-	 * @return $this
-	 * @auth 陈一枭
-	 */
-	/**
-	 * 原@auth 陈一枭
-	 * @param  string $title [description]
-	 * @param  string $name  [description]
-	 * @param  string $type  [description]
-	 * @param  string $des   [description]
-	 * @param  [type] $attr  [description]
-	 * @return [type]        [description]
-	public function search($title = '搜索', $name = 'key', $type = 'text', $des = '', $attr )
-	{
-	$this->_search[] = array('title' => $title, 'name' => $name, 'type' => $type, 'des' => $des, 'attr' => $attr);
-	return $this;
-	}
-	 */
-
-	/**
 	 * 更新筛选搜索功能 ，修正连续提交多出N+个GET参数的BUG
 	 * @param string $title 标题
 	 * @param string $name  键名

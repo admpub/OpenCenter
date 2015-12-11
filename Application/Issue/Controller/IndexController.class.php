@@ -49,46 +49,51 @@ class IndexController extends Base {
 		if (!is_login()) {
 			$this->error('请登陆后再投稿。');
 		}
-		if (!$cover_id) {
+		if (!($cover_id = intval($cover_id))) {
 			$this->error('请上传封面。');
 		}
-		if (trim(op_t($title)) == '') {
+		if (($title = trim(op_t($title))) == '') {
 			$this->error('请输入标题。');
 		}
-		if (trim(op_h($content)) == '') {
+		if (($content = trim(op_h($content))) == '') {
 			$this->error('请输入内容。');
 		}
 		if ($issue_id == 0) {
 			$this->error('请选择分类。');
 		}
-		if (trim(op_h($url)) == '') {
+		if (($url = trim(op_h($url))) == '') {
 			$this->error('请输入网址。');
 		}
-		$content = D('IssueContent')->create();
-		$content['content'] = op_h($content['content']);
-		$content['title'] = op_t($content['title']);
-		$content['url'] = op_t($content['url']); //新增链接框
-		$content['issue_id'] = $issue_id;
+		$data = array();
+		$data['content'] = &$content;
+		$data['title'] = &$title;
+		$data['url'] = &$url; //新增链接框
+		$data['issue_id'] = &$issue_id;
+		$data['cover_id'] = &$cover_id;
+		$data = D('IssueContent')->create($data);
+		if ($data === false) {
+			$this->error(D('IssueContent')->getError());
+		}
 
 		if ($id) {
-			$content_temp = D('IssueContent')->find($id);
+			$temp = D('IssueContent')->find($id);
 			if (!check_auth('editIssueContent')) {
 				//不是管理员则进行检测
-				if ($content_temp['uid'] != is_login()) {
+				if ($temp['uid'] != is_login()) {
 					$this->error('不可操作他人的内容。');
 				}
 			}
-			$content['uid'] = $content_temp['uid']; //权限矫正，防止被改为管理员
-			$rs = D('IssueContent')->save($content);
+			$data['uid'] = $temp['uid']; //权限矫正，防止被改为管理员
+			$rs = D('IssueContent')->save($data);
 			if ($rs) {
-				$this->success('编辑成功。', U('issueContentDetail', array('id' => $content['id'])));
+				$this->success('编辑成功。', U('issueContentDetail', array('id' => $data['id'])));
 			} else {
 				$this->success('编辑失败。', '');
 			}
 		} else {
 			if (modC('NEED_VERIFY', 0) && !is_administrator()) {
 				//需要审核且不是管理员
-				$content['status'] = 0;
+				$data['status'] = 0;
 				$tip = '但需管理员审核通过后才会显示在列表中，请耐心等待。';
 				$user = query_user(array('nickname'), is_login());
 				$admin_uids = explode(',', C('USER_ADMINISTRATOR'));
@@ -96,7 +101,7 @@ class IndexController extends Base {
 					D('Common/Message')->sendMessage($admin_uid, "{$user['nickname']}向专辑投了一份稿件，请到后台审核。", $title = '专辑投稿提醒', U('Admin/Issue/verify'), is_login(), 2);
 				}
 			}
-			$rs = D('IssueContent')->add($content);
+			$rs = D('IssueContent')->add($data);
 			if ($rs) {
 				$this->success('投稿成功。' . $tip, 'refresh');
 			} else {

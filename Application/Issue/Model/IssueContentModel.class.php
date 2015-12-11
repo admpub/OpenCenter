@@ -9,22 +9,24 @@
 
 namespace Issue\Model;
 use Common\Model\Base;
-use Think\Page;
 
 /**
  * 文档基础模型
  */
-class IssueContentModel extends Base{
-    protected $_validate = array(
-        array('title', '1,100', '标题长度不合法', self::EXISTS_VALIDATE, 'length'),
-        array('content', '1,40000', '内容长度不合法', self::EXISTS_VALIDATE, 'length'),
-    );
+class IssueContentModel extends Base {
+	protected $_validate = array(
+		array('title', '1,100', '标题长度不合法', self::EXISTS_VALIDATE, 'length'),
+		array('content', '1,40000', '内容长度不合法', self::EXISTS_VALIDATE, 'length'),
+	);
 
-    protected $_auto = array(
-        array('create_time', NOW_TIME, self::MODEL_INSERT),
-        array('update_time', NOW_TIME, self::MODEL_BOTH),
-        array('status', '1', self::MODEL_INSERT),
-        array('uid', 'is_login',3, 'function'),
-    );
+	protected $_auto = array(
+		array('create_time', NOW_TIME, self::MODEL_INSERT),
+		array('update_time', NOW_TIME, self::MODEL_BOTH),
+		array('status', '1', self::MODEL_INSERT),
+		array('uid', 'is_login', 3, 'function'),
+	);
 
+	protected function _initialize() {
+		parent::_initialize();
+	}
 }

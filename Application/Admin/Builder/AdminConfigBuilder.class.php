@@ -272,7 +272,7 @@ class AdminConfigBuilder extends AdminBuilder {
 		}
 	}
 
-	public function display() {
+	public function display($templateFile = '', $charset = '', $contentType = '', $content = '', $prefix = '') {
 
 		//将数据融入到key中
 		foreach ($this->_keyList as &$e) {

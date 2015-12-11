@@ -96,9 +96,10 @@ class FileController extends Controller {
 		$this->ajaxReturn($return);
 	}
 
-	/**用于兼容UM编辑器的图片上传方法
-		     * @auth 陈一枭
-	*/
+	/**
+	 * 用于兼容UM编辑器的图片上传方法
+	 * @auth 陈一枭
+	 */
 	public function uploadPictureUM() {
 		header('Content-Type:text/html;charset=utf-8');
 		//TODO: 用户登录检测
@@ -113,7 +114,7 @@ class FileController extends Controller {
 		$type = '.jpg';
 		$status = 'success';
 		$rs = array(
-			"originalName" => $originalName,
+			'originalName' => $originalName,
 			'name' => $newFilename,
 			'url' => $filePath,
 			'size' => $size,
@@ -210,8 +211,8 @@ class FileController extends Controller {
 			/*适用于自动表单的图片上传方式*/
 			if ($info['file']) {
 				$return['data']['file'] = $info['file'];
-				$return['data']['file']['path'] = getRootUrl() . "Uploads/Avatar" . $info['file']['savename'];
-				$size = getimagesize("./Uploads/Avatar/" . $info['file']['savename']);
+				$return['data']['file']['path'] = getRootUrl() . 'Uploads/Avatar' . $info['file']['savename'];
+				$size = getimagesize('./Uploads/Avatar/' . $info['file']['savename']);
 				$return['data']['file']['width'] = $size[0];
 				$return['data']['file']['height'] = $size[1];
 				$return['data']['file']['time'] = time();

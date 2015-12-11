@@ -300,11 +300,9 @@ ThinkPHP.nestedSelectedAjax=function (idNames,url,syncToEle){
     }
     $('#'+idNames.join(',#')).change(function(){
         var id=$(this).attr('id'),level=Number($(this).attr('level')),value=$(this).val(),rel=$(this).attr('rel');
-        if (isNaN(level)||idNames.length<level+fixLevel) return false;
+        if (isNaN(level)||idNames.length<level+fixLevel) return;
         $.get(url,{from:'nestedSelect',level:level,id_name:id,value:value},function(r){
-            if(typeof(r.data)=='undefined'||r.status==0){
-                return false;
-            }
+            if(typeof(r.data)=='undefined'||r.status==0) return;
             var str='',has=false;
             if (typeof(r.data.length)!='undefined') {
                 for (var i = 0; i < r.data.length; i++) {
@@ -330,7 +328,16 @@ ThinkPHP.nestedSelectedAjax=function (idNames,url,syncToEle){
             }
             var nextId=idNames[level+fixLevel];
             $('#'+nextId).html(str);
-            if(syncToEle!=null&&has)$(syncToEle).val(rel);
+            if(syncToEle==null)return;
+            if (has) {
+            	$(syncToEle).val(rel);
+            	return;
+            }
+            var p=$('#'+nextId).children('option:selected');
+            if(p.length<=0)return;
+            p=Number(p.attr('value'));
+            if(isNaN(p)||p<=0)return;
+            $(syncToEle).val(p);
         },'json');
         if(syncToEle!=null)$(syncToEle).val(value);
     });

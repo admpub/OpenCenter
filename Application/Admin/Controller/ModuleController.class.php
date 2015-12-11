@@ -244,7 +244,7 @@ class ' . $name . 'Controller extends AdminController {
 	}
 
 	/**
-	 * [index description]
+	 * 后台' . $module['alias'] . '首页
 	 * @param integer $page 页码
 	 * @param integer $rows 每页行数
 	 * @return void
@@ -253,7 +253,10 @@ class ' . $name . 'Controller extends AdminController {
 	public function index($page = 1, $rows = 10){
 		$list = $map = array();
 		$totalCount = 0;
-		//$model = M(\'' . $name . '\');
+
+		//因为此类继承于AdminController，所以用D函数时要使用“模块英文名/模型英文名”的格式调用该模块的模型实例，
+		//否则它将会试图调用Admin模块下的模型实例，这点要特别注意。
+		//$model = D(\'' . $name . '/' . $name . '\');
 		//$list = $model->where($map)->page($page, $rows)->select();
 		//$totalCount = $model->where($map)->count();
 

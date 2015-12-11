@@ -17,19 +17,21 @@ use Vendor\requester;
  * @author 麦当苗儿 <zuojiazi@vip.qq.com>
  */
 class AdminController extends Base {
-
 	/**
 	 * 后台控制器初始化
 	 */
 	protected function _initialize() {
+		parent::_initialize();
+		$this->_adminInit();
+	}
+
+	private function _adminInit() {
 		// 获取当前用户ID
 		define('UID', is_login());
 		if (!UID) {
 			// 还没登录 跳转到登录页面
 			$this->redirect('Public/login');
 		}
-		parent::_initialize();
-
 		// 是否是超级管理员
 		define('IS_ROOT', is_administrator());
 		if (!IS_ROOT && C('ADMIN_ALLOW_IP')) {
@@ -54,11 +56,12 @@ class AdminController extends Base {
 				$this->error('未授权访问!');
 			}
 		}
-		$this->assign('__MANAGE_COULD__', $this->checkRule('admin/module/lists', array('in', '1,2')));
 
-		$this->assign('__MENU__', $this->getMenus());
 		$this->assign('__MODULE_MENU__', $this->getModules());
+		$this->assign('__MANAGE_COULD__', $this->checkRule('admin/module/lists', array('in', '1,2')));
+		$this->assign('__MENU__', $this->getMenus());
 		$this->getReport();
+		echo get_class($this), '==', PHP_EOL;
 	}
 
 	/**
@@ -237,6 +240,10 @@ class AdminController extends Base {
 	 * @auth 陈一枭 <yixiao2020@qq.com>
 	 */
 	public function getModules() {
+		static $modules = null;
+		if (!is_null($modules)) {
+			return $modules;
+		}
 		$modules = D('Module')->getAll();
 		foreach ($modules as $key => &$v) {
 			$rule = strtolower($v['admin_entry']);
@@ -254,8 +261,9 @@ class AdminController extends Base {
 	 * @author 朱亚杰  <xcoolcc@gmail.com>
 	 */
 	final public function getMenus($controller = CONTROLLER_NAME) {
-		// $menus  =   session('ADMIN_MENU_LIST'.$controller);
-		if (empty($menus)) {
+		static $menusArr = array();
+		if (!isset($menusArr[$controller])) {
+			$menus = array();
 			// 获取主菜单
 			$where['pid'] = 0;
 			//$where['hide'] = 0;
@@ -350,9 +358,9 @@ class AdminController extends Base {
 					}
 				}
 			}
-			// session('ADMIN_MENU_LIST'.$controller,$menus);
+			$menusArr[$controller] = $menus;
 		}
-		return $menus;
+		return $menusArr[$controller];
 	}
 
 	/**

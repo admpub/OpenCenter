@@ -13,16 +13,14 @@ class Base extends Controller {
 	static protected $_once = false;
 
 	protected function _initialize() {
-		$this->_onceInit();
-	}
-
-	protected function _onceInit() {
 		if (self::$_once) {
 			return;
 		}
-
+		$this->_onceInit();
 		self::$_once = true;
+	}
 
+	protected function _onceInit() {
 		/* 读取数据库中的配置 */
 		$config = S('DB_CONFIG_DATA');
 		if (!$config) {
@@ -65,6 +63,7 @@ class Base extends Controller {
 	}
 
 	public function moduleMdl() {
+		self::$_moduleMdl || self::$_moduleMdl = D('Module');
 		return self::$_moduleMdl;
 	}
 
