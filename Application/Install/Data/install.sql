@@ -1414,7 +1414,7 @@ INSERT INTO `ocenter_menu` (`id`, `title`, `pid`, `sort`, `url`, `hide`, `tip`, 
 (174, '主题打包下载', 105, 0, 'Theme/packageDownload', 1, '', '云市场', 0, ''),
 (175, '卸载删除主题', 105, 0, 'Theme/delete', 1, '', '云市场', 0, ''),
 (176, '上传安装主题', 105, 0, 'Theme/add', 1, '', '云市场', 0, ''),
-(177, '快速创建', 107, 0, 'Module/create', 0, '', '模块管理', 0, '', '');
+(177, '快速创建', 107, 0, 'Module/create', 0, '', '模块管理', 0, '');
 
 
 INSERT INTO `ocenter_seo_rule` (`id`, `title`, `app`, `controller`, `action`, `status`, `seo_keywords`, `seo_description`, `seo_title`, `sort`) VALUES

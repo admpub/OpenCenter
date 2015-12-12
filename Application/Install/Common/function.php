@@ -179,51 +179,66 @@ function write_config($config, $auth) {
 function create_tables($db, $prefix = '') {
 	//读取SQL文件
 	$sql = file_get_contents(MODULE_PATH . 'Data/install.sql');
+
+	show_msg(write_install_log('读取安装所需的sql文件：'.MODULE_PATH . 'Data/install.sql'));
 	if (file_exists(MODULE_PATH . 'Data/data.sql')) {
 		$sql .= "\n" . file_get_contents(MODULE_PATH . 'Data/data.sql');
+		show_msg(write_install_log('自动读取检测到的表数据文件：'.MODULE_PATH . 'Data/data.sql'));
 	}
 	if (file_exists(MODULE_PATH . 'Data/patch.sql')) {
 		$sql .= "\n" . file_get_contents(MODULE_PATH . 'Data/patch.sql');
+		show_msg(write_install_log('自动读取检测到的补丁sql文件：'.MODULE_PATH . 'Data/patch.sql'));
 	}
 	$other_patch = glob(MODULE_PATH . 'Data/patch_*.sql');
 	if ($other_patch) {
 		foreach ($other_patch as $value) {
 			$sql .= "\n" . file_get_contents($value);
+			show_msg(write_install_log('自动读取检测到的补丁sql文件：'.$value));
 		}
 	}
-	$sql = str_replace("\r", "\n", $sql);
-	$sql = explode(";\n", $sql);
 
 	//替换表前缀
 	$orginal = C('ORIGINAL_TABLE_PREFIX');
 	$sql = str_replace(" `{$orginal}", " `{$prefix}", $sql);
 
+	$sql = str_replace("\r", "\n", $sql);
+	$sql = explode(";\n", $sql);
+
 	//开始安装
-	show_msg('开始安装数据库...');
+	show_msg(write_install_log('开始安装数据库...'));
 	foreach ($sql as $value) {
 		$value = trim($value);
-		if (empty($value) || strpos($value, '--') === 0) {
+		if (empty($value)) {
 			continue;
 		}
-
+		$value = preg_replace('/[\r\n]+[ \t]*--[^\n]*\n/', '', $value);
+		$value = preg_replace('/^[ \t]*--[^\n]*\n/', '', $value);
+		$value = trim($value);
+		if (empty($value)) {
+			continue;
+		}
 		if (substr($value, 0, 12) == 'CREATE TABLE') {
 			$name = preg_replace("/^CREATE TABLE IF NOT EXISTS `(\w+)` .*/s", "\\1", $value);
 			$msg = "创建数据表{$name}";
 			if (false !== $db->execute($value)) {
-				show_msg($msg . '...成功');
+				show_msg(write_install_log($msg . '...成功'));
 			} else {
-				show_msg($msg . '...失败！', 'error');
+				show_msg(write_install_log($msg . '...失败！'), 'error');
 				session('error', true);
 			}
 		} else {
-			$db->execute($value);
+			if(false !== $db->execute($value)){
+				write_install_log($value.'...成功');
+			}else{
+				write_install_log($value.'...失败');
+			}
 		}
 	}
 
 }
 
 function register_administrator($db, $prefix, $admin, $auth) {
-	show_msg('开始注册创始人帐号...');
+	show_msg(write_install_log('开始注册创始人帐号...'));
 	$uid = 1;
 	/*插入用户*/
 	$sql = <<<sql
@@ -279,7 +294,7 @@ sql;
 
 	/*初始化用户角色end*/
 
-	show_msg('创始人帐号注册完成！');
+	show_msg(write_install_log('创始人帐号注册完成！'));
 }
 
 /**
@@ -291,6 +306,21 @@ function show_msg($msg, $class = '') {
 	ob_flush();
 	flush();
 
+}
+
+/**
+ * 写安装日志
+ * @author swh <swh@admpub.com>
+ */
+function write_install_log($msg) {
+	static $_first=true;
+	$log_head='';
+	if ($_first) {
+		$_first=false;
+		$log_head=PHP_EOL.'======'.date('Y-m-d H:i:s').'====='.PHP_EOL;
+	}
+	file_put_contents(RUNTIME_PATH.'install.log', $log_head.'【'.$msg.'】'.PHP_EOL.PHP_EOL,FILE_APPEND);
+	return $msg;
 }
 
 /**
