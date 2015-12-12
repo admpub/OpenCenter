@@ -1319,7 +1319,7 @@ function array_subtract($a, $b) {
  * @param  array  $param 参数
  * @return string        插件网址
  */
-function simple_addons_url($url, $param) {
+function simple_addons_url($url, $param=array()) {
 	// 拆分URL
 	$url = explode('/', $url);
 	$addon = $url[0];

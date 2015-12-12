@@ -118,12 +118,12 @@ function get_at_uids($content) {
 	return $result;
 }
 
+function parse_url_link_callback($p) {
+	return '<a href="' . $p[1] . '" target="_blank"><i class="glyphicon glyphicon-link" title="' . $p[1] . '"></i></a>'.$p[4];
+}
+
 function parse_url_link($content) {
-	$content = preg_replace('#((http|https|ftp)://(\\S*?\\.\\S*?))(\\s|\\;|\\)|\\]|\\[|\\{|\\}|,|"|\'|:|\\<|$|\\.\\s)#i',
-		function ($p) {
-			return '<a href="' . $p[1] . '" target="_blank"><i class="glyphicon glyphicon-link" title="' . $p[1] . '"></i></a>$4';
-		}, $content
-	);
+	$content = preg_replace('#((http|https|ftp)://(\\S*?\\.\\S*?))(\\s|\\;|\\)|\\]|\\[|\\{|\\}|,|"|\'|:|\\<|$|\\.\\s)#i','parse_url_link_callback', $content);
 	return $content;
 }
 

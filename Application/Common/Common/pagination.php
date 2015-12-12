@@ -7,7 +7,7 @@ function getPagination($totalCount, $countPerPage = 10) {
 	$pageKey = 'page';
 
 	//获取当前页码
-	$currentPage = intval($_REQUEST[$pageKey]) ? intval($_REQUEST[$pageKey]) : 1;
+	$currentPage = isset($_REQUEST[$pageKey])&&($_REQUEST[$pageKey]=intval($_REQUEST[$pageKey]))>1 ? $_REQUEST[$pageKey] : 1;
 
 	//计算总页数
 	$pageCount = ceil($totalCount / $countPerPage);
