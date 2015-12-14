@@ -187,10 +187,10 @@ function bindMessageChecker() {
 }
 
 function play_bubble_sound() {
-    playsound('Public/Core/js/ext/toastr/message.wav');
+    playsound('Public/js/ext/toastr/message.wav');
 }
 function paly_ios_sound() {
-    playsound('Public/Core/js/ext/toastr/tip.mp3');
+    playsound('Public/js/ext/toastr/tip.mp3');
 }
 /**
  * 检查是否有新的消息

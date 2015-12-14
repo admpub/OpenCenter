@@ -18,11 +18,12 @@
 
 
     <php>
+        $show=0;
         foreach($searches as $search){
-        if($_REQUEST[$search['name']])
-        {
-        $show=1;
-        }
+            if(!empty($_REQUEST[$search['name']])){
+                $show=1;
+                break;
+            }
         }
     </php>
 

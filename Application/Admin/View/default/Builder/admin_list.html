@@ -10,8 +10,12 @@
         </h2>
     </div>
     <php>
+        $show=0;
         foreach($searches as $search){
-            if(!empty($_REQUEST[$search['name']]))$show=1;
+            if(!empty($_REQUEST[$search['name']])){
+                $show=1;
+                break;
+            }
         }
     </php>
 
@@ -85,8 +89,12 @@
 
 
             <php>
+                $show=0;
                 foreach($selects as $select){
-                    if(!empty($_REQUEST[$select['name']]))$show=1;
+                    if(!empty($_REQUEST[$select['name']])){
+                        $show=1;
+                        break;
+                    }
                 }
             </php>
             <!-- 选择框select -->

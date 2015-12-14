@@ -38,19 +38,17 @@
     </script>
 </head>
 <block name="body">
-    <link type="text/css" rel="stylesheet" href="__PUBLIC__/Core/js/ext/magnific/magnific-popup.css"/>
+    <link type="text/css" rel="stylesheet" href="__PUBLIC__/js/ext/magnific/magnific-popup.css"/>
 
     <php>
         foreach($searches as $search){
-            if($_REQUEST[$search['name']])
-        {
-        $show=1;
-        }
+            if(!empty($_REQUEST[$search['name']])){
+                $show=1;
+                break;
+            }
         }
         //如果inpitid存在就将它加入缓存
-    	if ($_GET['inputid']){
-		S('inputid',$_GET['inputid']);
-		}
+    	if (!empty($_GET['inputid'])) S('inputid',$_GET['inputid']);
 
     </php>
     <!-- 按钮工具栏 -->
@@ -135,45 +133,22 @@
 <body> 
     <script type="text/javascript" src="__STATIC__/thinkbox/jquery.thinkbox.js"></script>
 	<script> 
-				function choseids() 
-				{ 
-				var v=""; 
-				var check_ids = document.frm.ids; 
-				/*alert(check_ids.value);*/
-				v =check_ids.value; 
-				document.frm.txt.value=v; 
-				} 
-				function foo() 
-				{ 
-				window .close(); 
-				window .opener.document.getElementById("{:S('inputid')}").value=document.getElementById("txt").value 
-				} 
-	</script> 
-    <script type="text/javascript">
-//        //搜索功能
-//        $("#search").click(function () {
-//            var url = $(this).attr('url');
-//            var query = $('.search-form').find('input').serialize();
-//            query = query.replace(/(&|^)(\w*?\d*?\-*?_*?)*?=?((?=&)|(?=$))/g, '');
-//            query = query.replace(/^&/g, '');
-//            if (url.indexOf('?') > 0) {
-//                url += '&' + query;
-//            } else {
-//                url += '?' + query;
-//            }
-//            window.location.href = url;
-//        });
-        //回车搜索
-//        $(".search-input").keyup(function (e) {
-//            if (e.keyCode === 13) {
-//                $("#search").click();
-//                return false;
-//            }
-//        });
+		function choseids() { 
+			var v=""; 
+			var check_ids = document.frm.ids; 
+			/*alert(check_ids.value);*/
+			v =check_ids.value; 
+			document.frm.txt.value=v; 
+		} 
+		function foo() { 
+		    window .close(); 
+			window .opener.document.getElementById("{:S('inputid')}").value=document.getElementById("txt").value 
+		} 
+
+
         function toggle_search(){
             $('#search_form').toggle('slide');
         }
-
 
         $(document).on('submit', '.form-dont-clear-url-param', function(e){
             e.preventDefault();
@@ -192,10 +167,6 @@
         });
 
 
-    </script>
-
-
-    <script>
         $(function(){
             $('.tox-confirm').click(function(e){
                 var text = $(this).attr('data-confirm');
@@ -208,11 +179,7 @@
                     e.preventDefault();
                     return false;
                 }
-            })
-        });
-
-
-        $(document).ready(function () {
+            });
 
             $('.popup-gallery').each(function () { // the containers for all your galleries
                 $(this).magnificPopup({
@@ -238,5 +205,5 @@
             });
         });
     </script>
-    <script type="text/javascript" src="__PUBLIC__/Core/js/ext/magnific/jquery.magnific-popup.min.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/js/ext/magnific/jquery.magnific-popup.min.js"></script>
 </block>
