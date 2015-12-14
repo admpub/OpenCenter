@@ -3,41 +3,26 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>跳转提示</title>
-    <style type="text/css">
-        *{ padding: 0; margin: 0; }
-        body{ background: rgb(79, 138, 208); font-family: '微软雅黑'; color: #fff; font-size: 16px;}
-        .system-message{position: fixed;left: 50%;top: 50%;margin-left: -222px;margin-top: -230px}
-        .system-message h1{ font-size: 80px; font-weight: normal; line-height: 120px; margin-bottom: 12px }
-        .system-message .jump{ padding-top: 10px;margin-bottom:20px}
-        .system-message .jump a{ color: #333;}
-        .system-message .success,.system-message .error{ line-height: 1.8em; font-size: 36px }
-        .system-message .detail{ font-size: 12px; line-height: 20px; margin-top: 12px; display:none}
-        #wait {
-            font-size:46px;
-        }
-        #btn-stop,#href{
-            display: inline-block;
-            margin-right: 10px;
-            font-size: 16px;
-            line-height: 18px;
-            text-align: center;
-            vertical-align: middle;
-            cursor: pointer;
-            border: 0 none;
-            background-color: white;
-            padding: 10px 20px;
-            color: rgb(79, 138, 208);
-            border-radius: 3px;
-            font-weight: bold;
-            border-color: transparent;
-            text-decoration:none;
-        }
-
-        #btn-stop:hover,#href:hover{
-            color: rgba(79, 138, 208,0.9);
-            background: rgba(255,255,255,0.9);
-        }
-    </style>
+<style type="text/css">
+*{padding:0;margin:0;}
+body{background: rgb(79, 138, 208);font-family:'微软雅黑';color:#fff;font-size:16px;padding:20px;}
+.system-message{margin:0 auto;width:auto}
+.system-message h1{font-size:40px;font-weight:normal;line-height:60px;margin-bottom:12px}
+.system-message .jump{padding-top:10px;margin-bottom:20px}
+.system-message .jump a{color:#333;}
+.system-message .success,.system-message .error{line-height:1.8em;font-size: 22px;word-break:break-all;word-wrap:break-word;overflow-y:auto;max-height:400px;}
+.system-message .detail{font-size: 12px; line-height: 20px; margin-top: 12px; display:none}
+#wait {font-size:30px;}
+#btn-stop,#btn-now,#href{display: inline-block;margin-right: 5px;
+    font-size: 15px;line-height: 18px;text-align: center;
+    vertical-align: middle;cursor: pointer;border: 0 none;
+    background-color: white;padding: 6px 12px;color: rgb(79, 138, 208);
+    border-radius: 3px;font-weight: bold;
+    border-color: transparent;text-decoration:none;
+}
+#href{margin-right: 0px;}
+#btn-stop:hover,#href:hover{color: rgba(79, 138, 208,0.9);background: rgba(255,255,255,0.9);}
+</style>
 </head>
 <body>
 <div class="system-message">
@@ -48,9 +33,9 @@
         <b id="wait"><?php echo($waitSecond); ?></b> 秒后页面将自动跳转
     </p>
     <div>
-        <a id="href" id="btn-now" href="<?php echo($jumpUrl); ?>">立即跳转</a>
+        <a id="btn-now" href="<?php echo($jumpUrl); ?>">立即跳转</a>
         <button id="btn-stop" type="button" onclick="stop()">停止跳转</button>
-        <a id="href" id="btn-now" href="<?php echo(U('Home/index/index')); ?>">返回首页</a>
+        <a id="href" href="<?php echo(U('Home/index/index')); ?>">返回首页</a>
     </div>
 </div>
 <script type="text/javascript">
