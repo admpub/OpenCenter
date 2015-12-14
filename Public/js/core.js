@@ -11,7 +11,6 @@ $.getScript('Public/js/com/com.toast.class.js', function () {
             ucard();//绑定用户小名片
             bindGoTop();//回到顶部
             talker.bind_ctrl_enter();//绑定
-
             $('input,area').placeholder();//修复ieplace holder
             if (is_login()) {
                 bindMessageChecker();//绑定用户消息
@@ -20,12 +19,10 @@ $.getScript('Public/js/com/com.toast.class.js', function () {
                 bindRegister();
             }
             checkMessage();//检查一次消息
-
             bindLogout();
             $('.scroller').slimScroll({
                 height: '200px'
             });
-
             $('#scrollArea_chat').slimScroll({
                 height: '320px',
                 alwaysVisible: true,
@@ -41,7 +38,6 @@ $.getScript('Public/js/com/com.toast.class.js', function () {
             };
             var $inputor = $('#weibo_content').atwho(atwho_config);
         });
-
     });
 });
 
@@ -56,7 +52,6 @@ $(function () {
     $(document).on('click', '.ajax-post', function (e) {
         //取消默认动作，防止跳转页面
         e.preventDefault();
-
         //获取参数（属性）
         var url = $(this).attr('href');
         var confirmText = $(this).attr('data-confirm');
@@ -68,13 +63,11 @@ $(function () {
                 return false;
             }
         }
-
         //发送AJAX请求
         $.post(url, {}, function (a, b, c) {
             handleAjax(a);
         });
     });
-
     /**
      * ajax-form
      * 通过ajax提交表单，通过oneplus提示消息
@@ -83,28 +76,22 @@ $(function () {
     $(document).on('submit', 'form.ajax-form', function (e) {
         //取消默认动作，防止表单两次提交
         e.preventDefault();
-
         //禁用提交按钮，防止重复提交
         var form = $(this);
         $('[type=submit]', form).addClass('disabled');
-
         //获取提交地址，方式
         var action = $(this).attr('action');
         var method = $(this).attr('method');
-
         //检测提交地址
         if (!action) {
             return false;
         }
-
         //默认提交方式为get
         if (!method) {
             method = 'get';
         }
-
         //获取表单内容
         var formContent = $(this).serialize();
-
         //发送提交请求
         var callable;
         if (method == 'post') {
@@ -116,11 +103,9 @@ $(function () {
             handleAjax(a);
             $('[type=submit]', form).removeClass('disabled');
         });
-
         //返回
         return false;
     });
-
 });
 
 
@@ -150,7 +135,6 @@ function ufollow(obj, uid) {
             }
         }, 'json');
     }
-
 }
 /**
  * 绑定回到顶部
@@ -166,7 +150,6 @@ function bindGoTop() {
             $("#goTopBtn").css("display", "none");
         }
     })
-
     $("#goTopBtn").click(function () {
         var sc = $(window).scrollTop();
         $('body,html').animate({scrollTop: 0}, 500);
@@ -180,7 +163,6 @@ function bindGoTop() {
 function bindMessageChecker() {
     window["$hint_count"] = $('#nav_hint_count');
     window["$nav_bandage_count"] = $('#nav_bandage_count');
-
     setInterval(function () {
         checkMessage();
     }, 10000);
@@ -189,7 +171,7 @@ function bindMessageChecker() {
 function play_bubble_sound() {
     playsound('Public/js/ext/toastr/message.wav');
 }
-function paly_ios_sound() {
+function play_ios_sound() {
     playsound('Public/js/ext/toastr/tip.mp3');
 }
 /**
@@ -198,67 +180,52 @@ function paly_ios_sound() {
 function checkMessage() {
     if(typeof($hint_count)=='undefined')return;
     $.get(U('Ucenter/Public/getInformation'), {}, function (msg) {
-        if (msg.messages) {
+        if (msg.messages && msg.messages.length>0) {
             var count = parseInt($hint_count.text());
             if (count == 0) {
                 $('#nav_message').html('');
             }
-            paly_ios_sound();
+            play_ios_sound();
             for (var index in msg.messages) {
-
                 tip_message(msg['messages'][index]['content'] + '<div style="text-align: right"> ' + msg['messages'][index]['ctime'] + '</div>', msg['messages'][index]['title']);
                 //  var url=msg[index]['url']===''?U('') //设置默认跳转到消息中心
-
 
                 var new_html = $('<span><li><a data-url="' + msg['messages'][index]['url'] + '"' + 'onclick="Notify.readMessage(this,' + msg['messages'][index]['id'] + ')"><i class="icon-bell"></i> ' +
                     msg['messages'][index]['title'] + '<br/><span class="time">' + msg['messages'][index]['ctime'] +
                     '</span> </a></li></span>');
                 $('#nav_message').prepend(new_html.html());
-
-
             }
-
             $hint_count.text(count + msg.messages.length);
             $nav_bandage_count.show();
             $nav_bandage_count.text(count + msg.messages.length);
         }
 
-        if (msg.new_talks) {
+        if (msg.new_talks && msg.new_talks.length>0) {
             play_bubble_sound();
             //发现有新的聊天
-            $.each(msg.new_talks, function (index, talk) {
-                    talker.prepend_session(talk.talk);
-                }
-            );
+            $.each(msg.new_talks, function(index, talk){talker.prepend_session(talk.talk);});
         }
-
 
         function message_box_showing(talk_message) {
             return ($('#chat_id').val() == talk_message.talk_id) && ($('#chat_box').is(":visible"));
         }
 
-        if (msg.new_talk_messages) {
+        if (msg.new_talk_messages && msg.new_talk_messages.length>0) {
             play_bubble_sound();
             //发现有新的聊天
             $.each(msg.new_talk_messages, function (index, talk_message) {
-                    if (message_box_showing(talk_message)) {
-                        talker.append_message(talker.fetch_message_tpl(talk_message, MID));
-                        //发起一个获取聊天的请求来将该聊天设为已读
-                        $.get(U('Ucenter/Session/getSession'), {id: talk_message.talk_id}, function () {
+                if (message_box_showing(talk_message)) {
+                    talker.append_message(talker.fetch_message_tpl(talk_message, MID));
+                    //发起一个获取聊天的请求来将该聊天设为已读
+                    $.get(U('Ucenter/Session/getSession'), {id: talk_message.talk_id}, function () {
 
-                        }, 'json');
-
-                    }
-                    else {
-                        talker.set_session_unread(talk_message.talk_id);
-                    }
-                }
-            );
+                    }, 'json');
+                 } else {
+                    talker.set_session_unread(talk_message.talk_id);
+                 }
+            });
         }
-
-
     }, 'json');
-
 }
 
 
