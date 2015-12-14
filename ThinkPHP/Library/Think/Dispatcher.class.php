@@ -308,7 +308,7 @@ class Dispatcher {
 			// 智能识别方式 user_type 识别到 UserTypeController 控制器
 			$controller = parse_name($controller, 1);
 		}
-		return self::cleanNotWords(strip_tags(ucfirst($controller)));
+		return self::cleanNotWords(strip_tags(ucfirst($controller)), true);
 	}
 
 	/**
@@ -366,11 +366,19 @@ class Dispatcher {
 	/**
 	 * 清理掉上面getSpace、getModule、getAction、getController方法结果中的非法字符。
 	 * 在这三个函数的return部分用self::cleanNotWords(...)包裹即可。
-	 * @param  string $str 字符串
+	 * @param  string  $str 		字符串
+	 * @param  boolean $allowSlash 	是否允许斜杠（用于getController方法）
 	 * @return string
 	 * @author swh <swh@admpub.com>
 	 */
-	static private function cleanNotWords($str) {
+	static private function cleanNotWords($str, $allowSlash = false) {
+		if ($allowSlash) {
+			if (strpos($str, '/_')) {
+				return '';
+			}
+			$str = preg_replace('|[^\\w/]+|', '', $str);
+			return $str;
+		}
 		if ($str[0] == '_') {
 			return '';
 		}
