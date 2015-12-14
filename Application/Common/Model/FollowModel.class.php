@@ -11,12 +11,14 @@ namespace Common\Model;
 class FollowModel extends Base {
 
 	protected $_auto = array(
-		array('create_time', NOW_TIME, self::MODEL_INSERT));
+		array('create_time', NOW_TIME, self::MODEL_INSERT),
+	);
 
-	/**关注
-		     * @param $uid
-		     * @return int|mixed
-	*/
+	/**
+	 * 关注
+	 * @param $uid
+	 * @return int|mixed
+	 */
 	public function follow($uid) {
 		$follow['who_follow'] = is_login();
 		$follow['follow_who'] = $uid;
@@ -46,10 +48,11 @@ class FollowModel extends Base {
 		return $this->add($follow);
 	}
 
-	/**取消关注
-		     * @param $uid
-		     * @return mixed
-	*/
+	/**
+	 * 取消关注
+	 * @param $uid
+	 * @return mixed
+	 */
 	public function unfollow($uid) {
 		$follow['who_follow'] = is_login();
 		$follow['follow_who'] = $uid;
@@ -105,11 +108,12 @@ class FollowModel extends Base {
 		return $i_follow;
 	}
 
-	/**关注
-		     * @param $who_follow
-		     * @param $follow_who
-		     * @return int|mixed
-	*/
+	/**
+	 * 关注
+	 * @param $who_follow
+	 * @param $follow_who
+	 * @return int|mixed
+	 */
 	public function addFollow($who_follow, $follow_who) {
 		$follow['who_follow'] = $who_follow;
 		$follow['follow_who'] = $follow_who;

@@ -23,8 +23,9 @@ class TalkModel extends Base {
 	 * @auth 陈一枭
 	 */
 	public function getUids($uids) {
+		$uids_array = array();
 		preg_match_all('/\[(.*?)\]/', $uids, $uids_array);
-		return $uids_array[1];
+		return $uids_array ? array() : $uids_array[1];
 	}
 
 	/**

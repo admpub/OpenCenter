@@ -240,7 +240,7 @@ class MemberModel extends Base {
 	private function jiami($txt, $key = null) {
 		empty($key) && $key = $this->change();
 
-		$chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-=_";
+		$chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-=_';
 		$nh = rand(0, 64);
 		$ch = $chars[$nh];
 		$mdKey = md5($key . $ch);
@@ -267,7 +267,7 @@ class MemberModel extends Base {
 	private function jiemi($txt, $key = null) {
 		empty($key) && $key = $this->change();
 
-		$chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-=_";
+		$chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-=_';
 		$ch = $txt[0];
 		$nh = strpos($chars, $ch);
 		$mdKey = md5($key . $ch);
@@ -402,10 +402,10 @@ class MemberModel extends Base {
 				//查询已拥有头衔
 				$rankUserModel = D('RankUser');
 				$have_rank_ids = $rankUserModel->where(array(
-                    'uid' => $uid,
+					'uid' => $uid,
 					'status' => 1,
-					'_string' => 'expire_time=0 OR expire_time>' . NOW_TIME
-                ))->select();
+					'_string' => 'expire_time=0 OR expire_time>' . NOW_TIME,
+				))->select();
 				$have_rank_ids = array_column($have_rank_ids, 'rank_id');
 				//查询已拥有头衔 end
 

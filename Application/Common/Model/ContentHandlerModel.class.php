@@ -6,10 +6,10 @@
  * 创建时间: 9:44 PM
  * 版权所有 嘉兴想天信息科技有限公司(www.ourstu.com)
  */
-
 namespace Common\Model;
 
-/**内容处理模型，专门用于预处理各类文本
+/**
+ * 内容处理模型，专门用于预处理各类文本
  * Class ContentHandlerModel
  * @package Common\Model
  * @auth 陈一枭

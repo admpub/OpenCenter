@@ -6,7 +6,6 @@
  * Time: 下午4:29
  * @author:xjw129xjt(肖骏涛) xjt@ourstu.com
  */
-
 namespace Common\Model;
 
 class ActionLimitModel extends Base {
