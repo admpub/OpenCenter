@@ -90,10 +90,22 @@ class Base extends Model {
 		if ($count === false) {
 			// 查询总数
 			$count_options = $options;
-			$count_options['limit'] = 1;
-			$count_options['field'] = 'count(1) as count';
+
 			// 去掉统计时的排序提高效率
 			unset($count_options['order']);
+
+			// 采用group子句或distinct函数时查询总数需要特别处理
+			if (!empty($count_options['distinct']) || !empty($count_options['group'])) {
+				$sql = $this->db->buildSelectSql($count_options);
+				$count_options = array(
+					'field' => 'count(1) as count',
+					'table' => '(' . $sql . ') _temp_table_',
+				);
+			} else {
+				$count_options['limit'] = 1;
+				$count_options['field'] = 'count(1) as count';
+			}
+
 			$result = $this->db->select($count_options);
 
 			$count = is_array($result) ? $result[0]['count'] : 0;
