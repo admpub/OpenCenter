@@ -113,10 +113,10 @@ class Base extends Model {
 
 			// 输出控制
 			$output['count'] = $count;
+			$output['html'] = $p->show();
 			$output['totalPages'] = $p->totalPages;
 			$output['totalRows'] = $p->totalRows;
 			$output['nowPage'] = $p->nowPage;
-			$output['html'] = $p->show();
 
 			//上面的$this->_parseOptions()已经把$this->options的值清空了，所以这里要重新赋值
 			$this->options = &$options;
