@@ -372,6 +372,9 @@ class Dispatcher {
 	 * @author swh <swh@admpub.com>
 	 */
 	static private function cleanNotWords($str, $allowSlash = false) {
+		if ($str == '') {
+			return '';
+		}
 		if ($allowSlash) {
 			if (strpos($str, '/_')) {
 				return '';
