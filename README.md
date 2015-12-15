@@ -1,11 +1,21 @@
 #OpenCenter
+
+github地址：[https://github.com/admpub/OpenCenter](https://github.com/admpub/OpenCenter)
+
+###admpub新增重要特性
+
+1. 增加快速创建模块功能
+2. AdminConfigBuilder增加级联选择下拉框组件
+3. ThinPHP框架升级到最新稳定版
+4. 安装程序支持自动运用Install模块Data目录下的data.sql,patch.sql,patch_*.sql文件内的sql语句
+
+###项目简介
+
 在线开发手册：[点击阅读](http://www.ocenter.cn/index.php?m=book&f=browse&nodeID=1)
 
 开发者讨论群：390967955
 
 永久免费开源的用户中心
-
-项目从OpenSNS项目中提取并改进而来。
 
 基于Apache2.0的开源协议，对商业友好，永久开源免费。
 
