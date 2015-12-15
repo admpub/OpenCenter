@@ -72,3 +72,7 @@ function addonD($addon, $model = null) {
 	isset($_addonM[$k]) || $_addonM[$k] = D('Addons://' . $k);
 	return $_addonM[$k];
 }
+
+function baseM($name = '', $tablePrefix = '', $connection = '') {
+	return M('Common\\Model\\Base:' . $name, $tablePrefix, $connection);
+}

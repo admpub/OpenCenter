@@ -80,8 +80,9 @@ class Base extends Model {
 	 * @param mixed $options 表达式参数
 	 * @param mixed $pageopt 分页参数
 	 * @return mixed
+	 * @modified by swh <swh@admpub.com>
 	 */
-	public function findPage($pageopt, $count = false, $options = array()) {
+	public function findPage($pagesize, $count = false, $options = array()) {
 		// 分析表达式
 		$options = $this->_parseOptions($options);
 
@@ -95,20 +96,18 @@ class Base extends Model {
 			unset($count_options['order']);
 			$result = $this->db->select($count_options);
 
-			$count = $result[0]['count'];
+			$count = is_array($result) ? $result[0]['count'] : 0;
 			unset($result, $count_options);
 		}
 
 		// 如果查询总数大于0
 		if ($count > 0) {
 			// 解析分页参数
-			if (is_numeric($pageopt)) {
-				$pagesize = intval($pageopt);
-			} else {
+			if (!is_numeric($pagesize)) {
 				$pagesize = 10;
 			}
 
-			$p = new \Think\Page($count, $pageopt); // 实例化分页类 传入总记录数和每页显示的记录数
+			$p = new \Think\Page($count, $pagesize); // 实例化分页类 传入总记录数和每页显示的记录数
 			// 查询数据
 			$options['limit'] = $p->firstRow . ',' . $p->listRows;
 
@@ -118,7 +117,20 @@ class Base extends Model {
 			$output['totalRows'] = $p->totalRows;
 			$output['nowPage'] = $p->nowPage;
 			$output['html'] = $p->show();
-			$resultSet = $this->where($options['where'])->order($options['order'])->page($p->nowPage, $pageopt)->select();
+
+			//上面的$this->_parseOptions()已经把$this->options的值清空了，所以这里要重新赋值
+			$this->options = &$options;
+
+			//如果有别名且别名已经加入到table元素中了，这里要清除alias元素，否则sql会拼接错误
+			if (isset($this->options['alias']) && preg_match('/[\\s]+' . $this->options['alias'] . '$/', $this->options['table'])) {
+				unset($this->options['alias']);
+			}
+
+			$resultSet = $this->page($p->nowPage, $pagesize)->select();
+
+			//用完清空
+			$this->options = array();
+
 			if ($resultSet) {
 				$this->dataList = $resultSet;
 			} else {
@@ -164,31 +176,27 @@ class Base extends Model {
 
 		foreach (explode(";\n", trim($sql)) as $query) {
 			$query = trim($query);
-			if ($query) {
-				// if (substr($query, 0, 12) == 'CREATE TABLE') {
-				//预处理建表语句
-				//      $db_charset = (strpos($db_charset, '-') === FALSE) ? $db_charset : str_replace('-', '', $db_charset);
-				//       $type = strtoupper(preg_replace("/^\s*CREATE TABLE\s+.+\s+\(.+?\).*(ENGINE|TYPE)\s*=\s*([a-z]+?).*$/isU", "\\2", $query));
-				//       $type = in_array($type, array("MYISAM", "HEAP")) ? $type : "MYISAM";
-				/* $_temp_query = preg_replace("/^\s*(CREATE TABLE\s+.+\s+\(.+?\)).*$/isU", "\\1", $query) .*/
-				//          (mysql_get_server_info() > "4.1" ? " ENGINE=$type DEFAULT CHARSET=$db_charset" : " TYPE=$type");
+			if (empty($query)) {
+				continue;
+			}
+			$query = preg_replace('/[\r\n]+[ \t]*--[^\n]*\n/', '', $query);
+			$query = preg_replace('/^[ \t]*--[^\n]*\n/', '', $query);
+			$query = trim($query);
+			if (empty($query)) {
+				continue;
+			}
 
-				// dump($_temp_query);exit;
-				//     $res = $this->execute($_temp_query);
-				//  } else {
-				$res = $this->execute($query);
-				//  }
-				if ($res === false) {
-					$error[] = array(
-						'error_code' => $this->getDbError(),
-						'error_sql' => $query,
-					);
+			$res = $this->execute($query);
+			if ($res === false) {
+				$error[] = array(
+					'error_code' => $this->getDbError(),
+					'error_sql' => $query,
+				);
 
-					if ($stop) {
-						return $error;
-					}
-
+				if ($stop) {
+					return $error;
 				}
+
 			}
 		}
 		return $error;
