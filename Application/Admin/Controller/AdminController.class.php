@@ -26,6 +26,9 @@ class AdminController extends Base {
 	}
 
 	private function _adminInit() {
+		if (defined('UID')) {
+			return;
+		}
 		// 获取当前用户ID
 		define('UID', is_login());
 		if (!UID) {

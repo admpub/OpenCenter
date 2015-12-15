@@ -82,6 +82,13 @@ class Base extends Controller {
 		$this->assign('seo', $this->_seo);
 	}
 
+	public function viewInstance(&$view = null) {
+		if ($view) {
+			$this->view = $view;
+		}
+		return $this->view;
+	}
+
 	/**
 	 * 操作错误跳转的快捷方法
 	 * @access protected

@@ -20,6 +20,7 @@ class EmptyController extends Base {
 			}
 			require_once $file;
 			$controller = A('Admin/' . CONTROLLER_NAME);
+			$controller->viewInstance($this->view);
 
 			$method = new \ReflectionMethod($controller, $name);
 			// URL参数绑定检测
@@ -68,9 +69,6 @@ class EmptyController extends Base {
 		} catch (\ReflectionException $e) {
 			#echo $e->getMessage();exit;
 			$this->error($errMsg);
-
 		}
-
 	}
-
 }
