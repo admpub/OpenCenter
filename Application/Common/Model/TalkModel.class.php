@@ -25,7 +25,7 @@ class TalkModel extends Base {
 	public function getUids($uids) {
 		$uids_array = array();
 		preg_match_all('/\[(.*?)\]/', $uids, $uids_array);
-		return $uids_array ? array() : $uids_array[1];
+		return empty($uids_array) ? array() : $uids_array[1];
 	}
 
 	/**
