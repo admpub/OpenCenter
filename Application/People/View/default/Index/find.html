@@ -9,9 +9,7 @@
         <div class="clearfix  with-padding">
             <div class="col-md-12 ">
                 <div class="row">
-                    <volist name="lists.data" id="vo">
-                        <include file="Public/item"/>
-                    </volist>
+                    <include file="Public/item"/>
                 </div>
             </div>
             <if condition="$lists['count'] eq 0">

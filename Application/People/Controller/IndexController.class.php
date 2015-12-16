@@ -20,14 +20,13 @@ class IndexController extends Base {
 		$cachedPage = 10;
 		$cachedId = 'People_peoples_' . $page . '_' . serialize($map);
 		$peoples = $page > $cachedPage || !empty($_REQUEST['keywords']) || !empty($_REQUEST['tag']) ? null : S($cachedId);
-		$peoples = null;
+		#$peoples = null;
 		if (empty($peoples)) {
-			$peoples = D('Member')->where($map)->field('uid', 'reg_time', 'last_login_time')->order('last_login_time desc')->findPage(20);
-
+			$peoples = D('Member')->where($map)->field('uid,reg_time,last_login_time')->order('last_login_time desc')->findPage(20);
 			$userConfigModel = D('Ucenter/UserConfig');
 			$titleModel = D('Ucenter/Title');
 			foreach ($peoples['data'] as &$v) {
-				$v['user'] = query_user(array('title', 'avatar128', 'nickname', 'uid', 'space_url', 'icons_html', 'score', 'title', 'fans', 'following', 'rank_link'), $v['uid']);
+				$v['user'] = query_user(array('title', 'avatar128', 'nickname', 'uid', 'space_url', 'icons_html', 'score', 'title', 'fans', 'following', 'rank_link', 'is_following'), $v['uid']);
 				$v['level'] = $titleModel->getCurrentTitleInfo($v['uid']);
 				//获取用户封面id
 				$where = getUserConfigMap('user_cover', '', $v['uid']);

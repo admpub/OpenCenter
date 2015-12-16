@@ -20,6 +20,7 @@ class FollowModel extends Base {
 	 * @return int|mixed
 	 */
 	public function follow($uid) {
+		$follow = array();
 		$follow['who_follow'] = is_login();
 		$follow['follow_who'] = $uid;
 		if ($follow['who_follow'] == $follow['follow_who']) {
@@ -33,6 +34,8 @@ class FollowModel extends Base {
 
 		clean_query_user_cache($uid, 'fans');
 		clean_query_user_cache(is_login(), 'following');
+		clean_query_user_cache($uid, 'is_followed');
+		clean_query_user_cache(is_login(), 'is_following');
 		S('atUsersJson_' . is_login(), null);
 		/**
 		 * @param $to_uid 接受消息的用户ID
@@ -54,10 +57,13 @@ class FollowModel extends Base {
 	 * @return mixed
 	 */
 	public function unfollow($uid) {
+		$follow = array();
 		$follow['who_follow'] = is_login();
 		$follow['follow_who'] = $uid;
 		clean_query_user_cache($uid, 'fans');
 		clean_query_user_cache(is_login(), 'following');
+		clean_query_user_cache($uid, 'is_followed');
+		clean_query_user_cache(is_login(), 'is_following');
 		S('atUsersJson_' . is_login(), null);
 		$user = query_user(array('id', 'username', 'space_url'));
 		D('Message')->sendMessage($uid, $user['username'] . '取消了对你的关注', '粉丝数减少', $user['space_url'], is_login(), 0);
@@ -65,6 +71,7 @@ class FollowModel extends Base {
 	}
 
 	public function getFans($uid, $page, $fields, &$totalCount) {
+		$map = array();
 		$map['follow_who'] = $uid;
 		$fans = $this->where($map)->field('who_follow')->order('create_time desc')->page($page, 10)->select();
 		$totalCount = $this->where($map)->field('who_follow')->order('create_time desc')->count();
@@ -115,6 +122,7 @@ class FollowModel extends Base {
 	 * @return int|mixed
 	 */
 	public function addFollow($who_follow, $follow_who) {
+		$follow = array();
 		$follow['who_follow'] = $who_follow;
 		$follow['follow_who'] = $follow_who;
 		if ($follow['who_follow'] == $follow['follow_who']) {
@@ -128,6 +136,8 @@ class FollowModel extends Base {
 
 		clean_query_user_cache($follow_who, 'fans');
 		clean_query_user_cache($who_follow, 'following');
+		clean_query_user_cache($follow_who, 'is_followed');
+		clean_query_user_cache($who_follow, 'is_following');
 		S('atUsersJson_' . $who_follow, null);
 		/**
 		 * @param $to_uid 接受消息的用户ID
