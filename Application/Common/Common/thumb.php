@@ -186,8 +186,7 @@ function getRootUrl() {
 	if (C('URL_MODEL') == 2) {
 		return __ROOT__ . '/';
 	}
-
-	return __ROOT__;
+	return '/';
 }
 
 /**
