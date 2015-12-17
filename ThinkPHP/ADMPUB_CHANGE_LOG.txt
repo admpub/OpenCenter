@@ -68,4 +68,24 @@ define('_PHP_FILE_',    $_temp[0].'.php');//[SWH|+]
 
 4、文件 Library\Think\Page.class.php 有修改请不要直接覆盖，如果已经覆盖了，请使用 Library\Think\Page.modified-bak.class.php 文件还原。
 
+====【以下为可选更改(当前已更改)，即不修改也不会影响系统正常运行】====
+
+5、文件 Library\Behavior\ReadHtmlCacheBehavior.class.php 中代码“Storage::put(”之前添加代码行：
+$callback=C('HTML_CACHE_BEFORE_WRITE');
+并将：
+Storage::put(HTML_FILE_NAME, $content, 'html');
+改为：
+Storage::put(HTML_FILE_NAME, $callback?$callback($content):$content, 'html');
+
+此修改用于实现缓存在写入之前的数据处理，用于解决这样的需求：
+对外只公开纯静态页面的访问，而这时候我们希望静态页面内的链接总是指向静态页面，
+动态页面的链接总是指向动态页面，这样，我们无论是在动态页面还是静态页面都能无障碍的浏览。
+所以，要实现这个需求，我们首先在配置文件中把 HTML_CACHE_TIME 的值设为 1，然后再定义一个函数用来把动态页面内生成的链接替换成静态页面的链接，
+并将 HTML_CACHE_BEFORE_WRITE 的值设置为此函数名。
+这样，我们内部人员或程序访问动态页面时，就能总是生成新的静态页面（当然，点击的速度不能快过1秒，不然出现的就是静态页面的内容了），
+所谓：哪里更新，点哪里，so easy!
+当然，如果能用程序自动请求动态页面的方式来生成自然最好了。
+以上，可以在一定程度上解决静态页面文件不能及时更新的问题。
+
+
 -EOF-
