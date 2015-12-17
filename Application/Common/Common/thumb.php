@@ -197,7 +197,7 @@ function getThumbImageById($cover_id, $width = 100, $height = 'auto', $type = 0,
 
 	$picture = M('Picture')->where(array('status' => 1))->getById($cover_id);
 	if (empty($picture)) {
-		return getRootUrl() . 'Public/Core/images/nopic.png';
+		return getRootUrl() . 'Public/images/nopic.png';
 	}
 	switch ($picture['type']) {
 	case 'qiniu':

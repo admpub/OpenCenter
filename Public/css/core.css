@@ -1280,3 +1280,8 @@ General list for item with image
 .tooltip.red.bottom-right .tooltip-arrow {
   border-bottom-color: #ee4e2f;
 }
+
+.syntaxhighlighter .container::before,
+.syntaxhighlighter .container::after{
+content:none;
+}
