@@ -20,7 +20,7 @@
 
 
 <case value="water">
-    <php>empty($form['value']) && $form['value']='./Addons/Water/water.png';</php>
+    <php>empty($form['value']) && $form['value']=getRootUrl().'Addons/Water/water.png';</php>
     <div class="controls">
         <input type="file" id="upload_picture_{$o_key}">
         <input type="hidden" name="config[{$o_key}]" id="cover_id_{$o_key}" value="{$form.value}"/>

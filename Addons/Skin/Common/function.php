@@ -42,12 +42,13 @@ function getSkinList() {
  */
 function getSkinInfoList($skinList) {
 	$skinInfoList = array();
+    $skinUrl=getRootUrl().preg_replace('|^'.ONETHINK_ADDON_PATH.'|','Addons/',SKIN_PATH);
 	foreach ($skinList as $path) {
 		$skinConf = include SKIN_PATH . 'Skins/' . $path . '/config.php';
 		$skin['value'] = $path;
 		$skin['name'] = $skinConf['name'];
 		$skin['sort'] = $skinConf['sort'];
-		$skin['thumb_url'] = SKIN_PATH . 'Skins/' . $path . '/thumb.png';
+		$skin['thumb_url'] = $skinUrl . 'Skins/' . $path . '/thumb.png';
 		$skinInfoList[] = $skin;
 	}
 	unset($path, $skin);
