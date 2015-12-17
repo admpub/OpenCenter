@@ -180,13 +180,7 @@ function getThumbImage($filename, $width = 100, $height = 'auto', $type = 0, $re
  * @auth 陈一枭
  */
 function getRootUrl() {
-	if (__ROOT__ != '') {
-		return __ROOT__ . '/';
-	}
-	if (C('URL_MODEL') == 2) {
-		return __ROOT__ . '/';
-	}
-	return '/';
+	return __ROOT__ . '/';
 }
 
 /**
