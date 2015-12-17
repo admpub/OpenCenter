@@ -1,7 +1,12 @@
+jQuery.cachedScript = function(url, options) {
+    if (typeof(options)=='function') options={success: options};
+    options = $.extend(options || {}, {dataType: "script", cache: true, url: url});
+   return jQuery.ajax(options);
+};
+
 function is_login() {
     return parseInt(MID);
 }
-
 /**
  * 模拟U函数
  * @param url

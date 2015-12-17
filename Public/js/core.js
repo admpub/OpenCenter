@@ -1,6 +1,6 @@
-$.getScript('Public/js/com/com.talker.class.js');
-$.getScript('Public/js/com/com.toast.class.js', function () {
-    $.getScript('Public/js/com/com.ucard.js', function () {
+$.cachedScript('Public/js/com/com.talker.class.js');
+$.cachedScript('Public/js/com/com.toast.class.js', function () {
+    $.cachedScript('Public/js/com/com.ucard.js', function () {
         var atwho_config;
         $(function () {
             $('.open-popup-link').magnificPopup({

@@ -46,9 +46,13 @@ $getfiles = explode(',', $_GET['f']);
 ob_start('compress');
 
 function compress($buffer) {
-//去除文件中的注释
+	//去除文件中的注释
 	$buffer = preg_replace('!/\*[^*]*\*+([^/][^*]*\*+)*/!', '', $buffer);
 	return $buffer;
+}
+
+function gen_etag() {
+	return time() . '|' . md5($_SERVER['REQUEST_URI']);
 }
 
 function set_cache_limit($second = 1) {
@@ -56,20 +60,19 @@ function set_cache_limit($second = 1) {
 	if ($second == 0) {
 		return;
 	}
-	$etag = time() . '|' . md5($_SERVER['REQUEST_URI']);
 
 	if (!isset($_SERVER['HTTP_IF_NONE_MATCH'])) {
-		header('Etag:' . $etag, true, 200);
+		header('Etag:' . gen_etag(), true, 200);
 		return;
-	} else {
-		$id = $_SERVER['HTTP_IF_NONE_MATCH'];
 	}
+
+	$id = $_SERVER['HTTP_IF_NONE_MATCH'];
 
 	list($time, $uri) = explode('|', $id, 2);
 
 	if ($time < (time() - $second)) {
 		//过期了，发送新tag
-		header('Etag:' . $etag, true, 200);
+		header('Etag:' . gen_etag(), true, 200);
 	} else {
 		//未过期，发送旧tag
 		header('Etag:' . $id, true, 304);
