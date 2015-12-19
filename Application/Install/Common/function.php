@@ -117,7 +117,7 @@ function check_dirfile() {
  */
 function check_func() {
 	$items = array(
-		array('mysql_connect', '支持', 'ok'),
+		//array('mysql_connect', '支持', 'ok'),
 		array('file_get_contents', '支持', 'ok'),
 		array('mb_strlen', '支持', 'ok'),
 	);
