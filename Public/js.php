@@ -29,7 +29,7 @@ if ($gettype == 'css') {
 	exit();
 }
 
-header('content-type: ' . $content_type . '; charset: utf-8'); //注意修改到你的编码
+header('content-type: ' . $content_type . '; charset=utf-8'); //注意修改到你的编码
 // header ( 'cache-control: must-revalidate' );
 header('cache-control: max-age=' . $offset);
 header('Last-Modified: ' . gmdate('D, d M Y H:i:s', time()) . 'GMT');
