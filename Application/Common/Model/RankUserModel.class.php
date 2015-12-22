@@ -14,7 +14,7 @@ class RankUserModel extends Base {
 	 * @author swh <swh@admpub.com>
 	 */
 	public function getAllByUid($uid) {
-		$ranks = $this->field('a.*,b.title,c.path AS logo_url')->alias('a')->where(array(
+		$ranks = $this->field('a.*,b.title,b.label_content,b.label_bg,b.label_color,c.path AS logo_url')->alias('a')->where(array(
 			'a.uid' => $uid,
 			'a.status' => 1,
 			'_string' => 'a.expire_time=0 OR a.expire_time>' . NOW_TIME,

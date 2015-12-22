@@ -30,7 +30,13 @@
                     <span>
                 <if condition="$user_info['rank_link'][0]['num']">
                     <volist name="user_info['rank_link']" id="vl">
-                    <img src="{$vl.logo_url}" title="{$vl.title}" alt="{$vl.title}" style="max-width:32px;max-height:32px;vertical-align:middle;margin-left:2px;"/>
+
+                        <empty name="vl.logo_url">
+                            <span class="label label-badge rank-label" title="{$vl.title}" style="<notempty name="vl.label_bg">background:{$vl.label_bg} !important;</notempty><notempty name="vl.label_color">color:{$vl.label_color} !important;</notempty>"><empty name="vl.label_content">{$vl.title}<else/>{$vl.label_content}</empty></span>
+                        <else/>
+                            <img src="{$vl.logo_url}" title="{$vl.title}" alt="{$vl.title}" style="max-width:32px;max-height:32px;vertical-align:middle;margin-left:2px;"/>
+                        </empty>
+                    
                     </volist>
                 </if>
             </span>

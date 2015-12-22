@@ -6,32 +6,34 @@
 <if condition="$field['name'] == 'action'">
     <p style="color: #f00;">开发人员注意：你使用了一个名称为action的字段，由于这个字段名称会与form[action]冲突，导致无法提交表单，请换用另外一个名字。</p>
 </if>
-<div class="controls ">
+<div class="controls">
 <switch name="field.type">
     <case value="text">
-        <input type="text" name="{$field.name}" value="{$field.value|htmlspecialchars}"
-               class="text input-large form-control" style="width: 400px"/>
+        <input type="text" name="{$field.name}" value="{$field.value|htmlspecialchars}" class="text input-large form-control" style="width:400px"/>
     </case>
-
+    <case value="color">
+        <input type="{$field.type}" name="{$field.name}" value="{$field.value|htmlspecialchars}" class="text input-large form-control" style="width:400px" pattern="^#[0-9a-fA-F]{3,6}$" />
+    </case>
+    <case value="color2">
+        <div class="input-group" style="width:400px">
+            <input type="text" name="{$field.name}" value="{$field.value|htmlspecialchars}" class="text input-large form-control" style="width:370px" pattern="^#[0-9a-fA-F]{3,6}$" />
+            <div class="input-group-addon" style="vertical-align:middle;padding:0"><input type="color" value="{$field.value|htmlspecialchars}" class="text input-large" style="height:30px;width:30px;border:0" pattern="^#[0-9a-fA-F]{3,6}$" onchange="$(this).parent('div').prev('input:text').val(this.value);" /></div>
+        </div>
+    </case>
     <case value="label">
         {$field.value}
     </case>
-
-
     <case value="hidden">
         <input type="hidden" name="{$field.name}" value="{$field.value}" class="text input-large"/>
     </case>
     <case value="readonly">
-        <input type="text" name="{$field.name}" value="{$field.value}" class="text input-large form-control"
-               style="width: 400px" placeholder="无需填写" readonly/>
+        <input type="text" name="{$field.name}" value="{$field.value}" class="text input-large form-control" style="width:400px" placeholder="无需填写" readonly/>
     </case>
     <case value="integer">
-        <input type="text" name="{$field.name}" value="{$field.value}" class="text input-large form-control"
-               style="width: 400px"/>
+        <input type="text" name="{$field.name}" value="{$field.value}" class="text input-large form-control" style="width:400px"/>
     </case>
     <case value="uid">
-        <input type="text" name="{$field.name}" value="{$field.value}" class="text input-large form-control"
-               style="width: 100px"/>
+        <input type="text" name="{$field.name}" value="{$field.value}" class="text input-large form-control" style="width:100px"/>
     </case>
     <case value="select">
         <select name="{$field.name}" class="form-control" style="width:auto;">

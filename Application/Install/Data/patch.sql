@@ -22,3 +22,8 @@ INSERT INTO `ocenter_menu` (`id`, `title`, `pid`, `sort`, `url`, `hide`, `tip`, 
 (NULL, '编辑表情包', 74, 9, 'Expression/editPackage', 1, '', '表情设置', 0, '', ''),
 (NULL, '删除表情', 74, 10, 'Expression/delExpression', 1, '', '表情设置', 0, '', ''),
 (NULL, '上传表情包', 74, 11, 'Expression/upload', 1, '', '表情设置', 0, '', '');
+
+ALTER TABLE `ocenter_rank`
+ADD `label_content` varchar(50) NOT NULL DEFAULT '' COMMENT '标签内容' AFTER `logo`,
+ADD `label_bg` varchar(50) NOT NULL DEFAULT '' COMMENT '标签背景色' AFTER `label_content`,
+ADD `label_color` char(7) NOT NULL DEFAULT '' COMMENT '标签前景色' AFTER `label_bg`;

@@ -92,11 +92,17 @@ class RankController extends AdminController {
 	 * @param int $types
 	 * @author 郑钟良<zzl@ourstu.com>
 	 */
-	public function editRank($id = null, $title = null, $logo = null, $types = 1) {
+	public function editRank($id = null, $title = null, $label_content = null, $label_bg = null, $label_color = null, $logo = null, $types = 1) {
 		//判断是否为编辑模式
 		$isEdit = $id ? true : false;
 		if (IS_POST) {
-			$data = array('title' => $title, 'logo' => $logo);
+			$data = array(
+				'title' => $title,
+				'label_content' => $label_content,
+				'label_bg' => $label_bg,
+				'label_color' => $label_color,
+				'logo' => $logo,
+			);
 			$model = D('rank');
 			$data['types'] = $types;
 			if ($isEdit) {
@@ -107,16 +113,19 @@ class RankController extends AdminController {
 				if ($logo != '') {
 					$data_old['logo'] = $data['logo'];
 				}
-				if ($title == '' && $logo == '') {
+				if ($title == '' || ($logo == '' && $label_content == '')) {
 					$this->error('信息不完整');
 				}
 				$data_old['types'] = $data['types'];
+				$data_old['label_content'] = $data['label_content'];
+				$data_old['label_bg'] = $data['label_bg'];
+				$data_old['label_color'] = $data['label_color'];
 				$result = $model->where(array('id' => $id))->save($data_old);
 				if (!$result) {
 					$this->error('修改失败');
 				}
 			} else {
-				if ($title == '' || $logo == '') {
+				if ($title == '' || ($logo == '' && $label_content == '')) {
 					$this->error('信息不完整');
 				}
 				$data = $model->create($data);
@@ -140,9 +149,13 @@ class RankController extends AdminController {
 				'0' => '否',
 				'1' => '是',
 			);
-			$builder
-				->title($isEdit ? '编辑头衔' : '新增头衔')
-				->keyId()->keyTitle()->keySingleImage('logo', '头衔图标', '图标')->keyRadio('types', '前台是否可申请', null, $options)
+			$builder->title($isEdit ? '编辑头衔' : '新增头衔')
+				->keyId()->keyTitle()
+				->keyText('label_content', '标签内容', '在不上传图标的情况下，此项必填')
+				->key('label_bg', '标签背景色', '', 'color2')
+				->key('label_color', '标签前景色', '', 'color2')
+				->keySingleImage('logo', '头衔图标', '如果不上传图标，将显示文字标签')
+				->keyRadio('types', '前台是否可申请', null, $options)
 				->data($rank)
 				->buttonSubmit(U('editRank'))->buttonBack()
 				->display();

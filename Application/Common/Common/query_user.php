@@ -147,7 +147,7 @@ function query_user($fields = null, $uid = null, $temped = true) {
 		if ($rank_List) {
 			$num = 0;
 			foreach ($rank_List as $key => $val) {
-				$val['logo_url'] = fixAttachUrl($val['logo_url']);
+				$val['logo_url'] = $val['logo_url'] ? fixAttachUrl($val['logo_url']) : '';
 				if ($val['is_show']) {
 					$num = 1;
 				}
