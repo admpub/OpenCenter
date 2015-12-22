@@ -6,15 +6,20 @@
  * Time: PM9:01
  */
 namespace Core\Model;
-use Common\Model\Base;
+#use Common\Model\Base;
 
-class ExpressionModel extends Base {
+class ExpressionModel {
 	public $pkg = '';
-	protected function _initialize() {
-		parent::_initialize();
-		$this->pkg = modC('EXPRESSION', 'miniblog', 'EXPRESSION');
-		define('ROOT_PATH', str_replace('/Application/Core/Model/ExpressionModel.class.php', '', str_replace('\\', '/', __FILE__)));
+	protected $_rootPath;
 
+	public function __construct() {
+		$this->_initialize();
+	}
+
+	protected function _initialize() {
+		#parent::_initialize();
+		$this->pkg = modC('EXPRESSION', 'miniblog', 'EXPRESSION');
+		$this->_rootPath = str_replace('/Application/Core/Model/ExpressionModel.class.php', '', str_replace('\\', '/', __FILE__));
 	}
 
 	/**
@@ -23,13 +28,10 @@ class ExpressionModel extends Base {
 	 * @return array 返回表情数据
 	 */
 	public function getAllExpression() {
-
-		$pkg = $this->pkg;
-
-		if ($pkg == 'all') {
+		if ($this->pkg == 'all') {
 			return $this->getAll();
 		} else {
-			return $this->getExpression($pkg);
+			return $this->getExpression($this->pkg);
 		}
 
 	}
@@ -40,7 +42,7 @@ class ExpressionModel extends Base {
 		} else {
 			$filepath = '/Uploads/expression/' . $pkg;
 		}
-		$list = $this->myreaddir(ROOT_PATH . $filepath);
+		$list = $this->myreaddir($this->_rootPath . $filepath);
 		$res = array();
 		foreach ($list as $value) {
 			$file = explode('.', $value);
@@ -61,10 +63,8 @@ class ExpressionModel extends Base {
 	 * @author:xjw129xjt xjt@ourstu.com
 	 */
 	public function getAll() {
-
 		$res = $this->getExpression('miniblog');
-
-		$ExpressionPkg = ROOT_PATH . '/Uploads/expression';
+		$ExpressionPkg = $this->_rootPath . '/Uploads/expression';
 		$pkgList = $this->myreaddir($ExpressionPkg);
 		foreach ($pkgList as $v) {
 			$res = array_merge($res, $this->getExpression($v));

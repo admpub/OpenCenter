@@ -11,18 +11,16 @@ use Admin\Builder\AdminListBuilder;
  * @author:xjw129xjt xjt@ourstu.com
  */
 class ExpressionController extends AdminController {
-	protected $ROOT_PATH = '';
+	protected $_rootPath = '';
 
 	protected function _initialize() {
 		parent::_initialize();
-		define('ROOT_PATH', str_replace('/Application/Admin/Controller/ExpressionController.class.php', '', str_replace('\\', '/', __FILE__)));
-		$this->ROOT_PATH = ROOT_PATH;
+		$this->_rootPath = str_replace('/Application/Admin/Controller/ExpressionController.class.php', '', str_replace('\\', '/', __FILE__));
 	}
 
 	public function index() {
-
-		$ExpressionPkg = $this->ROOT_PATH . '/Uploads/expression';
-		$pkgList = D('Expression')->myreaddir($ExpressionPkg);
+		$ExpressionPkg = $this->_rootPath . '/Uploads/expression';
+		$pkgList = D('Core/Expression')->myreaddir($ExpressionPkg);
 		$pkg['all'] = '全部';
 		$pkg['miniblog'] = 'miniblog';
 		foreach ($pkgList as $v) {
@@ -38,19 +36,25 @@ class ExpressionController extends AdminController {
 	}
 
 	public function package() {
-
-		$ExpressionPkg = $this->ROOT_PATH . "/Uploads/expression";
-		$pkgList = D('Expression')->myreaddir($ExpressionPkg);
+		$ExpressionPkg = $this->_rootPath . '/Uploads/expression';
+		$pkgList = D('Core/Expression')->myreaddir($ExpressionPkg);
 
 		$list = array();
-		$list[] = array('name' => 'miniblog', 'title' => 'miniblog', 'count' => D('Expression')->getCount($this->ROOT_PATH . '/Public/static/image/expression/miniblog'));
+		$list[] = array(
+			'name' => 'miniblog',
+			'title' => 'miniblog',
+			'count' => D('Core/Expression')->getCount($this->_rootPath . '/Public/static/image/expression/miniblog'),
+		);
 		foreach ($pkgList as $v) {
-			$list[] = array('name' => $v, 'title' => $v, 'count' => D('Expression')->getCount($this->ROOT_PATH . '/Uploads/expression/' . $v));
+			$list[] = array(
+				'name' => $v,
+				'title' => $v,
+				'count' => D('Core/Expression')->getCount($this->_rootPath . '/Uploads/expression/' . $v),
+			);
 		}
 
 		$builder = new AdminListBuilder();
-		$builder
-			->title('表情包列表')
+		$builder->title('表情包列表')
 			->buttonNew(U('admin/expression/add'))
 			->keyLink('title', '标题', 'Admin/Expression/expressionList?title={$name}')
 			->keyText('count', '表情数量')->keyDoAction('Admin/Expression/delPackage?title={$name}', '删除')
@@ -59,7 +63,7 @@ class ExpressionController extends AdminController {
 	}
 
 	public function add() {
-
+		$this->setTitle('上传表情包');
 		$this->display('add');
 	}
 
@@ -82,7 +86,7 @@ class ExpressionController extends AdminController {
 			$this->error($upload->getError());
 		} else {
 			// 上传成功
-			$this->jieya($info['pkg']['savename']);
+			$this->_unCompress($info['pkg']['savename']);
 			$this->success('上传成功！', U('admin/expression/package'));
 		}
 
@@ -90,14 +94,16 @@ class ExpressionController extends AdminController {
 
 	public function expressionList() {
 		$title = I('get.title', '', 'op_t');
-		$list = D('Expression')->getExpression($title);
+		if (strpos($title, '..') !== false) {
+			$this->error('非法参数');
+		}
+		$list = D('Core/Expression')->getExpression($title);
 		foreach ($list as &$v) {
 			$v['image'] = '<img src="' . $v['src'] . '"/>';
 		}
 		unset($v);
 		$builder = new AdminListBuilder();
-		$builder
-			->title('表情列表')
+		$builder->title('表情列表')
 			->keyText('title', '标题')
 			->keyText('image', '表情图片')->keyDoAction('Admin/Expression/delExpression?title={$filename}&pkg=' . $title, '删除')
 			->data($list)
@@ -105,14 +111,13 @@ class ExpressionController extends AdminController {
 
 	}
 
-	public function jieya($filename) {
-		$ExpressionPkg = $this->ROOT_PATH . "/Uploads/expression/";
-		require_once "./ThinkPHP/Library/OT/PclZip.class.php";
+	protected function _unCompress($filename) {
+		$ExpressionPkg = $this->_rootPath . '/Uploads/expression/';
+		@chmod($ExpressionPkg, 0666);
+		require_once './ThinkPHP/Library/OT/PclZip.class.php';
 		$pcl = new \PclZip($ExpressionPkg . $filename);
 		if ($pcl->extract($ExpressionPkg)) {
-
 			$result = $this->delFile($ExpressionPkg . $filename);
-
 			if ($result) {
 				return true;
 			}
@@ -122,11 +127,13 @@ class ExpressionController extends AdminController {
 
 	public function delPackage() {
 		$title = I('get.title', '', 'op_t');
-
+		if (strpos($title, '..') !== false) {
+			$this->error('非法参数');
+		}
 		if ($title == 'miniblog') {
-			$path = $this->ROOT_PATH . '/Public/static/image/expression/miniblog';
+			$path = $this->_rootPath . '/Public/static/image/expression/miniblog';
 		} else {
-			$path = $this->ROOT_PATH . "/Uploads/expression/" . $title . '/';
+			$path = $this->_rootPath . '/Uploads/expression/' . $title . '/';
 		}
 
 		$res = $this->deldir($path);
@@ -141,10 +148,16 @@ class ExpressionController extends AdminController {
 	public function delExpression() {
 		$title = I('get.title', '', 'op_t');
 		$pkg = I('get.pkg', '', 'op_t');
+		if (strpos($title, '..') !== false) {
+			$this->error('非法参数');
+		}
+		if (strpos($pkg, '..') !== false) {
+			$this->error('非法参数');
+		}
 		if ($pkg == 'miniblog') {
-			$path = $this->ROOT_PATH . '/Public/static/image/expression/miniblog/' . $title;
+			$path = $this->_rootPath . '/Public/static/image/expression/miniblog/' . $title;
 		} else {
-			$path = $this->ROOT_PATH . "/Uploads/expression/" . $pkg . '/' . $title;
+			$path = $this->_rootPath . '/Uploads/expression/' . $pkg . '/' . $title;
 		}
 		$res = $this->delFile($path);
 		if ($res) {
@@ -159,12 +172,12 @@ class ExpressionController extends AdminController {
 		//先删除目录下的文件：
 		$dh = opendir($dir);
 		while ($file = readdir($dh)) {
-			if ($file != "." && $file != "..") {
-				$fullpath = $dir . "/" . $file;
+			if ($file != '.' && $file != '..') {
+				$fullpath = $dir . '/' . $file;
 				if (!is_dir($fullpath)) {
 					unlink($fullpath);
 				} else {
-					deldir($fullpath);
+					$this->deldir($fullpath);
 				}
 			}
 		}

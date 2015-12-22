@@ -13,3 +13,12 @@ CREATE TABLE `ocenter_rank_price` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='头衔价格';
 
+INSERT INTO `ocenter_menu` (`id`, `title`, `pid`, `sort`, `url`, `hide`, `tip`, `group`, `is_dev`, `icon`, `module`) VALUES
+(NULL, '表情设置', 74, 4, 'Expression/index', 0, '', '表情设置', 0, '', ''),
+(NULL, '添加表情包', 74, 5, 'Expression/add', 1, '', '表情设置', 0, '', ''),
+(NULL, '表情包列表', 74, 6, 'Expression/package', 0, '', '表情设置', 0, '', ''),
+(NULL, '表情列表', 74, 7, 'Expression/expressionList', 1, '', '表情设置', 0, '', ''),
+(NULL, '删除表情包', 74, 8, 'Expression/delPackage', 1, '', '表情设置', 0, '', ''),
+(NULL, '编辑表情包', 74, 9, 'Expression/editPackage', 1, '', '表情设置', 0, '', ''),
+(NULL, '删除表情', 74, 10, 'Expression/delExpression', 1, '', '表情设置', 0, '', ''),
+(NULL, '上传表情包', 74, 11, 'Expression/upload', 1, '', '表情设置', 0, '', '');

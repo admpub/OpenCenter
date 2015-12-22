@@ -5,11 +5,14 @@
     <div class="main-title">
         <h2>上传表情包</h2>
     </div>
-    <form action="{:U('admin/expression/upload')}"enctype="multipart/form-data" method="post" >
-        <div class="controls">
-            <span class="pull-left" id="upload_button" style="width: 100px;height: 30px;background: #0000ff;color: #fff;line-height: 30px;text-align: center;cursor: pointer;margin: 10px 30px 20px 0;display: inline-block">上传文件</span>
-            <span class="pull-left" id="show_info"></span>
-            <input type="file" name="pkg" style="display: none" onchange="$('#show_info').html($(this).val())">
+     <div class="tab-content with-padding">
+    <div class="col-md-12">
+
+    <form action="{:U('admin/expression/upload')}" enctype="multipart/form-data" method="post">
+        <div class="controls clearfix" style="margin-bottom:10px">
+            <span class="pull-left btn btn-primary" id="upload_button">上传文件</span>
+            <span class="pull-left" style="margin-left:10px;line-height:30px" id="show_info"></span>
+            <input type="file" name="pkg" style="display:none" onchange="$('#show_info').html($(this).val())">
         </div>
 
         <div class="form-item">
@@ -17,20 +20,23 @@
             <button class="btn btn-return" onclick="javascript:history.back(-1);return false;">返 回</button>
         </div>
     </form>
+    </div>
+    </div>
 </block>
 
 <block name="script">
-    <script>
-        $('#upload_button').click(function(){
-            $('input[type=file]').click();
-        })
-    </script>
-    <script type="text/javascript">
-        Think.setValue("type", {$info.type|default=0});
-        Think.setValue("group", {$info.group|default=0});
-        //导航高亮
-        highlight_subnav('{:U('Config/index')}');
-    </script>
+<script type="text/javascript">
+$(function(){
+    $('#upload_button').click(function(){
+        $('input[type=file]').click();
+    });
+
+    Think.setValue("type", {$info.type|default=0});
+    Think.setValue("group", {$info.group|default=0});
+    //导航高亮
+    highlight_subnav('{:U('Config/index')}');
+});
+</script>
 </block>
 
 
