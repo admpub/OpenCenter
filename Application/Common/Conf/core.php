@@ -16,5 +16,27 @@ $mode['core'] = array_merge($mode['core'], array(
 	COMMON_PATH . 'Common/limit.php',
 	COMMON_PATH . 'Common/role.php',
 	COMMON_PATH . 'Common/extend.php',
+
+	COMMON_PATH . 'Controller/Base' . EXT,
+	COMMON_PATH . 'Model/Base' . EXT,
+	COMMON_PATH . 'Behavior/InitHookBehavior' . EXT,
+
+	CORE_PATH . 'Cache' . EXT,
+	CORE_PATH . 'Db' . EXT,
+	CORE_PATH . 'Db/Driver' . EXT,
+	CORE_PATH . 'Log' . EXT,
+	BEHAVIOR_PATH . 'ReadHtmlCacheBehavior' . EXT,
+	BEHAVIOR_PATH . 'WriteHtmlCacheBehavior' . EXT,
+	BEHAVIOR_PATH . 'ShowPageTraceBehavior' . EXT,
+	CORE_PATH . 'Template' . EXT,
+	LIB_PATH . 'OT/TagLib/Article' . EXT,
+	LIB_PATH . 'OT/TagLib/Think' . EXT,
+	LIB_PATH . 'Think/Template/TagLib/Cx' . EXT,
+
+	##########以下文件不可添加至此，会冲突#########
+	#CORE_PATH . 'Storage' . EXT,
+	#CORE_PATH . 'Model' . EXT,
+	#CORE_PATH . 'Behavior' . EXT,
+	#LIB_PATH . 'Think/Template/TagLib' . EXT,
 ));
 return $mode;
