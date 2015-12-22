@@ -7,13 +7,12 @@
 // | Author: 麦当苗儿 <zuojiazi@vip.qq.com> <http://www.zjzit.cn>
 // +----------------------------------------------------------------------
 namespace Core\Controller;
-use Think\Controller;
 
 /**
  * 文件控制器
  * 主要用于下载模型的文件上传和下载
  */
-class FileController extends Controller {
+class FileController extends Core {
 	/* 文件上传 */
 	public function upload() {
 		$return = array('status' => 1, 'info' => '上传成功', 'data' => '');

@@ -8,7 +8,9 @@ use Think\Controller;
  */
 class Base extends Controller {
 	public $_seo = array();
-	static private $_freeInstall = array(); //是否是免安装模块
+	static private $_freeInstall = array(
+		'Core' => true,
+	); //是否是免安装模块
 	static protected $_moduleMdl = null;
 	static protected $_once = false;
 

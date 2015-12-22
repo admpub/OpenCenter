@@ -8,13 +8,12 @@
 // +----------------------------------------------------------------------
 
 namespace Core\Controller;
-use Think\Controller;
 
 /**
  * 前台首页控制器
  * 主要获取首页聚合数据
  */
-class ExpressionController extends Controller {
+class ExpressionController extends Core {
 	/**
 	 * 获取表情列表。
 	 */
