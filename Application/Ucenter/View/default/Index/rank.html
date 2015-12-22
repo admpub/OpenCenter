@@ -40,8 +40,9 @@
                             <div class="row"
                                  style="border-bottom: 1px solid #dedede;padding-bottom: 20px;padding-top:20px;margin-left: 0;margin-right: 0">
                                 <div class="col-xs-2">
-                                    <img style="max-width:80px;max-height:80px;margin:0 auto;vertical-align:middle;"
-                                         src="{$rank.logo|get_cover='path'}"/>
+                                    <notempty name="rank.logo">
+                                    <img style="max-width:80px;max-height:80px;margin:0 auto;vertical-align:middle;" src="{$rank.logo|get_cover='path'}" />
+                                    </notempty>
                                 </div>
                                 <div class="col-xs-8">
                                     <div>
