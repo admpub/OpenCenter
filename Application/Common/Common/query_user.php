@@ -17,7 +17,7 @@
  */
 function query_user($fields = null, $uid = null, $temped = true) {
 	static $_user = array();
-	$cached = true;
+	$cached = &$temped;
 	if ($fields === null) {
 		$fields = array('nickname', 'space_url', 'avatar64', 'avatar128', 'uid');
 	}

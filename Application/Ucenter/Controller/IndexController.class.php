@@ -13,9 +13,10 @@ class IndexController extends BaseController {
 	protected function _initialize() {
 		parent::_initialize();
 		$uid = isset($_GET['uid']) && ($_GET['uid'] = intval($_GET['uid'])) > 0 ? $_GET['uid'] : is_login();
+
 		//调用API获取基本信息
-		$this->userInfo($uid);
-		$this->_fans_and_following($uid);
+		$user_info = $this->userInfo($uid);
+		$this->_fans_and_following($uid, $user_info);
 		$this->_tab_menu();
 	}
 
@@ -54,8 +55,13 @@ class IndexController extends BaseController {
 	}
 
 	private function userInfo($uid = null) {
+		static $_userInfo = array();
+		if (isset($_userInfo[$uid])) {
+			return $_userInfo[$uid];
+		}
 		$user_info = query_user(array('avatar128', 'nickname', 'uid', 'space_url', 'icons_html', 'score', 'title', 'fans', 'following', 'weibocount', 'rank_link', 'signature'), $uid);
 		$this->assign('user_info', $user_info);
+		$_userInfo[$uid] = &$user_info;
 		return $user_info;
 	}
 
@@ -78,7 +84,6 @@ class IndexController extends BaseController {
 		$this->setKeywords($str . '，个人资料');
 		$this->setDescription($str . '的个人资料页');
 		//四处一词 seo end
-
 		$this->display();
 	}
 
@@ -197,7 +202,7 @@ class IndexController extends BaseController {
 	}
 
 	public function _get_field_data($data = null) {
-		$result = null;
+		$result = array();
 		$result['field_name'] = $data['field_name'];
 		$result['field_data'] = '还未设置';
 		switch ($data['form_type']) {
@@ -254,9 +259,9 @@ class IndexController extends BaseController {
 	 * @return void
 	 */
 	public function _tab_menu() {
-		$appList = D('Module')->getAll();
 		static $apps = null;
 		if (is_null($apps)) {
+			$appList = D('Module')->getAll();
 			$apps = array();
 			// 获取APP的HASH数组
 			foreach ($appList as $appName => $module) {
@@ -284,12 +289,13 @@ class IndexController extends BaseController {
 		return file_exists(APP_PATH . $className . '/Model/' . $className . 'ProtocolModel.class.php');
 	}
 
-	public function _fans_and_following($uid = null) {
+	public function _fans_and_following($uid = null, &$user_info = array()) {
+		$map_follow = $map = array();
 		$uid = isset($uid) ? $uid : is_login();
 		//我的粉丝展示
 		$map['follow_who'] = $uid;
 		$fans_default = D('Follow')->where($map)->field('who_follow')->order('create_time desc')->limit(8)->select();
-		$fans_totalCount = D('Follow')->where($map)->count();
+		$fans_totalCount = $user_info && isset($user_info['fans']) ? $user_info['fans'] : D('Follow')->where($map)->count();
 		foreach ($fans_default as &$user) {
 			$user['user'] = query_user(array('avatar64', 'uid', 'nickname', 'fans', 'following', 'weibocount', 'space_url', 'title'), $user['who_follow']);
 		}
@@ -300,7 +306,7 @@ class IndexController extends BaseController {
 		//我关注的展示
 		$map_follow['who_follow'] = $uid;
 		$follow_default = D('Follow')->where($map_follow)->field('follow_who')->order('create_time desc')->limit(8)->select();
-		$follow_totalCount = D('Follow')->where($map_follow)->count();
+		$follow_totalCount = $user_info && isset($user_info['following']) ? $user_info['following'] : D('Follow')->where($map_follow)->count();
 		foreach ($follow_default as &$user) {
 			$user['user'] = query_user(array('avatar64', 'uid', 'nickname', 'fans', 'following', 'weibocount', 'space_url', 'title'), $user['follow_who']);
 		}
@@ -312,13 +318,12 @@ class IndexController extends BaseController {
 	public function fans($uid = null, $page = 1) {
 		$uid = isset($uid) ? $uid : is_login();
 		//调用API获取基本信息
-		$this->userInfo($uid);
-		$this->_tab_menu();
+		$user_info = $this->userInfo($uid);
 
 		$this->assign('tab', 'fans');
-		$fans = D('Follow')->getFans($uid, $page, array('avatar128', 'uid', 'nickname', 'fans', 'following', 'weibocount', 'space_url', 'title'), $totalCount);
-		$this->assign('fans', $fans);
-		$this->assign('totalCount', $totalCount);
+		$fans = D('Follow')->getFans($uid, $page, array('avatar128', 'uid', 'nickname', 'fans', 'following', 'weibocount', 'space_url', 'title'), $user_info['fans']);
+		$this->assign('fans', $userInfo['fans']);
+		$this->assign('totalCount', $user_info['fans']);
 
 		//四处一词 seo
 		$str = '{$user_info.nickname|op_t}';
@@ -333,12 +338,11 @@ class IndexController extends BaseController {
 	public function following($uid = null, $page = 1) {
 		$uid = isset($uid) ? $uid : is_login();
 		//调用API获取基本信息
-		$this->userInfo($uid);
-		$this->_tab_menu();
+		$user_info = $this->userInfo($uid);
 
-		$following = D('Follow')->getFollowing($uid, $page, array('avatar128', 'uid', 'nickname', 'fans', 'following', 'weibocount', 'space_url', 'title'), $totalCount);
+		$following = D('Follow')->getFollowing($uid, $page, array('avatar128', 'uid', 'nickname', 'fans', 'following', 'weibocount', 'space_url', 'title'), $user_info['following']);
 		$this->assign('following', $following);
-		$this->assign('totalCount', $totalCount);
+		$this->assign('totalCount', $user_info['following']);
 		$this->assign('tab', 'following');
 
 		//四处一词 seo
@@ -353,17 +357,17 @@ class IndexController extends BaseController {
 
 	public function rank($uid = null) {
 		$uid = isset($uid) ? $uid : is_login();
-		//调用API获取基本信息
-		$this->userInfo($uid);
-		$this->_tab_menu();
 
 		$rankList = D('rank_user')->where(array('uid' => $uid, 'status' => 1, '_string' => 'expire_time=0 OR expire_time>' . NOW_TIME))->field('rank_id,reason,create_time,expire_time')->select();
-		foreach ($rankList as &$val) {
-			$rank = D('rank')->where(array('id' => $val['rank_id']))->find();
-			$val['title'] = $rank['title'];
-			$val['logo'] = $rank['logo'];
+		if ($rankList) {
+			foreach ($rankList as &$val) {
+				$rank = D('rank')->where(array('id' => $val['rank_id']))->find();
+				$val['title'] = $rank['title'];
+				$val['logo'] = $rank['logo'];
+			}
+			unset($val);
 		}
-		unset($val);
+
 		$this->assign('rankList', $rankList);
 		$this->assign('tab', 'rank');
 
@@ -378,18 +382,18 @@ class IndexController extends BaseController {
 	}
 
 	public function rankVerifyFailure() {
-		$uid = isset($uid) ? $uid : is_login();
-		//调用API获取基本信息
-		$this->userInfo($uid);
-		$this->_tab_menu();
+		$uid = is_login();
 
 		$rankList = D('rank_user')->where(array('uid' => $uid, 'status' => -1))->field('id,rank_id,reason,create_time')->select();
-		foreach ($rankList as &$val) {
-			$rank = D('rank')->where(array('id' => $val['rank_id']))->find();
-			$val['title'] = $rank['title'];
-			$val['logo'] = $rank['logo'];
+		if ($rankList) {
+			foreach ($rankList as &$val) {
+				$rank = D('rank')->where(array('id' => $val['rank_id']))->find();
+				$val['title'] = $rank['title'];
+				$val['logo'] = $rank['logo'];
+			}
+			unset($val);
 		}
-		unset($val);
+
 		$this->assign('rankList', $rankList);
 		$this->assign('tab', 'rankVerifyFailure');
 
@@ -404,18 +408,18 @@ class IndexController extends BaseController {
 	}
 
 	public function rankVerifyWait() {
-		$uid = isset($uid) ? $uid : is_login();
-		//调用API获取基本信息
-		$this->userInfo($uid);
-		$this->_tab_menu();
+		$uid = is_login();
 
 		$rankList = D('rank_user')->where(array('uid' => $uid, 'status' => 0))->field('rank_id,reason,create_time')->select();
-		foreach ($rankList as &$val) {
-			$rank = D('rank')->where(array('id' => $val['rank_id']))->find();
-			$val['title'] = $rank['title'];
-			$val['logo'] = $rank['logo'];
+		if ($rankList) {
+			foreach ($rankList as &$val) {
+				$rank = D('rank')->where(array('id' => $val['rank_id']))->find();
+				$val['title'] = $rank['title'];
+				$val['logo'] = $rank['logo'];
+			}
+			unset($val);
 		}
-		unset($val);
+
 		$this->assign('rankList', $rankList);
 		$this->assign('tab', 'rankVerifyWait');
 
@@ -446,10 +450,7 @@ class IndexController extends BaseController {
 	}
 
 	public function rankVerify($rank_user_id = null) {
-		$uid = isset($uid) ? $uid : is_login();
-		//调用API获取基本信息
-		$this->userInfo($uid);
-		$this->_tab_menu();
+		$uid = is_login();
 
 		$rank_user_id = intval($rank_user_id);
 		$map_already['uid'] = $uid;
@@ -494,6 +495,7 @@ class IndexController extends BaseController {
 		if ($reason == null || $reason == '') {
 			$this->error('请填写申请理由');
 		}
+		$data = array();
 		$data['rank_id'] = $rank_id;
 		$data['reason'] = $reason;
 		$data['uid'] = is_login();

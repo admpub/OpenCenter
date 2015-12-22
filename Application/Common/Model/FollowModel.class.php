@@ -70,21 +70,21 @@ class FollowModel extends Base {
 		return $this->where($follow)->delete();
 	}
 
-	public function getFans($uid, $page, $fields, &$totalCount) {
+	public function getFans($uid, $page, $fields, &$totalCount = null) {
 		$map = array();
 		$map['follow_who'] = $uid;
 		$fans = $this->where($map)->field('who_follow')->order('create_time desc')->page($page, 10)->select();
-		$totalCount = $this->where($map)->field('who_follow')->order('create_time desc')->count();
+		is_null($totalCount) && $totalCount = $this->where($map)->field('who_follow')->order('create_time desc')->count();
 		foreach ($fans as &$user) {
 			$user['user'] = query_user($fields, $user['who_follow']);
 		}
 		unset($user);
 		return $fans;
 	}
-	public function getFollowing($uid, $page, $fields, &$totalCount) {
+	public function getFollowing($uid, $page, $fields, &$totalCount = null) {
 		$map['who_follow'] = $uid;
 		$fans = $this->where($map)->field('follow_who')->order('create_time desc')->page($page, 10)->select();
-		$totalCount = $this->where($map)->field('follow_who')->order('create_time desc')->count();
+		is_null($totalCount) && $totalCount = $this->where($map)->field('follow_who')->order('create_time desc')->count();
 
 		foreach ($fans as &$user) {
 			$user['user'] = query_user($fields, $user['follow_who']);
