@@ -28,7 +28,7 @@ class PublicController extends Base {
 		if (count($userProfile['rank_link'])) {
 			foreach ($userProfile['rank_link'] as $val) {
 				if ($val['is_show']) {
-					$html = $html . '<img class="img-responsive" src="' . $val['logo_url'] . '" title="' . $val['title'] . '" alt="' . $val['title'] . '" style="width: 18px;height: 18px;vertical-align: middle;margin-left: 3px;display: inline;"/>';
+					$html = $html . ($val['logo_url'] ? '<img class="img-responsive" src="' . $val['logo_url'] . '" title="' . $val['title'] . '" alt="' . $val['title'] . '" style="width: 18px;height: 18px;vertical-align: middle;margin-left: 3px;display: inline;"/>' : '<span style="font-weight:normal;' . ($val['label_bg'] ? 'background:' . $val['label_bg'] . ' !important;' : '') . ($val['label_color'] ? 'color:' . $val['label_color'] . ' !important;' : '') . '" title="' . $val['label_content'] . '" class="label label-badge rank-label">' . ($val['label_content'] ? $val['label_content'] : $val['title']) . '</span>');
 				}
 			}
 			unset($val);
