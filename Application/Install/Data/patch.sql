@@ -13,6 +13,9 @@ CREATE TABLE `ocenter_rank_price` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='头衔价格';
 
+ALTER TABLE `ocenter_rank_price`
+ADD UNIQUE `rank_id_time_num_time_unit` (`rank_id`, `time_num`, `time_unit`);
+
 INSERT INTO `ocenter_menu` (`id`, `title`, `pid`, `sort`, `url`, `hide`, `tip`, `group`, `is_dev`, `icon`, `module`) VALUES
 (NULL, '表情设置', 74, 4, 'Expression/index', 0, '', '表情设置', 0, '', ''),
 (NULL, '添加表情包', 74, 5, 'Expression/add', 1, '', '表情设置', 0, '', ''),
