@@ -658,7 +658,7 @@ function ubb($data) {
  * @param string $model 触发行为的模型名
  * @param int    $record_id 触发行为的记录id
  * @param int    $user_id 执行行为的用户id
- * @return boolean
+ * @return string 返回错误消息，如果成功则错误消息为空
  * @author huajie <banhuajie@163.com>
  */
 function action_log($action = null, $model = null, $record_id = null, $user_id = null) {
@@ -676,7 +676,7 @@ function action_log($action = null, $model = null, $record_id = null, $user_id =
 	if ($action_info['status'] != 1) {
 		return '该行为被禁用或删除';
 	}
-
+	$data = array();
 	//插入行为日志
 	$data['action_id'] = $action_info['id'];
 	$data['user_id'] = $user_id;
@@ -688,6 +688,7 @@ function action_log($action = null, $model = null, $record_id = null, $user_id =
 	//解析日志规则,生成日志备注
 	if (!empty($action_info['log'])) {
 		if (preg_match_all('/\[(\S+?)\]/', $action_info['log'], $match)) {
+			$log = array();
 			$log['user'] = $user_id;
 			$log['record'] = $record_id;
 			$log['model'] = $model;
@@ -712,12 +713,17 @@ function action_log($action = null, $model = null, $record_id = null, $user_id =
 
 	$log_id = M('ActionLog')->add($data);
 
-	if (!empty($action_info['rule'])) {
-		//解析行为
-		$rules = parse_action($action, $user_id);
-		//执行行为
-		$res = execute_action($rules, $action_info['id'], $user_id, $log_id);
+	if (empty($action_info['rule'])) {
+		return '行为规则为空';
 	}
+	//解析行为
+	$rules = parse_action($action, $user_id, $action_info);
+	//执行行为
+	$res = execute_action($rules, $action_info['id'], $user_id, $log_id);
+	if ($res === false) {
+		return '行为执行失败';
+	}
+	return '';
 }
 
 /**
@@ -735,7 +741,7 @@ function action_log($action = null, $model = null, $record_id = null, $user_id =
  * @return boolean|array: false解析出错 ， 成功返回规则数组
  * @author huajie <banhuajie@163.com>
  */
-function parse_action($action = null, $self) {
+function parse_action($action = null, $self, &$info = array()) {
 	if (empty($action)) {
 		return false;
 	}
@@ -748,7 +754,7 @@ function parse_action($action = null, $self) {
 	}
 
 	//查询行为信息
-	$info = M('Action')->where($map)->find();
+	$info || $info = M('Action')->where($map)->find();
 
 	if (!$info || $info['status'] != 1) {
 		return false;
@@ -795,11 +801,10 @@ function parse_action($action = null, $self) {
  * @author huajie <banhuajie@163.com>
  */
 function execute_action($rules = false, $action_id = null, $user_id = null, $log_id = null) {
-	$log_score = '';
 	if (!$rules || empty($action_id) || empty($user_id)) {
 		return false;
 	}
-	$return = true;
+	$log_score = '';
 	foreach ($rules as $rule) {
 		//检查执行周期
 		$map = array('action_id' => $action_id, 'user_id' => $user_id);
@@ -811,19 +816,24 @@ function execute_action($rules = false, $action_id = null, $user_id = null, $log
 		//执行数据库操作
 		$Model = M(ucfirst($rule['table']));
 		$field = 'score' . $rule['field'];
-		$res = $Model->where(array('uid' => is_login(), 'status' => 1))->setField($field, array('exp', $field . (is_bool(strpos($rule['rule'], '+')) ? '+' : '') . $rule['rule']));
+		$res = $Model->where(array(
+			'uid' => is_login(),
+			'status' => 1)
+		)->setField($field, array(
+			'exp',
+			$field . (is_bool(strpos($rule['rule'], '+')) ? '+' : '') . $rule['rule'],
+		));
 
+		if ($res === false) {
+			return false;
+		}
 		$sType = D('ucenter_score_type')->where(array('id' => $rule['field']))->find();
 		$log_score .= '【' . $sType['title'] . '：' . $rule['rule'] . $sType['unit'] . '】';
-
-		if (!$res) {
-			$return = false;
-		}
 	}
-	if ($log_score) {
-		M('ActionLog')->where(array('id' => $log_id))->setField('remark', array('exp', "CONCAT(remark,'" . $log_score . "')"));
+	if ($log_score && $log_id) {
+		M('ActionLog')->where(array('id' => $log_id))->setField('remark', array('exp', 'CONCAT(remark,\'' . $log_score . '\')'));
 	}
-	return $return;
+	return true;
 }
 
 //基于数组创建目录和文件
@@ -1319,7 +1329,7 @@ function array_subtract($a, $b) {
  * @param  array  $param 参数
  * @return string        插件网址
  */
-function simple_addons_url($url, $param=array()) {
+function simple_addons_url($url, $param = array()) {
 	// 拆分URL
 	$url = explode('/', $url);
 	$addon = $url[0];
