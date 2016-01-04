@@ -111,7 +111,7 @@ class Base extends Model {
 			$count = is_array($result) ? $result[0]['count'] : 0;
 			unset($result, $count_options);
 		}
-
+		$output = array();
 		// 如果查询总数大于0
 		if ($count > 0) {
 			// 解析分页参数
