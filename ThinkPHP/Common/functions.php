@@ -1022,7 +1022,7 @@ function U($url = '', $vars = '', $suffix = true, $domain = false) {
 	$urlCase = C('URL_CASE_INSENSITIVE');
 	if ($url) {
 		if (0 === strpos($url, '/')) {
-// 定义路由
+			// 定义路由
 			$route = true;
 			$url = substr($url, 1);
 			if ('/' != $depr) {
@@ -1079,6 +1079,14 @@ function U($url = '', $vars = '', $suffix = true, $domain = false) {
 				unset($var[$varModule]);
 			}
 
+			//[SWH|+]绑定子域名到 [模块/控制器] 时的网址需要删除控制器名称
+			if (C('APP_SUB_DOMAIN_DEPLOY')) {
+				static $_bindControllers = null;
+				is_null($_bindControllers) && $_bindControllers = array_flip(C('APP_SUB_DOMAIN_RULES'));
+				if (isset($_bindControllers[$module . '/' . $var[$varController]])) {
+					unset($var[$varController]);
+				}
+			}
 		}
 	}
 
