@@ -93,12 +93,15 @@ define('_PHP_FILE_',    $_temp[0].'.php');//[SWH|+]
 
 ====【以下为可选更改(当前已更改)，即不修改也不会影响系统正常运行】====
 
-1、文件 Library\Behavior\ReadHtmlCacheBehavior.class.php 中代码“Storage::put(”之前添加代码行：
+1、改进静态页面生成
+1)、文件 Library\Behavior\WriteHtmlCacheBehavior.class.php 中代码“Storage::put(”之前添加代码行：
 $callback=C('HTML_CACHE_BEFORE_WRITE');
 并将：
 Storage::put(HTML_FILE_NAME, $content, 'html');
 改为：
 Storage::put(HTML_FILE_NAME, $callback?$callback($content):$content, 'html');
+
+2)、文件 Library\Behavior\ReadHtmlCacheBehavior.class.php 内将checkHTMLCache方法体中的“function_exists($cacheTime)”改为“is_callable($cacheTime)”，
 
 此修改用于实现缓存在写入之前的数据处理，用于解决这样的需求：
 对外只公开纯静态页面的访问，而这时候我们希望静态页面内的链接总是指向静态页面，
