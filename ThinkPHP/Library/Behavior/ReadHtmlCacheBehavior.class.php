@@ -21,11 +21,17 @@ class ReadHtmlCacheBehavior {
 		if (IS_GET && C('HTML_CACHE_ON')) {
 			$cacheTime = $this->requireHtmlCache();
 			if (false !== $cacheTime && $this->checkHTMLCache(HTML_FILE_NAME, $cacheTime)) {
+				if (!empty($_SERVER['HTTP_IF_NONE_MATCH']) && is_numeric($_SERVER['HTTP_IF_NONE_MATCH'])) {
+					header('Etag:' . $_SERVER['HTTP_IF_NONE_MATCH'], true, 304);
+					exit();
+				}
+				header('Etag:' . NOW_TIME, true, 200);
 				//静态页面有效
 				// 读取静态页面输出
 				echo Storage::read(HTML_FILE_NAME, 'html');
 				exit();
 			}
+			header('Etag:' . NOW_TIME, true, 200);
 		}
 	}
 

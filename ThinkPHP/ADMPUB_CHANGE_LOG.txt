@@ -103,6 +103,18 @@ Storage::put(HTML_FILE_NAME, $callback?$callback($content):$content, 'html');
 
 2)、文件 Library\Behavior\ReadHtmlCacheBehavior.class.php 内将checkHTMLCache方法体中的“function_exists($cacheTime)”改为“is_callable($cacheTime)”，
 
+增加HTTP缓存：
+在run方法体中在其最内层的if代码块后面增加：
+header('Etag:' . NOW_TIME, true, 200);
+并在代码“echo Storage::read(HTML_FILE_NAME, 'html');”的前面增加代码：
+
+				if (!empty($_SERVER['HTTP_IF_NONE_MATCH']) && is_numeric($_SERVER['HTTP_IF_NONE_MATCH'])) {
+					header('Etag:' . $_SERVER['HTTP_IF_NONE_MATCH'], true, 304);
+					exit();
+				}
+				header('Etag:' . NOW_TIME, true, 200);
+
+
 此修改用于实现缓存在写入之前的数据处理，用于解决这样的需求：
 对外只公开纯静态页面的访问，而这时候我们希望静态页面内的链接总是指向静态页面，
 动态页面的链接总是指向动态页面，这样，我们无论是在动态页面还是静态页面都能无障碍的浏览。
