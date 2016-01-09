@@ -69,26 +69,55 @@ define('_PHP_FILE_',    $_temp[0].'.php');//[SWH|+]
 4、文件 Library\Think\Page.class.php 有修改请不要直接覆盖，如果已经覆盖了，请使用 Library\Think\Page.modified-bak.class.php 文件还原。
 
 
-5、文件 Common\functions.php 内U函数中，在代码：
+5、这一步用于解决模块绑定域名后生成网址不正确的问题。
+文件 Common\functions.php 内U函数中，在代码：
 
 			if (isset($var[$varModule])) {
 				$module = $var[$varModule];
 				unset($var[$varModule]);
 			}
 
-后面（亦即代码“if (C('URL_MODEL') == 0) {”上面的两个花括号“}”的前面）增加代码以下代码：
+后面（亦即代码“if (C('URL_MODEL') == 0) {”上面的两个花括号“}”的前面）增加以下代码：
 
 			//[SWH|+]绑定子域名到 [模块/控制器] 时的网址需要删除控制器名称
-			if (C('APP_SUB_DOMAIN_DEPLOY')) {
-				static $_bindControllers = null;
-				is_null($_bindControllers) && $_bindControllers = array_flip(C('APP_SUB_DOMAIN_RULES'));
-				if (isset($_bindControllers[$module . '/' . $var[$varController]])) {
+			$_bindControllers = moduleDomains();
+			if ($_bindControllers) {
+				$_module = strtolower($module);
+				$_k = $_module . '/' . strtolower($var[$varController]);
+				if (isset($_bindControllers[$_k])) {
 					unset($var[$varController]);
+					if (!$domain) {
+						$domain = $_bindControllers[$_k];
+					}
+				} else if (isset($_bindControllers[$_module])) {
+					if (!$domain) {
+						$domain = $_bindControllers[$_module];
+					}
 				}
 			}
 
+并将U函数中代码：
+ $module = (defined('BIND_MODULE') && BIND_MODULE == $module) ? '' : $module;
+改为：
+ $module = $domain || (defined('BIND_MODULE') && BIND_MODULE == $module) ? '' : $module;
 
-
+并在U函数前添加代码：
+function moduleDomains(){
+	static $_moduleDomains = null;
+	if (is_null($_moduleDomains)) {
+		$_moduleDomains = array();
+		if (C('APP_SUB_DOMAIN_DEPLOY')) {
+			$rules = C('APP_SUB_DOMAIN_RULES');
+			if ($rules) {
+				foreach ($rules as $key => $value) {
+					$value = strtolower($value);
+					$_moduleDomains[$value] = $key;
+				}
+			}
+		}
+	}
+	return $_moduleDomains;
+}
 
 
 ====【以下为可选更改(当前已更改)，即不修改也不会影响系统正常运行】====

@@ -957,6 +957,22 @@ function layout($layout) {
 	}
 }
 
+function moduleDomains() {
+	static $_moduleDomains = null;
+	if (is_null($_moduleDomains)) {
+		$_moduleDomains = array();
+		if (C('APP_SUB_DOMAIN_DEPLOY')) {
+			$rules = C('APP_SUB_DOMAIN_RULES');
+			if ($rules) {
+				foreach ($rules as $key => $value) {
+					$value = strtolower($value);
+					$_moduleDomains[$value] = $key;
+				}
+			}
+		}
+	}
+	return $_moduleDomains;
+}
 /**
  * URL组装 支持不同URL模式
  * @param string $url URL表达式，格式：'[模块/控制器/操作#锚点@域名]?参数1=值1&参数2=值2...'
@@ -1080,11 +1096,19 @@ function U($url = '', $vars = '', $suffix = true, $domain = false) {
 			}
 
 			//[SWH|+]绑定子域名到 [模块/控制器] 时的网址需要删除控制器名称
-			if (C('APP_SUB_DOMAIN_DEPLOY')) {
-				static $_bindControllers = null;
-				is_null($_bindControllers) && $_bindControllers = array_flip(C('APP_SUB_DOMAIN_RULES'));
-				if (isset($_bindControllers[$module . '/' . $var[$varController]])) {
+			$_bindControllers = moduleDomains();
+			if ($_bindControllers) {
+				$_module = strtolower($module);
+				$_k = $_module . '/' . strtolower($var[$varController]);
+				if (isset($_bindControllers[$_k])) {
 					unset($var[$varController]);
+					if (!$domain) {
+						$domain = $_bindControllers[$_k];
+					}
+				} else if (isset($_bindControllers[$_module])) {
+					if (!$domain) {
+						$domain = $_bindControllers[$_module];
+					}
 				}
 			}
 		}
@@ -1105,7 +1129,7 @@ function U($url = '', $vars = '', $suffix = true, $domain = false) {
 		if (isset($route)) {
 			$url = __APP__ . '/' . rtrim($url, $depr);
 		} else {
-			$module = (defined('BIND_MODULE') && BIND_MODULE == $module) ? '' : $module;
+			$module = $domain || (defined('BIND_MODULE') && BIND_MODULE == $module) ? '' : $module;
 			$url = __APP__ . '/' . ($module ? $module . MODULE_PATHINFO_DEPR : '') . implode($depr, array_reverse($var));
 		}
 		if ($urlCase) {
