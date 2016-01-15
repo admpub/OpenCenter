@@ -47,7 +47,7 @@ $config['HTML_CACHE_RULES'] = array(
 // 		if (!empty($_GET['admpub'])) {
 // 			return false;//缓存失效，会重新生成缓存
 // 		}
-// 		return NOW_TIME <= \Think\Storage::get($cacheFile, 'mtime', 'html') + 86400 * 7;
+// 		return NOW_TIME <= \Behavior\ReadHtmlCacheBehavior::fileMTime($cacheFile) + 86400 * 7;
 // 	}, // 为数字时为全局静态缓存有效期（秒），为函数时为判断缓存是否失效
 // 	'HTML_CACHE_RULES' => array(
 // 		'wap:download' => array('wap/download', function ($cacheFile) {
@@ -56,8 +56,11 @@ $config['HTML_CACHE_RULES'] = array(
 // 				C('HTML_CACHE_ON', false); //避免写缓存
 // 				return false; //避免读缓存
 // 			}
-// 			return NOW_TIME <= \Think\Storage::get($cacheFile, 'mtime', 'html') + 86400 * 7;
-// 		}),
+// 			return NOW_TIME <= \Behavior\ReadHtmlCacheBehavior::fileMTime($cacheFile) + 86400 * 7;
+// 		}, function ($rule) {
+//			//整理文件名
+//			return $rule . '_' . max(1, isset($_GET['p']) ? intval($_GET['p']) : 1);
+//		}),
 // 	),
  */
 return $config;

@@ -15,23 +15,32 @@ use Think\Storage;
  * 系统行为扩展：静态缓存读取
  */
 class ReadHtmlCacheBehavior {
+	static public function fileMTime($cacheFile) {
+		static $_fmt = array();
+		if (isset($_fmt[$cacheFile])) {
+			return $_fmt[$cacheFile];
+		}
+		$_fmt[$cacheFile] = Storage::get($cacheFile, 'mtime', 'html');
+		return $_fmt[$cacheFile];
+	}
 	// 行为扩展的执行入口必须是run
 	public function run(&$params) {
 		// 开启静态缓存
 		if (IS_GET && C('HTML_CACHE_ON')) {
 			$cacheTime = $this->requireHtmlCache();
 			if (false !== $cacheTime && $this->checkHTMLCache(HTML_FILE_NAME, $cacheTime)) {
-				if (!empty($_SERVER['HTTP_IF_NONE_MATCH']) && is_numeric($_SERVER['HTTP_IF_NONE_MATCH'])) {
+				$mtime = self::fileMTime(HTML_FILE_NAME);
+				if (!empty($_SERVER['HTTP_IF_NONE_MATCH']) && $_SERVER['HTTP_IF_NONE_MATCH'] >= $mtime) {
 					header('Etag:' . $_SERVER['HTTP_IF_NONE_MATCH'], true, 304);
 					exit();
 				}
-				header('Etag:' . NOW_TIME, true, 200);
+				header('Etag:' . $mtime, true, 200);
 				//静态页面有效
 				// 读取静态页面输出
 				echo Storage::read(HTML_FILE_NAME, 'html');
 				exit();
 			}
-			header('Etag:' . NOW_TIME, true, 200);
+			header('Etag:' . (NOW_TIME + 5), true, 200);
 		}
 	}
 
@@ -119,12 +128,12 @@ class ReadHtmlCacheBehavior {
 	static public function checkHTMLCache($cacheFile = '', $cacheTime = '') {
 		if (!is_file($cacheFile) && 'sae' != APP_MODE) {
 			return false;
-		} elseif (filemtime(\Think\Think::instance('Think\View')->parseTemplate()) > Storage::get($cacheFile, 'mtime', 'html')) {
+		} elseif (filemtime(\Think\Think::instance('Think\View')->parseTemplate()) > self::fileMTime($cacheFile)) {
 			// 模板文件如果更新静态文件需要更新
 			return false;
 		} elseif (!is_numeric($cacheTime) && is_callable($cacheTime)) {
 			return $cacheTime($cacheFile);
-		} elseif ($cacheTime != 0 && NOW_TIME > Storage::get($cacheFile, 'mtime', 'html') + $cacheTime) {
+		} elseif ($cacheTime != 0 && NOW_TIME > self::fileMTime($cacheFile) + $cacheTime) {
 			// 文件是否在有效期
 			return false;
 		}
