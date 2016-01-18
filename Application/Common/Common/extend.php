@@ -76,3 +76,37 @@ function addonD($addon, $model = null) {
 function baseM($name = '', $tablePrefix = '', $connection = '') {
 	return M('Common\\Model\\Base:' . $name, $tablePrefix, $connection);
 }
+
+if (!function_exists('moduleDomains')) {
+	function moduleDomains() {
+		static $_moduleDomains = null;
+		if (is_null($_moduleDomains)) {
+			$_moduleDomains = array();
+			if (C('APP_SUB_DOMAIN_DEPLOY')) {
+				$rules = C('APP_SUB_DOMAIN_RULES');
+				if ($rules) {
+					foreach ($rules as $key => $value) {
+						$value = strtolower($value);
+						$_moduleDomains[$value] = $key;
+					}
+				}
+			}
+		}
+		return $_moduleDomains;
+	}
+}
+
+/**
+ * 根据模块及是否绑定域名来返回合适的首页网址
+ */
+function homeUrl() {
+	$domains = moduleDomains();
+	$module = strtolower(MODULE_NAME);
+	if (!empty($domains[$module . '/' . strtolower(CONTROLLER_NAME)])) {
+		return U('index');
+	}
+	if (!empty($domains[$module])) {
+		return U('Index/index');
+	}
+	return U('Home/Index/index');
+}
