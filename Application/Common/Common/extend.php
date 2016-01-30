@@ -134,3 +134,19 @@ function check_remote_file_exists($url) {
 	curl_close($curl);
 	return $found;
 }
+
+/**
+ * 缓存快捷函数
+ * @param  string  $cachedId 缓存key
+ * @param  mixed   $func     获取新数据的功能函数
+ * @param  integer $lifeTime 生存时间(秒)
+ * @return mixed
+ */
+function cached($cachedId, $func, $lifeTime = 86400) {
+	$r = $lifeTime > 0 ? S($cachedId) : null;
+	if (!$r) {
+		$r = $func();
+		$lifeTime && S($cachedId,$r,$lifeTime);
+	}
+	return $r;
+}
