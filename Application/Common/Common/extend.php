@@ -143,10 +143,11 @@ function check_remote_file_exists($url) {
  * @return mixed
  */
 function cached($cachedId, $func, $lifeTime = 86400) {
+	defined('NOCACHE_MODE') && NOCACHE_MODE && $lifeTime = -1;
 	$r = $lifeTime > 0 ? S($cachedId) : null;
 	if (!$r) {
 		$r = $func();
-		$lifeTime && S($cachedId,$r,$lifeTime);
+		$lifeTime && S($cachedId, $r, $lifeTime);
 	}
 	return $r;
 }
