@@ -178,6 +178,7 @@ Storage::put(HTML_FILE_NAME, $callback?$callback($content):$content, 'html');
 						header('Etag:' . $_SERVER['HTTP_IF_NONE_MATCH'], true, 304);
 						exit();
 					}
+					self::httpCached($mtime, false);
 				} else {
 					self::httpCached($mtime);
 				}

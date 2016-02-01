@@ -54,6 +54,7 @@ class ReadHtmlCacheBehavior {
 						header('Etag:' . $_SERVER['HTTP_IF_NONE_MATCH'], true, 304);
 						exit();
 					}
+					self::httpCached($mtime, false);
 				} else {
 					self::httpCached($mtime);
 				}
