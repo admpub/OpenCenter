@@ -185,7 +185,7 @@ Storage::put(HTML_FILE_NAME, $callback?$callback($content):$content, 'html');
 				header('Etag:' . $mtime, true, 200);
 
 
-此修改用于实现缓存在写入之前的数据处理，用于解决这样的需求：
+如要解决这样的需求：
 对外只公开纯静态页面的访问，而这时候我们希望静态页面内的链接总是指向静态页面，
 动态页面的链接总是指向动态页面，这样，我们无论是在动态页面还是静态页面都能无障碍的浏览。
 所以，要实现这个需求，我们首先在配置文件中把 HTML_CACHE_TIME 的值设为php代码 “function ($cacheFile) {return false;}”来令缓存总是过期，
