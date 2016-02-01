@@ -23,6 +23,25 @@ class ReadHtmlCacheBehavior {
 		$_fmt[$cacheFile] = Storage::get($cacheFile, 'mtime', 'html');
 		return $_fmt[$cacheFile];
 	}
+
+	/**
+	 * http缓存(用于不支持etag的情况)
+	 * @param  integer $mtime 修改时间戳
+	 * @param  boolean $check 是否检测时间
+	 * @return void
+	 */
+	static function httpCached($mtime, $check = true) {
+		// Checking if the client is validating his cache and if it is current.
+		if ($check && isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) && (strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) >= $mtime)) {
+			// Client's cache IS current, so we just respond '304 Not Modified'.
+			header('Last-Modified: ' . gmdate('D, d M Y H:i:s', $mtime) . ' GMT', true, 304);
+			exit;
+		} else {
+			// Image not cached or cache outdated, we respond '200 OK' and output the image.
+			header('Last-Modified: ' . gmdate('D, d M Y H:i:s', $mtime) . ' GMT', true, 200);
+		}
+	}
+
 	// 行为扩展的执行入口必须是run
 	public function run(&$params) {
 		// 开启静态缓存
@@ -30,9 +49,13 @@ class ReadHtmlCacheBehavior {
 			$cacheTime = $this->requireHtmlCache();
 			if (false !== $cacheTime && $this->checkHTMLCache(HTML_FILE_NAME, $cacheTime)) {
 				$mtime = self::fileMTime(HTML_FILE_NAME);
-				if (!empty($_SERVER['HTTP_IF_NONE_MATCH']) && $_SERVER['HTTP_IF_NONE_MATCH'] >= $mtime) {
-					header('Etag:' . $_SERVER['HTTP_IF_NONE_MATCH'], true, 304);
-					exit();
+				if (!empty($_SERVER['HTTP_IF_NONE_MATCH'])) {
+					if ($_SERVER['HTTP_IF_NONE_MATCH'] >= $mtime) {
+						header('Etag:' . $_SERVER['HTTP_IF_NONE_MATCH'], true, 304);
+						exit();
+					}
+				} else {
+					self::httpCached($mtime);
 				}
 				header('Etag:' . $mtime, true, 200);
 				//静态页面有效
@@ -40,7 +63,9 @@ class ReadHtmlCacheBehavior {
 				echo Storage::read(HTML_FILE_NAME, 'html');
 				exit();
 			}
-			header('Etag:' . (NOW_TIME + 5), true, 200);
+			$mtime = NOW_TIME + 5;
+			header('Etag:' . $mtime, true, 200);
+			self::httpCached($mtime, false);
 		}
 	}
 
