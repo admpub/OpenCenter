@@ -5,7 +5,7 @@
  *@modified by swh <swh@admpub.com>
  */
 error_reporting(0);
-
+defined('NOW_TIME') || define('NOW_TIME', time());
 if (extension_loaded('zlib')) {
 	//检查服务器是否开启了zlib拓展
 	ob_start('ob_gzhandler');
@@ -30,11 +30,6 @@ if ($gettype == 'css') {
 }
 
 header('content-type: ' . $content_type . '; charset=utf-8'); //注意修改到你的编码
-// header ( 'cache-control: must-revalidate' );
-header('cache-control: max-age=' . $offset);
-header('Last-Modified: ' . gmdate('D, d M Y H:i:s', time()) . 'GMT');
-header('Pragma: max-age=' . $offset);
-header('Expires:' . gmdate('D, d M Y H:i:s', time() + $offset) . ' GMT');
 set_cache_limit($offset);
 
 if (strpos($_GET['f'], '://') !== false) {
@@ -42,7 +37,6 @@ if (strpos($_GET['f'], '://') !== false) {
 }
 
 $getfiles = explode(',', $_GET['f']);
-
 ob_start('compress');
 
 function compress($buffer) {
@@ -51,32 +45,20 @@ function compress($buffer) {
 	return $buffer;
 }
 
-function gen_etag() {
-	return time() . '|' . md5($_SERVER['REQUEST_URI']);
-}
-
 function set_cache_limit($second = 1) {
 	$second = intval($second);
 	if ($second == 0) {
 		return;
 	}
-
-	if (!isset($_SERVER['HTTP_IF_NONE_MATCH'])) {
-		header('Etag:' . gen_etag(), true, 200);
-		return;
-	}
-
-	$id = $_SERVER['HTTP_IF_NONE_MATCH'];
-
-	list($time, $uri) = explode('|', $id, 2);
-
-	if ($time < (time() - $second)) {
-		//过期了，发送新tag
-		header('Etag:' . gen_etag(), true, 200);
+	if (!isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) || (strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) < NOW_TIME - $second)) {
+		//过期了
+		header('Cache-Control: max-age=' . $second);
+		header('Last-Modified: ' . gmdate('D, d M Y H:i:s', NOW_TIME) . ' GMT');
+		header('Pragma: max-age=' . $second);
+		header('Expires:' . gmdate('D, d M Y H:i:s', NOW_TIME + $second) . ' GMT');
 	} else {
-		//未过期，发送旧tag
-		header('Etag:' . $id, true, 304);
-		exit(-1);
+		header('Last-Modified: ' . $_SERVER['HTTP_IF_MODIFIED_SINCE'], true, 304);
+		exit;
 	}
 }
 
@@ -86,6 +68,9 @@ function ext_name($file) {
 
 foreach ($getfiles as $file) {
 	if ($gettype == ext_name($file)) {
+		if ($file[0] == '/') {
+			$file = __DIR__ . '/..' . $file;
+		}
 		readfile($file);
 	} else {
 		echo PHP_EOL . '/* not allowed file type:' . $file . ' */' . PHP_EOL;
