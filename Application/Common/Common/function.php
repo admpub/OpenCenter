@@ -111,10 +111,14 @@ function check_auth($rule, $type = AuthRuleModel::RULE_URL) {
  * @author 麦当苗儿 <zuojiazi@vip.qq.com>
  */
 function is_administrator($uid = null) {
+	static $adminIds = array();
+	if (!$adminIds) {
+		$admin_uids = explode(',', C('USER_ADMINISTRATOR')); //调整验证机制，支持多管理员，用,分隔
+		$adminIds = array_flip($admin_uids);
+	}
 	$uid = is_null($uid) ? is_login() : $uid;
-	$admin_uids = explode(',', C('USER_ADMINISTRATOR')); //调整验证机制，支持多管理员，用,分隔
-	//dump($admin_uids);exit;
-	return $uid && (in_array(intval($uid), $admin_uids)); //调整验证机制，支持多管理员，用,分隔
+	$uid = intval($uid);
+	return $uid > 0 && isset($adminIds[$uid]); //调整验证机制，支持多管理员，用,分隔
 }
 
 /**
@@ -483,7 +487,7 @@ function get_username($uid = 0) {
 	static $list;
 	if (!($uid && is_numeric($uid))) {
 		//获取当前登录用户名
-		return $_SESSION['ocenter']['user_auth']['username'];
+		return session('user_auth.username');
 	}
 
 	/* 获取缓存数据 */
