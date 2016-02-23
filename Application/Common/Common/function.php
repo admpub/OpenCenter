@@ -1546,3 +1546,13 @@ function check_verify_open($open) {
 	}
 	return false;
 }
+
+function xmlspecialchars($str, $onlyQuote = true) {
+	if ($onlyQuote) {
+		return '<![CDATA[' . $str . ']]>';
+	}
+	$str = preg_replace_callback('/&(?![a-z]{2,4};)/', function ($p) {
+		return '&amp;' . $p[1];
+	}, $str);
+	return str_replace(array('<', '>', '"', '\''), array('&lt;', '&gt;', '&quot;', '&apos;'), $str);
+}
