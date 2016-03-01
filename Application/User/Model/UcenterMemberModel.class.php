@@ -487,7 +487,7 @@ class UcenterMemberModel extends Model {
 	}
 
 	public function addSyncData() {
-
+		$data=array();
 		$data['username'] = $this->rand_username();
 		$data['email'] = $this->rand_email();
 		$data['password'] = $this->create_rand(10);

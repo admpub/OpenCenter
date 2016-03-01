@@ -116,10 +116,13 @@ class ConfigController extends BaseController {
 			$already_role_ids = array_column($already_role_list, 'role_id');
 			$already_role_list = array_combine($already_role_ids, $already_role_list);
 
-			$map_already_roles['id'] = array('in', $already_role_ids);
-			$map_already_roles['status'] = 1;
-			$already_roles = $roleModel->where($map_already_roles)->order('sort asc')->select();
-			$already_group_ids = array_unique(array_column($already_roles, 'group_id'));
+			$map_already_roles = $already_roles = $already_group_ids = array();
+			if ($already_role_ids) {
+				$map_already_roles['id'] = array('in', $already_role_ids);
+				$map_already_roles['status'] = 1;
+				$already_roles = $roleModel->where($map_already_roles)->order('sort asc')->select();
+				$already_group_ids = array_unique(array_column($already_roles, 'group_id'));
+			}
 
 			foreach ($already_roles as &$val) {
 				$val['user_status'] = $already_role_list[$val['id']]['status'] != 2 ? ($already_role_list[$val['id']]['status'] == 1) ? '<span style="color: green;">已审核</span>' : '<span style="color: #ff0000;">已禁用<span style="color: 333">(如有疑问，请联系管理员)</span></span>' : '<span style="color: #0003FF;">正在审核</span>';
@@ -132,14 +135,17 @@ class ConfigController extends BaseController {
 			if (count($already_group_ids)) {
 				$map_can_have_roles['group_id'] = array('not in', $already_group_ids); //同组内的角色不显示
 			}
-			$map_can_have_roles['id'] = array('not in', $already_role_ids); //去除已有角色
-			$map_can_have_roles['invite'] = 0; //不需要邀请注册
-			$map_can_have_roles['status'] = 1;
-			$can_have_roles = $roleModel->where($map_can_have_roles)->order('sort asc')->select(); //可持有角色
+			$can_have_roles = $map_can_have_roles = array();
+			if ($already_role_ids) {
+				$map_can_have_roles['id'] = array('not in', $already_role_ids); //去除已有角色
+				$map_can_have_roles['invite'] = 0; //不需要邀请注册
+				$map_can_have_roles['status'] = 1;
+				$can_have_roles = $roleModel->where($map_can_have_roles)->order('sort asc')->select(); //可持有角色
+			}
 
 			$register_type = modC('REGISTER_TYPE', 'normal', 'Invite');
 			$register_type = explode(',', $register_type);
-			if (in_array('invite', $register_type)) {
+			if ($map_can_have_roles && in_array('invite', $register_type)) {
 				//开启邀请注册
 				$map_can_have_roles['invite'] = 1;
 				$can_up_roles = $roleModel->where($map_can_have_roles)->order('sort asc')->select(); //可升级角色

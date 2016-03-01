@@ -41,31 +41,27 @@ class BaseController extends AddonsController {
 		$type = I('get.type');
 		$is_login = is_login();
 		$sns = \ThinkOauth::getInstance($type);
-
 		//腾讯微博需传递的额外参数
 		$extend = null;
 		if ($type == 'tencent') {
 			$extend = array('openid' => I('get.openid'), 'openkey' => I('get.openkey'));
 		}
-
 		$token = $sns->getAccessToken($code, $extend);
 		session('SYNCLOGIN_TOKEN', $token);
 		session('SYNCLOGIN_TYPE', $type);
 		session('SYNCLOGIN_OPENID', $token['openid']);
 		session('SYNCLOGIN_ACCESS_TOKEN', $token['access_token']);
-		$check = D('sync_login')->where(array('type_uid' => $token['openid'], 'type' => $type))->select();
+		$check = D('sync_login')->where(array('type_uid' => $token['openid'], 'type' => $type))->find();
 		$addon_config = get_addon_config('SyncLogin');
-
 		if ($is_login) {
 			$this->dealIsLogin($is_login);
 		} else {
 			if ($addon_config['bind'] && !$check) {
 				redirect(addons_url('SyncLogin://Base/bind'));
 			} else {
-				$this->unbind();
+				$this->unbind($check);
 			}
 		}
-
 	}
 
 	/**
@@ -81,8 +77,7 @@ class BaseController extends AddonsController {
 			if ($Member->login($uid, false)) {
 				//登录用户
 				//TODO:跳转到登录前页面
-				//redirect(U('Home/Index/index'));
-				$this->success('登录成功！', U('Home/Index/index'));
+				$this->success('登录成功！', homeUrl());
 			} else {
 				$this->error($Member->getError());
 			}
@@ -100,6 +95,7 @@ class BaseController extends AddonsController {
 	 * autor:xjw129xjt
 	 */
 	protected function addSyncLoginData($uid, $token, $openID, $type, $oauth_token_secret) {
+		$data = array();
 		$data['uid'] = $uid;
 		$data['type_uid'] = $openID;
 		$data['oauth_token'] = $token;
@@ -117,11 +113,9 @@ class BaseController extends AddonsController {
 	 * autor:xjw129xjt
 	 */
 	protected function saveAvatar($url, $oid, $uid, $type) {
-
 		if (is_sae()) {
 			$s = new \SaeStorage();
 			$img = file_get_contents($url); //括号中的为远程图片地址
-
 			$url_sae = $s->write(C('UPLOAD_SAE_CONFIG.domain'), '/Avatar/' . $type . 'Avatar/' . $oid . '.jpg', $img);
 			$data['path'] = $url_sae;
 		} else {
@@ -136,7 +130,6 @@ class BaseController extends AddonsController {
 		$data['status'] = 1;
 		$data['is_temp'] = 0;
 		D('avatar')->add($data);
-
 	}
 
 	public function bind() {
@@ -148,36 +141,30 @@ class BaseController extends AddonsController {
 	}
 
 	public function newAccount() {
-
 		$username = I('post.username');
 		$nickname = I('post.nickname');
 		$email = I('post.email');
 		$password = I('post.password');
-
-		$User = new UserApi;
+		$User = new UserApi();
 		$uid = $User->register($username, $nickname, $password, $email);
 		if (0 < $uid) {
 			//注册成功
 			$this->addSyncLoginData($uid, $this->access_token, $this->openid, $this->type, $this->openid);
 			$uid = $User->login($username, $password); //通过账号密码取到uid
 			D('Member')->login($uid, false); //登陆
-			$this->success('绑定成功！', U('Home/Index/index'));
+			$this->success('绑定成功！', homeUrl());
 		} else {
 			//注册失败，显示错误信息
 			$this->error($this->showRegError($uid));
 		}
-
 	}
 
 	public function existLogin() {
-
 		$username = I('post.username');
 		$password = I('post.password');
 		$remember = I('post.remember');
-
-		$user = new UserApi;
+		$user = new UserApi();
 		$uid = $user->login($username, $password);
-
 		if (0 < $uid) {
 			//UC登录成功
 			/* 登录用户 */
@@ -186,11 +173,10 @@ class BaseController extends AddonsController {
 				//登录用户
 				$this->addSyncLoginData($uid, $this->access_token, $this->openid, $this->type, $this->openid);
 				//TODO:跳转到登录前页面
-				$this->success('登录成功！', U('Home/Index/index'));
+				$this->success('登录成功！', homeUrl());
 			} else {
 				$this->error($Member->getError());
 			}
-
 		} else {
 			//登录失败
 			switch ($uid) {
@@ -206,37 +192,39 @@ class BaseController extends AddonsController {
 			}
 			$this->error($error);
 		}
-
 	}
 
-	public function unbind() {
-		$this->checkIsBind();
+	public function unbind($syncData = null) {
+		//$this->checkIsBind($syncData);
 		$access_token = session('SYNCLOGIN_ACCESS_TOKEN');
 		$openid = session('SYNCLOGIN_OPENID');
 		$type = session('SYNCLOGIN_TYPE');
 		$token = session('SYNCLOGIN_TOKEN');
 		$user_info = D('Addons://SyncLogin/Info')->$type($token);
-		if ($info1 = D('sync_login')->where(array('type_uid' => $openid, 'type' => $type))->find()) {
-			$user = UCenterMember()->where(array('id' => $info1['uid']))->find();
+		$syncData === null && $syncData = D('sync_login')->where(array('type_uid' => $openid, 'type' => $type))->find();
+		if ($syncData) {
+			$uid = $syncData['uid'];
+			$user = UCenterMember()->where(array('id' => $syncData['uid']))->find();
 			if (empty($user)) {
+				//用户已经不存在，删除绑定记录
 				D('sync_login')->where(array('type_uid' => $openid, 'type' => $type))->delete();
-				//已经绑定过，执行登录操作，设置token
+				return redirect(homeUrl());
 			} else {
-				if ($info1['oauth_token'] == '') {
-					$syncdata['id'] = $info1['id'];
-					$syncdata['oauth_token'] = $access_token;
-					$syncdata['oauth_token_secret'] = $openid;
-					D('sync_login')->save($syncdata);
+				//已经绑定过，执行登录操作，设置token
+				if (!$syncData['oauth_token'] || $syncData['oauth_token'] != $access_token) {
+					$data = array();
+					$data['id'] = $syncData['id'];
+					$data['oauth_token'] = $access_token;
+					$data['oauth_token_secret'] = $openid;
+					D('sync_login')->save($data);
 				}
-				$uid = $info1['uid'];
 			}
 		} else {
 			$Api = new UserApi();
 			//usercenter表新增数据
 			$uid = $Api->addSyncData();
 			//member表新增数据
-			D('Home/Member')->addSyncData($uid, $user_info);
-
+			D('Common/Member')->addSyncData($uid, $user_info);
 			// 记录数据到sync_login表中
 			$this->addSyncLoginData($uid, $access_token, $openid, $type, $openid);
 			//保存头像
@@ -249,13 +237,12 @@ class BaseController extends AddonsController {
 			}
 		}
 		$this->loginWithoutpwd($uid);
-
 	}
 
-	public function checkIsBind() {
-		$check = D('sync_login')->where(array('type_uid' => $this->openid, 'type' => $this->type))->select();
-		if ($check) {
-			redirect(U('Home/Index/index'));
+	public function checkIsBind($syncData = null) {
+		$syncData === null && $syncData = D('sync_login')->where(array('type_uid' => $this->openid, 'type' => $this->type))->find();
+		if ($syncData) {
+			redirect(homeUrl());
 		}
 	}
 
@@ -319,6 +306,7 @@ class BaseController extends AddonsController {
 		}
 		return $error;
 	}
+
 	protected function dealIsLogin($uid = 0) {
 		$access_token = session('SYNCLOGIN_ACCESS_TOKEN');
 		$openid = session('SYNCLOGIN_OPENID');

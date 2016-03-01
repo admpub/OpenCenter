@@ -289,19 +289,19 @@ class RoleController extends AdminController {
 		$role_list = $this->roleModel->field('id,title as value')->order('sort asc')->select();
 		$role_id_list = array_column($role_list, 'id');
 		if ($aRoleId && in_array($aRoleId, $role_id_list)) {
-//筛选角色
+			//筛选角色
 			$map_user_list['role_id'] = $aRoleId;
 		} else {
 			$map_user_list['role_id'] = $role_list[0]['id'];
 		}
 		if ($aUserStatus) {
-//筛选状态
+			//筛选状态
 			$map_user_list['status'] = $aUserStatus == 3 ? 0 : $aUserStatus;
 		}
 		$user_ids = D('Member')->where(array('status' => -1))->field('uid')->select();
 		$user_ids = array_column($user_ids, 'uid');
 		if ($aSingleRole) {
-//单角色筛选
+			//单角色筛选
 			$uids = $this->userRoleModel->group('uid')->field('uid')->having('count(uid)=1')->select();
 			$uids = array_column($uids, 'uid'); //单角色用户id列表
 			if ($aSingleRole == 1) {
@@ -737,7 +737,7 @@ class RoleController extends AdminController {
 					$result = $this->roleConfigModel->addData($data);
 				}
 			} else {
-//使用系统默认头像
+				//使用系统默认头像
 				if ($this->roleConfigModel->where($map)->find()) {
 					$result = $this->roleConfigModel->where($map)->delete();
 				} else {
@@ -983,30 +983,21 @@ class RoleController extends AdminController {
 	 */
 	public function initUnhaveUser() {
 		$memberModel = D('Common/Member');
-
-		$uids = $memberModel->field('uid')->select();
-		$uids = array_column($uids, 'uid');
-
-		$have_uids = $this->userRoleModel->field('uid')->select();
-		$have_uids = array_column($have_uids, 'uid');
-		$have_uids = array_unique($have_uids);
-
-		$not_have_uids = array_diff($uids, $have_uids);
-
+		$not_have_uids = $memberModel->alias('a')->where('NOT EXISTS (SELECT b.uid FROM ' . $this->userRoleModel->getTableName() . ' b WHERE a.uid=b.uid)')->field('a.uid')->select();
+		$data = array();
 		$data['status'] = 1;
 		$data['role_id'] = 1;
-		$data['step'] = "finish";
+		$data['step'] = 'finish';
 		$data['init'] = 1;
 		$dataList = array();
-
 		foreach ($not_have_uids as $val) {
-			$data['uid'] = $val;
+			$data['uid'] = $val['uid'];
 			$dataList[] = $data;
-			$memberModel->initUserRoleInfo(1, $val);
-			$memberModel->initDefaultShowRole(1, $val);
+			$memberModel->initUserRoleInfo(1, $val['uid']);
+			$memberModel->initDefaultShowRole(1, $val['uid']);
 		}
 		unset($val);
 		$this->userRoleModel->addAll($dataList);
-		$this->success('操作成功！');
+		$this->success('操作成功！处理了' . count($not_have_uids) . '个没有角色的用户');
 	}
 }
