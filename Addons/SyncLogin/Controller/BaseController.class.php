@@ -194,7 +194,7 @@ class BaseController extends AddonsController {
 		}
 	}
 
-	public function unbind($syncData = null) {
+	protected function unbind($syncData = null) {
 		//$this->checkIsBind($syncData);
 		$access_token = session('SYNCLOGIN_ACCESS_TOKEN');
 		$openid = session('SYNCLOGIN_OPENID');
@@ -239,7 +239,7 @@ class BaseController extends AddonsController {
 		$this->loginWithoutpwd($uid);
 	}
 
-	public function checkIsBind($syncData = null) {
+	protected function checkIsBind($syncData = null) {
 		$syncData === null && $syncData = D('sync_login')->where(array('type_uid' => $this->openid, 'type' => $this->type))->find();
 		if ($syncData) {
 			redirect(homeUrl());

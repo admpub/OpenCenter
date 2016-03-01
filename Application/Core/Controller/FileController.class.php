@@ -210,7 +210,7 @@ class FileController extends Core {
 			/*适用于自动表单的图片上传方式*/
 			if ($info['file']) {
 				$return['data']['file'] = $info['file'];
-				$return['data']['file']['path'] = getRootUrl() . 'Uploads/Avatar' . $info['file']['savename'];
+				$return['data']['file']['path'] = getRootUrl() . 'Uploads/Avatar/' . $info['file']['savename'];
 				$size = getimagesize('./Uploads/Avatar/' . $info['file']['savename']);
 				$return['data']['file']['width'] = $size[0];
 				$return['data']['file']['height'] = $size[1];
