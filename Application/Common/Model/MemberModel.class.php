@@ -306,7 +306,7 @@ class MemberModel extends Base {
 	 * autor:xjw129xjt
 	 */
 	public function addSyncData($uid, $info) {
-
+		$data1 = array();
 		$data1['nickname'] = mb_substr($info['nick'], 0, 32, 'utf-8');
 		//去除特殊字符。
 		$data1['nickname'] = preg_replace('/[^A-Za-z0-9_\x80-\xff\s\']/', '', $data1['nickname']);
@@ -316,6 +316,17 @@ class MemberModel extends Base {
 		$data = $this->create($data1);
 		$data['uid'] = $uid;
 		$res = $this->add($data);
+		if ($res !== false) {
+			$data = array();
+			$data['status'] = 1;
+			$data['role_id'] = 1;
+			$data['step'] = 'finish';
+			$data['init'] = 1;
+			$data['uid'] = $uid;
+			$this->initUserRoleInfo(1, $uid);
+			$this->initDefaultShowRole(1, $uid);
+			D('user_role')->add($data);
+		}
 		return $res;
 	}
 
