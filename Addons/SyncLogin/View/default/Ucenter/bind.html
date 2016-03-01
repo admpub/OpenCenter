@@ -76,32 +76,25 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-9 col-sm-8 col-xs-11" style="padding-left:10px;padding-right: 0;">
-
-
-                <div class="uc_config_info common_block_border clearfix col-xs-12 "
+            <div class="col-md-9 col-sm-8 col-xs-11" style="padding-left:10px;padding-right:0;">
+                <div class="uc_config_info common_block_border clearfix col-xs-12"
                      style="padding-top:20px;padding-bottom: 20px;">
                     <h2>帐号绑定</h2>
-
-                    <div class="other_login_link" style="margin: 0">
+                    <div class="other_login_link" style="margin:0">
                         <volist name="list" id="vo">
                             <p>
-           <span class="col-xs-4">  <a href="javascript:" class="other_login other_login_{$vo['name']}"></a></span>
+           <span class="col-xs-4">  <a href="javascript:;" class="other_login other_login_{$vo['name']}"></a></span>
            <span class="col-xs-6"><if condition="$vo['is_bind']">已绑定 &nbsp; [<a href="{$vo.info.profile_url}" target="_blank">{$vo.info.nick}</a>]<else/>未绑定</if> </span>
-<span class="">
-    <if condition="$vo['is_bind']"><a href="javascript:" class="btn btn-primary unbind" data-type="{$vo.name}"  data-url="{:addons_url('SyncLogin://Ucenter/unbind')}">取消绑定</a>
-        <else/>
-        <a href="{:addons_url('SyncLogin://Base/login',array('type'=>$vo['name']))}" class="btn btn-primary ">点击绑定</a></if>
+<span>
+    <if condition="$vo['is_bind']"><a href="javascript:;" class="btn btn-primary unbind" data-type="{$vo.name}"  data-url="{:addons_url('SyncLogin://Ucenter/unbind')}">取消绑定</a>
+    <else/><a href="{:addons_url('SyncLogin://Base/login',array('type'=>$vo['name']))}" class="btn btn-primary ">点击绑定</a>
+    </if>
 </span>
 
                             </p>
-
                         </volist>
-
                     </div>
-
                 </div>
-
             </div>
         </div>
     </div>
