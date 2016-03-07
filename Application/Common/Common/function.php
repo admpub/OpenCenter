@@ -1560,3 +1560,15 @@ function xmlspecialchars($str, $onlyQuote = true) {
 	}, $str);
 	return str_replace(array('<', '>', '"', '\''), array('&lt;', '&gt;', '&quot;', '&apos;'), $str);
 }
+
+/**
+ * 根据id值来获取子目录
+ * @param  integer  $id  id值
+ * @param  integer  $num 每个子目录中保存的id数量
+ * @return string
+ */
+function subdir_by_id($id, $num = 1000) {
+	$id = intval($id);
+	$n = floor($id / $num);
+	return $n . '/' . $id;
+}
