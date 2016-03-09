@@ -391,8 +391,8 @@ str;
 
 		$addons = new $class;
 		$info = $addons->info;
-		if (!$info || !$addons->checkInfo()) //检测信息的正确性
-		{
+		if (!$info || !$addons->checkInfo()) {
+			//检测信息的正确性
 			$this->error('插件信息缺失');
 		}
 
@@ -401,6 +401,41 @@ str;
 		if (!$install_flag) {
 			$this->error('执行插件预安装操作失败' . session('addons_install_error'));
 		}
+
+		// =====================================
+		// 添加钩子到数据库
+		// @author Wenhui Shen <swh@admpub.com>
+		// =====================================
+		$hooks = D('Hooks');
+		if (!empty($addons->info['hooks'])) {
+			foreach ($addons->info['hooks'] as $key => $value) {
+				if ($hook = $hooks->where(array('name' => $key))->find()) {
+					$addons = $hook['addons'] ? explode(',', $hook['addons']) : array();
+					if ($value['addons']) {
+						$newAddons = explode(',', $value['addons']);
+						$newAddons = array_diff($newAddons, $addons);
+						if ($newAddons) {
+							foreach ($newAddons as $v) {
+								$addons[] = $v;
+							}
+						}
+					}
+					$hooks->where(array('id' => $hook['id']))->save(array(
+						'update_time' => NOW_TIME,
+						'addons' => implode(',', $addons),
+					));
+				} else {
+					$hooks->add(array(
+						'name' => $key,
+						'description' => $value['description'],
+						'type' => $value['type'],
+						'update_time' => NOW_TIME,
+						'addons' => $value['addons'],
+					));
+				}
+			}
+		}
+
 		$addonsModel = D('Addons');
 		$data = $addonsModel->create($info);
 
@@ -454,6 +489,34 @@ str;
 		if ($hooks_update === false) {
 			$this->error('卸载插件所挂载的钩子数据失败');
 		}
+
+		$info = $addons->info;
+		// =====================================
+		// 删除钩子
+		// @author Wenhui Shen <swh@admpub.com>
+		// =====================================
+		$hooks = D('Hooks');
+		if (!empty($addons->info['hooks'])) {
+			foreach ($addons->info['hooks'] as $key => $value) {
+				if ($hook = $hooks->where(array('name' => $key))->find()) {
+					if ($hook['addons'] == $key || $hook['addons'] == '') {
+						$hooks->where(array('id' => $hook['id']))->delete();
+					} else {
+						$addons = explode(',', $hook['addons']);
+						if ($value['addons']) {
+							$newAddons = explode(',', $value['addons']);
+							foreach ($addons as $k => $v) {
+								if (in_array($v, $newAddons)) {
+									unset($addons[$k]);
+								}
+							}
+						}
+						$hooks->where(array('id' => $hook['id']))->setField('addons', implode(',', $addons));
+					}
+				}
+			}
+		}
+
 		S('hooks', null);
 		$delete = $addonsModel->where(array('name' => $db_addons['name']))->delete();
 		if ($delete === false) {
@@ -494,6 +557,7 @@ str;
 	//超级管理员删除钩子
 	public function delhook($id) {
 		if (M('Hooks')->delete($id) !== false) {
+			S('hooks', null);
 			$this->success('删除成功');
 		} else {
 			$this->error('删除失败');
@@ -507,6 +571,7 @@ str;
 			if ($data['id']) {
 				$flag = $hookModel->save($data);
 				if ($flag !== false) {
+					S('hooks', null);
 					$this->success('更新成功', Cookie('__SELF__'));
 				} else {
 					$this->error('更新失败');
@@ -515,6 +580,7 @@ str;
 			} else {
 				$flag = $hookModel->add($data);
 				if ($flag) {
+					S('hooks', null);
 					$this->success('新增成功', Cookie('__forward__'));
 				} else {
 					$this->error('新增失败');

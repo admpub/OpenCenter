@@ -17,6 +17,23 @@ class SyncLoginAddon extends Addon {
 		'status' => 1,
 		'author' => 'xjw129xjt',
 		'version' => '0.1',
+		'hooks' => array(
+			'syncLogin' => array(
+				'description' => '第三方登录',
+				'type' => 1,
+				'addons' => 'SyncLogin',
+			),
+			'userConfig' => array(
+				'description' => '用户配置页面钩子',
+				'type' => 1,
+				'addons' => 'SyncLogin',
+			),
+			'syncMeta' => array(
+				'description' => '第三方登陆meta接口',
+				'type' => 1,
+				'addons' => 'SyncLogin',
+			),
+		),
 	);
 
 	public function install() {
