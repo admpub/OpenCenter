@@ -444,6 +444,7 @@ function addons_url($url, $param = array()) {
 	$addons = $case ? parse_name($url['scheme']) : $url['scheme'];
 	$controller = $case ? parse_name($url['host']) : $url['host'];
 	$action = trim($case ? strtolower($url['path']) : $url['path'], '/');
+	$module = isset($url['fragment']) ? $url['fragment'] : '';
 
 	/* 解析URL带的参数 */
 	if (isset($url['query'])) {
@@ -458,13 +459,14 @@ function addons_url($url, $param = array()) {
 		'_action' => $action,
 	);
 	$params = array_merge($params, $param); //添加额外参数
-	if (strtolower(MODULE_NAME) == 'admin') {
-		return U('Admin/Addons/execute', $params);
-	} else {
-		return U('Home/Addons/execute', $params);
-
+	if (!$module) {
+		if (strtolower(MODULE_NAME) == 'admin') {
+			$module = 'Admin';
+		} else {
+			$module = 'Home';
+		}
 	}
-
+	return U($module . '/Addons/execute', $params);
 }
 
 /**
@@ -1334,8 +1336,9 @@ function array_subtract($a, $b) {
  * @return string        插件网址
  */
 function simple_addons_url($url, $param = array()) {
+	$p = explode('#', $url);
 	// 拆分URL
-	$url = explode('/', $url);
+	$url = explode('/', $p[0]);
 	$addon = $url[0];
 	$controller = $url[1];
 	$action = $url[2];
@@ -1344,7 +1347,12 @@ function simple_addons_url($url, $param = array()) {
 	$param['_addons'] = $addon;
 	$param['_controller'] = $controller;
 	$param['_action'] = $action;
-	return U('Home/Addons/execute', $param);
+	$module = isset($p[1]) ? $p[1] : '';
+	if (!$module) {
+		$module = 'Home';
+	}
+
+	return U($module . '/Addons/execute', $param);
 }
 
 /**

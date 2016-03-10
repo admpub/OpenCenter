@@ -32,6 +32,13 @@ class BaseController extends AddonsController {
 		redirect($sns->getRequestCodeURL());
 	}
 
+	public function clearSyncLoginSession() {
+		session('SYNCLOGIN_TOKEN', null);
+		session('SYNCLOGIN_TYPE', null);
+		session('SYNCLOGIN_OPENID', null);
+		session('SYNCLOGIN_ACCESS_TOKEN', null);
+	}
+
 	/**
 	 * 登陆后回调地址
 	 * autor:xjw129xjt
@@ -71,12 +78,9 @@ class BaseController extends AddonsController {
 	 */
 	protected function loginWithoutpwd($uid) {
 		if (0 < $uid) {
-			//UC登录成功
-			/* 登录用户 */
 			$Member = D('Member');
 			if ($Member->login($uid, false)) {
-				//登录用户
-				//TODO:跳转到登录前页面
+				$this->clearSyncLoginSession();
 				$this->success('登录成功！', homeUrl());
 			} else {
 				$this->error($Member->getError());
@@ -152,6 +156,7 @@ class BaseController extends AddonsController {
 			$this->addSyncLoginData($uid, $this->access_token, $this->openid, $this->type, $this->openid);
 			$uid = $User->login($username, $password); //通过账号密码取到uid
 			D('Member')->login($uid, false); //登陆
+			$this->clearSyncLoginSession();
 			$this->success('绑定成功！', homeUrl());
 		} else {
 			//注册失败，显示错误信息
@@ -172,7 +177,7 @@ class BaseController extends AddonsController {
 			if ($Member->login($uid, $remember == 'on')) {
 				//登录用户
 				$this->addSyncLoginData($uid, $this->access_token, $this->openid, $this->type, $this->openid);
-				//TODO:跳转到登录前页面
+				$this->clearSyncLoginSession();
 				$this->success('登录成功！', homeUrl());
 			} else {
 				$this->error($Member->getError());
@@ -206,6 +211,7 @@ class BaseController extends AddonsController {
 			$uid = $syncData['uid'];
 			$user = UCenterMember()->where(array('id' => $syncData['uid']))->find();
 			if (empty($user)) {
+				$this->clearSyncLoginSession();
 				//用户已经不存在，删除绑定记录
 				D('sync_login')->where(array('type_uid' => $openid, 'type' => $type))->delete();
 				return redirect(homeUrl());
@@ -242,6 +248,7 @@ class BaseController extends AddonsController {
 	protected function checkIsBind($syncData = null) {
 		$syncData === null && $syncData = D('sync_login')->where(array('type_uid' => $this->openid, 'type' => $this->type))->find();
 		if ($syncData) {
+			$this->clearSyncLoginSession();
 			redirect(homeUrl());
 		}
 	}
@@ -315,6 +322,7 @@ class BaseController extends AddonsController {
 			$this->error('该帐号已经被绑定！');
 		}
 		$this->addSyncLoginData($uid, $access_token, $openid, $type, $openid);
+		$this->clearSyncLoginSession();
 		$this->success('绑定成功！', U('usercenter/config/index'));
 	}
 
