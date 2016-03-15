@@ -1580,3 +1580,19 @@ function subdir_by_id($id, $num = 1000) {
 	$n = floor($id / $num);
 	return $n . '/' . $id;
 }
+
+/**
+ * 跳转到下一步的网址
+ * @param  string $default 默认网址
+ * @return string
+ */
+function next_url($default = 'index') {
+	if (empty($_REQUEST['next'])) {
+		$_REQUEST['next'] = U($default);
+	} else {
+		if ($_REQUEST['next'][0] == '#') {
+			$_REQUEST['next'] = base64_decode($_REQUEST['next']);
+		}
+	}
+	return $_REQUEST['next'];
+}
