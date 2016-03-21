@@ -1591,8 +1591,20 @@ function next_url($default = 'index') {
 		$_REQUEST['next'] = U($default);
 	} else {
 		if ($_REQUEST['next'][0] == '#') {
+			$_REQUEST['next'] = str_replace(array(' ', '-'), array('+', '/'), $_REQUEST['next']);
 			$_REQUEST['next'] = base64_decode($_REQUEST['next']);
 		}
 	}
 	return $_REQUEST['next'];
+}
+
+/**
+ * 生成编码后的网址
+ * @return string
+ */
+function gen_next_url($next = null) {
+	$next = base64_encode(is_null($next) ? $_REQUEST['next'] : $next);
+	$next = rtrim($next, '=');
+	$next = str_replace(array('/'), array('-'), $next);
+	return '#' . $next;
 }
