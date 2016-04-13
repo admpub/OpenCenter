@@ -966,7 +966,7 @@ function moduleDomains() {
 			if ($rules) {
 				foreach ($rules as $key => $value) {
 					$value = strtolower($value);
-					$_moduleDomains[$value] = $key;
+					$_moduleDomains[$value][] = $key;
 				}
 			}
 		}
@@ -1103,11 +1103,11 @@ function U($url = '', $vars = '', $suffix = true, $domain = false) {
 				if (isset($_bindControllers[$_k])) {
 					unset($var[$varController]);
 					if (!$domain) {
-						$domain = $_bindControllers[$_k];
+						$domain = reset($_bindControllers[$_k]);
 					}
 				} else if (isset($_bindControllers[$_module])) {
 					if (!$domain) {
-						$domain = $_bindControllers[$_module];
+						$domain = reset($_bindControllers[$_module]);
 					}
 				}
 			}

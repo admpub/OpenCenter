@@ -87,7 +87,7 @@ if (!function_exists('moduleDomains')) {
 				if ($rules) {
 					foreach ($rules as $key => $value) {
 						$value = strtolower($value);
-						$_moduleDomains[$value] = $key;
+						$_moduleDomains[$value][] = $key;
 					}
 				}
 			}
