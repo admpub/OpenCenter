@@ -23,17 +23,17 @@ class Base extends Controller {
 
         if(!empty($_REQUEST['next'])){
 			if(!empty($_GET['next'])) {
-				$_GET['next']=strip_tags($_GET['next']);
+				$_GET['next']=strip_tags(urldecode($_GET['next']));
 				$_GET['next']=str_replace(array('"','\''),'',$_GET['next']);
 				$_REQUEST['next']=$_GET['next'];
 			}elseif(!empty($_POST['next'])){
-				$_POST['next']=strip_tags($_POST['next']);
+				$_POST['next']=strip_tags(urldecode($_POST['next']));
 				$_POST['next']=str_replace(array('"','\''),'',$_POST['next']);
 				$_REQUEST['next']=$_POST['next'];
 			}
 		}
 		if(!empty($_SERVER['HTTP_REFERER'])){
-			$_SERVER['HTTP_REFERER']=strip_tags($_SERVER['HTTP_REFERER']);
+			$_SERVER['HTTP_REFERER']=strip_tags(urldecode($_SERVER['HTTP_REFERER']));
 			$_SERVER['HTTP_REFERER']=str_replace(array('"','\''),'',$_SERVER['HTTP_REFERER']);
 		}
 	}
