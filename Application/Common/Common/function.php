@@ -1593,6 +1593,9 @@ function next_url($default = 'index') {
 		if ($_REQUEST['next'][0] == '#') {
 			$_REQUEST['next'] = str_replace(array(' ', '-'), array('+', '/'), $_REQUEST['next']);
 			$_REQUEST['next'] = base64_decode($_REQUEST['next']);
+			//clean
+			$_REQUEST['next'] = strip_tags($_REQUEST['next']);
+			$_REQUEST['next'] = str_replace(array('"','\''),'',$_REQUEST['next']);
 		}
 	}
 	return $_REQUEST['next'];
