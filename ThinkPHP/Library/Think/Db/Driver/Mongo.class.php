@@ -589,11 +589,11 @@ class Mongo extends Driver {
                     case 'set':
                     case 'unset':
                     case 'push':
-                    case 'pushall':
-                    case 'addtoset':
+                    case 'pushAll':
+                    case 'addToSet':
                     case 'pop':
                     case 'pull':
-                    case 'pullall':
+                    case 'pullAll':
                         $result['$'.$val[0]][$key] = $val[1];
                         break;
                     default:
