@@ -284,8 +284,8 @@ class MemberController extends Base {
 
 			//发送验证邮箱
 			$url = 'http://' . $_SERVER['HTTP_HOST'] . U('Ucenter/member/reset?uid=' . $uid . '&verify=' . $verify);
-			$content = C('USER_RESPASS') . '<br/>' . $url . '<br/>' . modC('WEB_SITE_NAME', 'OpenSNS开源社交系统', 'Config') . '系统自动发送--请勿直接回复<br/>' . date('Y-m-d H:i:s', TIME()) . '</p>';
-			send_mail($email, modC('WEB_SITE_NAME', 'OpenSNS开源社交系统', 'Config') . '密码找回', $content);
+			$content = C('USER_RESPASS') . '<br/>' . $url . '<br/>' . modC('WEB_SITE_NAME', 'OpenCenter', 'Config') . '系统自动发送--请勿直接回复<br/>' . date('Y-m-d H:i:s', TIME()) . '</p>';
+			send_mail($email, modC('WEB_SITE_NAME', 'OpenCenter', 'Config') . '密码找回', $content);
 			$this->success('密码找回邮件发送成功', U('Member/login'));
 		} else {
 			if (is_login()) {
@@ -477,7 +477,7 @@ class MemberController extends Base {
 			$content = modC('REG_EMAIL_VERIFY', '{$verify}', 'USERCONFIG');
 			$content = str_replace('{$verify}', $verify, $content);
 			$content = str_replace('{$account}', $account, $content);
-			$res = send_mail($account, modC('WEB_SITE_NAME', 'OpenSNS开源社交系统', 'Config') . '邮箱验证', $content);
+			$res = send_mail($account, modC('WEB_SITE_NAME', 'OpenCenter', 'Config') . '邮箱验证', $content);
 			return $res;
 			break;
 		}
@@ -558,8 +558,8 @@ class MemberController extends Base {
 		$url = 'http://' . $_SERVER['HTTP_HOST'] . U('ucenter/member/doActivate?account=' . $account . '&verify=' . $verify . '&type=email&uid=' . $uid);
 		$content = modC('REG_EMAIL_ACTIVATE', '{$url}', 'USERCONFIG');
 		$content = str_replace('{$url}', $url, $content);
-		$content = str_replace('{$title}', modC('WEB_SITE_NAME', 'OpenSNS开源社交系统', 'Config'), $content);
-		$res = send_mail($account, modC('WEB_SITE_NAME', 'OpenSNS开源社交系统', 'Config') . '激活信', $content);
+		$content = str_replace('{$title}', modC('WEB_SITE_NAME', 'OpenCenter', 'Config'), $content);
+		$res = send_mail($account, modC('WEB_SITE_NAME', 'OpenCenter', 'Config') . '激活信', $content);
 
 		return $res;
 	}

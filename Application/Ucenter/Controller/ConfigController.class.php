@@ -751,7 +751,7 @@ class ConfigController extends BaseController {
 			$content = modC('REG_EMAIL_VERIFY', '{$verify}', 'USERCONFIG');
 			$content = str_replace('{$verify}', $verify, $content);
 			$content = str_replace('{$account}', $account, $content);
-			$res = send_mail($account, modC('WEB_SITE_NAME', 'OpenSNS开源社交系统', 'Config') . '邮箱验证', $content);
+			$res = send_mail($account, modC('WEB_SITE_NAME', 'OpenCenter', 'Config') . '邮箱验证', $content);
 
 			return $res;
 			break;

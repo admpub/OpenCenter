@@ -1435,15 +1435,6 @@ INSERT INTO `ocenter_seo_rule` (`id`, `title`, `app`, `controller`, `action`, `s
 (15, '专辑首页', 'issue', 'index', 'index', -1, '专辑', '专辑首页', '专辑首页——ThinkOX', 0),
 (16, '专辑详情页', 'issue', 'index', 'issuecontentdetail', -1, '{$content.title|op_t}', '{$content.title|op_t}', '{$content.title|op_t}——ThinkOX', 0);
 
-
-INSERT INTO `ocenter_super_links` ( `type`, `title`, `cover_id`, `link`, `level`, `status`, `create_time`) VALUES
-( 2, '想天科技', 0, 'http://www.ourstu.com', 0, 1, 1407156786),
-( 2, 'Onethink', 0, 'http://www.onethink.cn', 0, 1, 1407156813),
-( 1, 'OpenCenter', 0, 'http://www.ocenter.cn', 0, 1, 1407156830),
-( 1, 'OpenSNS', 0, 'http://www.opensns.cn', 0, 1, 1407156830);
-
-
-
 INSERT INTO `ocenter_ucenter_score_type` (`id`, `title`, `status`, `unit`) VALUES
 (1, '积分', 1, '分'),
 (2, '威望', 1, '点'),
