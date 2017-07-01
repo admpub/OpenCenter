@@ -29,18 +29,29 @@ body{background: rgb(79, 138, 208);font-family:'微软雅黑';color:#fff;font-si
     <h1>恭喜您!</h1>
     <p class="error"><?php echo($message); ?></p>
     <p class="detail"></p>
-    <p class="jump">
+    <p class="jump" id="jump-message">
+        <?php if($waitSecond>=0):?>
         <b id="wait"><?php echo($waitSecond); ?></b> 秒后页面将自动跳转
+        <?php endif;?>
     </p>
     <div>
+        <?php if($waitSecond>=0):?>
         <a id="btn-now" href="<?php echo($jumpUrl); ?>">立即跳转</a>
         <button id="btn-stop" type="button" onclick="stop()">停止跳转</button>
-        <a id="href" href="<?php echo(U('Home/index/index')); ?>">返回首页</a>
+        <?php endif;?>
+        <a id="href" href="<?php echo homeUrl();?>">返回首页</a>
     </div>
 </div>
 <script type="text/javascript">
 (function(){
     var wait = document.getElementById('wait'),href = document.getElementById('href').href;
+    if(wait.innerHTML<0) return;
+    if(href==location.href) {
+        document.getElementById('jump-message').innerHTML='';
+        document.getElementById('btn-now').style.display='none';
+        document.getElementById('btn-stop').style.display='none';
+        return;
+    }
     var interval = setInterval(function(){
         var time = --wait.innerHTML;
         if(time <= 0) {

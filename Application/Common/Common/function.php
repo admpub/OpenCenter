@@ -80,7 +80,7 @@ function get_uid() {
 /**
  * 检测权限
  */
-function CheckPermission($uids) {
+function check_permission($uids) {
 	if (is_administrator()) {
 		return true;
 	}
@@ -423,9 +423,14 @@ function get_addon_class($name) {
  * @param string $name 插件名
  */
 function get_addon_config($name) {
+	static $_addons=array();
 	$class = get_addon_class($name);
+	if(isset($_addons[$class])){
+		return $_addons[$class]->getConfig();
+	}
 	if (class_exists($class)) {
 		$addon = new $class();
+		$_addons[$class]=$addon;
 		return $addon->getConfig();
 	} else {
 		return array();
@@ -1303,7 +1308,7 @@ function getMoneyTip($before, $after) {
 	$money_change = $after - $before;
 	$tip = '';
 	if ($money_change) {
-		$tip = getMoneyName() . ($money_change > 0 ? '加&nbsp;' . $money_change : '减&nbsp;' . $money_change) . ' 。';
+		$tip = getMoneyName() . ($money_change > 0 ? '加 ' . $money_change : '减 ' . $money_change) . ' 。';
 	}
 	return $tip;
 }

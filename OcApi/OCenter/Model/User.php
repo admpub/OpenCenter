@@ -22,8 +22,8 @@ class User extends base{
      * @author:xjw129xjt(肖骏涛) xjt@ourstu.com
      */
     function doLogin($args){
-        $username = $args['username'];
-        $password = $args['password'];
+        $username = addslashes($args['username']);
+        $password = addslashes($args['password']);
         $this->checkUsername($username, $email, $mobile, $type);
 
         switch ($type) {
@@ -83,8 +83,10 @@ class User extends base{
      */
     function doGetUserInfo($where=''){
         $ucenter_member = $this->db->getOne("SELECT * FROM `".$this->tablePre."ucenter_member` WHERE ".$where);
-        $user = $this->db->getOne("SELECT * FROM `".$this->tablePre."member` WHERE uid=".$ucenter_member['id']);
-        $ucenter_member = array_merge($ucenter_member,$user);
+        if ($ucenter_member) {
+            $user = $this->db->getOne("SELECT * FROM `".$this->tablePre."member` WHERE uid=".$ucenter_member['id']);
+            $ucenter_member = array_merge($ucenter_member,$user);
+        }
 
         return $ucenter_member;
     }
@@ -96,6 +98,7 @@ class User extends base{
      * @author:xjw129xjt(肖骏涛) xjt@ourstu.com
      */
     function doSynLogin($uid){
+        $uid=intval($uid);
         $time =time();
         $user = $this->doGetUserInfo('id='.$uid);
         $appList = $this->db->getAll("SELECT * FROM `".$this->tablePre."sso_app` WHERE status=1");

@@ -17,9 +17,14 @@
  */
 function query_user($fields = null, $uid = null, $temped = true) {
 	static $_user = array();
+	static $ignoredFields=array('icons_html'=>true, 'title'=>true);
+	static $ignoredFields2=array('score'=>true, 'money'=>true);
+	static $textFields=array('rank_link'=>true, 'icons_html'=>true, 'space_link'=>true, 'expand_info'=>true);
+	static $defaultFields=array('nickname', 'space_url', 'avatar64', 'avatar128', 'uid');
+
 	$cached = &$temped;
 	if ($fields === null) {
-		$fields = array('nickname', 'space_url', 'avatar64', 'avatar128', 'uid');
+		$fields = $defaultFields;
 	}
 	//如果fields不是数组，则返回值也不是数组
 	if (!is_array($fields)) {
@@ -30,7 +35,7 @@ function query_user($fields = null, $uid = null, $temped = true) {
 	$cachedFields = $cacheResult = $result = array();
 
 	//默认获取自己的资料
-	$uid = $uid ? $uid : is_login();
+	$uid = $uid ? $uid : get_uid();
 	if (!$uid) {
 		return null;
 	}
@@ -57,7 +62,7 @@ function query_user($fields = null, $uid = null, $temped = true) {
 	if ($cached) {
 		//查询缓存，过滤掉已缓存的字段
 		foreach ($fields as $field) {
-			if (in_array($field, array('icons_html', 'title')) || substr($field, 0, 5) == 'score') {
+			if (isset($ignoredFields[$field]) || substr($field, 0, 5) == 'score') {
 				continue;
 			}
 			$cache = read_query_user_cache($uid, $field);
@@ -84,8 +89,7 @@ function query_user($fields = null, $uid = null, $temped = true) {
 	$ucenterFields = array_intersect($ucenterFields, $fields);
 
 	//查询需要的字段
-	$homeResult = array();
-	$ucenterResult = array();
+	$homeResult = $ucenterResult = array();
 	if ($homeFields) {
 		$homeResult = D('Home/Member')->where(array('uid' => $uid))->field($homeFields)->find();
 	}
@@ -94,13 +98,16 @@ function query_user($fields = null, $uid = null, $temped = true) {
 		$ucenterResult = $model->where(array('id' => $uid))->field($ucenterFields)->find();
 	}
 	if ($avatarFields) {
-		//读取头像数据
-		$avatarObject = new \Ucenter\Widget\UploadAvatarWidget();
+		static $avatarObject=null;
+		if (!$avatarObject) {
+			$avatarObject = new \Ucenter\Widget\UploadAvatarWidget();
 
-		$check = file_exists('./api/uc_login.lock');
-		if ($check) {
-			include_once './api/uc_client/client.php';
+			$check = file_exists('./api/uc_login.lock');
+			if ($check) {
+				include_once './api/uc_client/client.php';
+			}
 		}
+		//读取头像数据
 		foreach ($avatarFields as $e) {
 			$avatarSize = intval(substr($e, 6));
 			$avatarUrl = $avatarObject->getAvatar($uid, $avatarSize);
@@ -128,8 +135,8 @@ function query_user($fields = null, $uid = null, $temped = true) {
 		$result['space_url'] = U('Ucenter/Index/index', array('uid' => $uid));
 	}
 
-	if (in_array('nickname', $fields)) {
-		$ucenterResult['nickname'] = op_t($ucenterResult['nickname']);
+	if (isset($fieldKeys['nickname'])) {
+		$ucenterResult['nickname'] = text($ucenterResult['nickname']);
 	}
 
 	//获取昵称链接
@@ -251,12 +258,12 @@ function query_user($fields = null, $uid = null, $temped = true) {
 	//写入缓存
 	if ($result) {
 		foreach ($result as $field => $value) {
-			if (in_array($field, array('icons_html', 'title')) || in_array(substr($field, 0, 5), array('score', 'money'))) {
+			if (isset($ignoredFields[$field]) || isset($ignoredFields2[substr($field, 0, 5)])) {
 				$_user[$uid][$field] = $value;
 				continue;
 			}
-			if (!in_array($field, array('rank_link', 'icons_html', 'space_link', 'expand_info'))) {
-				$value = str_replace('"', '', op_t($value));
+			if (!isset($textFields[$field])) {
+				$value = str_replace('"', '', text($value));
 			}
 			$result[$field] = $value;
 			$_user[$uid][$field] = $value;

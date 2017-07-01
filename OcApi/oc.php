@@ -65,9 +65,9 @@ class ocNode
      */
     function synLogin($get)
     {
-        $uid = $get['uid'];
-        $username = $get['username'];
-        $password = $get['password'];
+        $uid = intval($get['uid']);
+        $username = addslashes($get['username']);
+        $password = addslashes($get['password']);
         header('P3P: CP="CURa ADMa DEVa PSAo PSDo OUR BUS UNI PUR INT DEM STA PRE COM NAV OTC NOI DSP COR"');
         session_start();
         $check_user = $this->db->getOne("SELECT * FROM `" . $this->tablePre . "member` WHERE uid=" . $uid);

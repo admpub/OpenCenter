@@ -23,6 +23,11 @@ function callApi($apiName, $args = array()) {
 	}
 }
 
+/**
+ * Api转ajax
+ * @param  array  $result  api数据
+ * @return array
+ */
 function apiToAjax($result) {
 	$result['status'] = $result['success'];
 	$result['info'] = $result['message'];
@@ -30,6 +35,11 @@ function apiToAjax($result) {
 	return $result;
 }
 
+/**
+ * 确保Api结果为成功结果
+ * @param  array  $apiResult  api数据
+ * @return array
+ */
 function ensureApiSuccess($apiResult) {
 	if (!$apiResult['success']) {
 		api_show_error($apiResult['message']);
@@ -71,6 +81,10 @@ function api_show_error_html($message, $extra = null) {
 	$controller->showError($message);
 }
 
+/**
+ * 处理异常
+ * @param $exception 异常对象
+ */
 function handle_exception($exception) {
 	// 显示错误消息
 	$message = $exception->getMessage();

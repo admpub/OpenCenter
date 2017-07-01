@@ -73,10 +73,23 @@ function addonD($addon, $model = null) {
 	return $_addonM[$k];
 }
 
+/**
+ * 获取自己定义的Base模型
+ * @param  string 	$name 模型名称
+ * @param  string 	$tablePrefix 表前缀
+ * @param  string 	$connection 数据库连接设置
+ * @return object
+ * @author swh <swh@admpub.com>
+ */
 function baseM($name = '', $tablePrefix = '', $connection = '') {
 	return M('Common\\Model\\Base:' . $name, $tablePrefix, $connection);
 }
 
+/**
+ * 获取所有模块的域名
+ * @return array
+ * @author swh <swh@admpub.com>
+ */
 if (!function_exists('moduleDomains')) {
 	function moduleDomains() {
 		static $_moduleDomains = null;
@@ -108,6 +121,7 @@ function homeUrl() {
 	if (!empty($domains[$module])) {
 		return U('Index/index');
 	}
+	if ($module=='install') return './';
 	return U('Home/Index/index');
 }
 

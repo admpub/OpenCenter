@@ -37,21 +37,22 @@ class ModuleController extends AdminController {
 			$m['alias'] = '<i class="icon-' . $m['icon'] . '"></i> ' . $m['alias'];
 			empty($m['admin_entry']) || $m['admin_entry'] = '<a href="' . U($m['admin_entry']) . '" target="_blank">' . $m['admin_entry'] . '</a>';
 			empty($m['entry']) || $m['entry'] = '<a href="' . U($m['entry']) . '" target="_blank">' . $m['entry'] . '</a>';
-			$m['do'] = '<a class="btn" href="' . U('Module/edit', array('id' => $m['id'], 'name' => $name)) . '"><span style="color: green;"><i class="icon-pencil"></i></span> 编辑</a>&nbsp;';
+			$m['do'] = '<a class="btn" href="' . U('Module/edit', array('id' => $m['id'], 'name' => $name)) . '"><span style="color:green"><i class="icon-pencil"></i></span> 编辑</a>&nbsp;';
+
 			if ($m['is_setup']) {
-				$m['name'] = '<i class="icon-ok" style="color: green;"></i> ' . $m['name'];
+				$m['name'] = '<i class="icon-ok" style="color:green"></i> ' . $m['name'];
 				if ($m['can_uninstall']) {
-					$m['do'] .= '<a class="btn btn-error "  onclick="moduleManager.uninstall(\'' . $m['id'] . '\')"><span style="color: red;" ><i class="icon-cut"></i></span> 卸载</a>';
+					$m['do'] .= '<a class="btn btn-error" onclick="moduleManager.uninstall(\'' . $m['id'] . '\')"><span style="color:red"><i class="icon-cut"></i></span> 卸载</a>';
 				}
 
 			} else {
-				$m['name'] = '<i class="icon-remove" style="color: red;"></i> ' . $m['name'];
-				$m['do'] .= '<a class="btn" onclick="moduleManager.install(\'' . $m['id'] . '\')"><span style="color: green;"><i class="icon-check"></i></span> 安装</a>';
+				$m['name'] = '<i class="icon-remove" style="color:red"></i> ' . $m['name'];
+				$m['do'] .= '<a class="btn" onclick="moduleManager.install(\'' . $m['id'] . '\')"><span style="color:green"><i class="icon-check"></i></span> 安装</a>';
 			}
 			if ($m['is_com']) {
-				$m['is_com'] = '<strong style="color: orange">商业模块</strong>';
+				$m['is_com'] = '<strong style="color:orange">商业模块</strong>';
 			} else {
-				$m['is_com'] = '<strong style="color: green">免费模块</strong>';
+				$m['is_com'] = '<strong style="color:green">免费模块</strong>';
 			}
 		}
 		unset($m);
